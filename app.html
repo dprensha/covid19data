@@ -19,7 +19,7 @@
 			for (i = 0; i < 97; i++) {
 				var node = document.createElement("div");
 				node.id = 'myDiv' + i;
-				node.style = 'width:470px; height: 300px;';
+				node.style = 'width:450px; height: 300px; padding: 8px;';
 				document.getElementById("countyGraphs").appendChild(node);
 			}
 		}
@@ -79,7 +79,7 @@
 			Plotly.newPlot('rollupGraph', [{ x: stateData.x, y: stateData.y}], { title: "All Counties" })
 
 			for (i = 0; i < sortedCountyKeys.length; i++) {
-				Plotly.newPlot('myDiv' + i, [{ x: countyData[sortedCountyKeys[i]].x, y: countyData[sortedCountyKeys[i]].y }], { title: countyData[sortedCountyKeys[i]].title });
+				Plotly.newPlot('myDiv' + i, [{ x: countyData[sortedCountyKeys[i]].x, y: countyData[sortedCountyKeys[i]].y }], { title: { text: countyData[sortedCountyKeys[i]].title, x: 0.5, y: .8 }});
 			}
 		}
 
