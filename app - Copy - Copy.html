@@ -1,0 +1,88 @@
+<head>
+	<!-- Plotly.js -->
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+	<div style="font-family: 'Open Sans', verdana, arial, sans-serif; font-size: 36px; text-align: center">
+		Tennessee County Active COVID-19 Cases
+	</div>
+	<div style="position: absolute; left: calc(100vw/2 - 400px);">
+		<img id="loading" src="https://i.pinimg.com/originals/78/e8/26/78e826ca1b9351214dfdd5e47f7e2024.gif"/>
+	</div>
+	<div id="rollupGraph" style="width: 60vw; height: 400px; margin: auto;"></div>
+	<div id="countyGraphs" style="display: flex; flex-wrap: wrap;">
+
+	</div>
+	<script>
+		function divify() {
+			for (i = 0; i < 97; i++) {
+				var node = document.createElement("div");
+				node.id = 'myDiv' + i;
+				node.style = 'width:470px; height: 300px;';
+				document.getElementById("countyGraphs").appendChild(node);
+			}
+		}
+		divify();
+	</script>
+	<script>
+		function makeplot() {
+			Plotly.d3.csv("https://raw.githubusercontent.com/dprensha/covid19data/master/Public-Dataset-County-New.csv", function (data) { processData(data) });
+
+		};
+
+		function processData(allRows) {
+
+			var countyData = {};
+			var stateData = { x: [], y: [] };
+
+			for (var i = 0; i < allRows.length; i++) {
+				row = allRows[i];
+
+				if (!Object.keys(countyData).includes(row['COUNTY'])) {
+					countyData[row['COUNTY']] = {
+						x: [],
+						y: [],
+						title: row['COUNTY']
+					}
+				}				
+
+				else {
+					countyData[row['COUNTY']].x.push(row['DATE']);
+					countyData[row['COUNTY']].y.push(row['TOTAL_ACTIVE']);
+				}
+
+
+				if(!stateData.x.includes(row['DATE'])){
+					stateData.x.push(row['DATE']);
+				}
+				
+				if(stateData.y[stateData.x.indexOf(row['DATE'])] === undefined) {
+					stateData.y[stateData.x.indexOf(row['DATE'])] = 0;
+				} 
+				
+				stateData.y[stateData.x.indexOf(row['DATE'])] += parseInt(row['TOTAL_ACTIVE']);
+
+			}
+
+			//remove leading NULL data
+			for(i = 0; i < stateData.y.length; i++) {
+				if(!isNaN(stateData.y[i])) {
+					break;
+				}
+			}
+			stateData.y.splice(0, i);
+			stateData.x.splice(0, i);
+
+			var sortedCountyKeys = Object.keys(countyData).sort();
+			
+			Plotly.newPlot('rollupGraph', [{ x: stateData.x, y: stateData.y}], { title: "All Counties" })
+
+			for (i = 0; i < sortedCountyKeys.length; i++) {
+				Plotly.newPlot('myDiv' + i, [{ x: countyData[sortedCountyKeys[i]].x, y: countyData[sortedCountyKeys[i]].y }], { title: countyData[sortedCountyKeys[i]].title });
+			}
+		}
+
+		makeplot();
+	</script>
+</body>
