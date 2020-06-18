@@ -11,7 +11,7 @@
 		<img id="loading" src="https://i.pinimg.com/originals/78/e8/26/78e826ca1b9351214dfdd5e47f7e2024.gif"/>
 	</div>
 	<div id="rollupGraph" style="width: 65vw; height: 400px; margin: auto;"></div>
-	<div id="countyGraphs" style="display: flex; flex-wrap: wrap;">
+	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;">
 
 	</div>
 	<script>
@@ -26,10 +26,10 @@
 		divify();
 	</script>
 	<script>
-		function makeplot() {
+		//function makeplot() {
 			Plotly.d3.csv("https://raw.githubusercontent.com/dprensha/covid19data/master/Public-Dataset-County-New.csv", function (data) { processData(data) });
 
-		};
+		//};
 
 		function processData(allRows) {
 
@@ -76,13 +76,13 @@
 
 			var sortedCountyKeys = Object.keys(countyData).sort();
 			
-			Plotly.newPlot('rollupGraph', [{ x: stateData.x, y: stateData.y}], { title: "All Counties" })
+			Plotly.newPlot('rollupGraph', [{ x: stateData.x, y: stateData.y}], { title: "All Counties" }, { modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'] })
 
 			for (i = 0; i < sortedCountyKeys.length; i++) {
-				Plotly.newPlot('myDiv' + i, [{ x: countyData[sortedCountyKeys[i]].x, y: countyData[sortedCountyKeys[i]].y }], { title: { text: countyData[sortedCountyKeys[i]].title, x: 0.5, y: .8 }});
+				Plotly.newPlot('myDiv' + i, [{ x: countyData[sortedCountyKeys[i]].x, y: countyData[sortedCountyKeys[i]].y }], { title: { text: countyData[sortedCountyKeys[i]].title, x: 0.5, y: .8 }}, { modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'] });
 			}
 		}
 
-		makeplot();
+		//makeplot();
 	</script>
 </body>
