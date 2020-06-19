@@ -5,6 +5,7 @@
 	<link rel="icon" type="image/png" href="favicon.ico"/>
 	<!-- Plotly.js -->
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<style>
 		@keyframes yellowfade {
 			from {
@@ -130,14 +131,16 @@
 			var county = getQueryVariable("county");
 			if(county) {
 				//window.scrollTo({left: 0, top: document.getElementById(county).getBoundingClientRect().top, behavior: 'smooth'});
-				document.getElementById(county).scrollIntoView({block: 'center', behavior: 'smooth'})
-				document.getElementById(county).classList.add("selected");
+				//document.getElementById(county).scrollIntoView({block: 'center', behavior: 'smooth'})
+				setTimeout(function(){
+					$('html').animate({
+						scrollTop: $("#" + county).offset().top
+					}, 1000);
+					document.getElementById(county).classList.add("selected");
+				}, 100);
+				
 			}
 		}
-
-		function focusGraph() {
-			
-		};
 
 		function getQueryVariable(variable) {
 			var query = window.location.search.substring(1);
@@ -152,7 +155,6 @@
 		}
 
 		makeplot();
-		//focusGraph();
 	</script>
 </body>
 </html>
