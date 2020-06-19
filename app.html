@@ -101,7 +101,7 @@
 			
 			Plotly.newPlot('rollupGraph', [{ x: stateData.x, y: stateData.y}], { title: "All Counties" }, { displaylogo: false, modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'] })
 
-			for (i = 0; i < sortedCountyKeys.length; i++) {
+			for (i = 0; i < sortedCountyKeys.length - 1; i++) {
 				Plotly.newPlot(
 					'myDiv' + i, 
 					[{ x: countyData[sortedCountyKeys[i]].x, y: countyData[sortedCountyKeys[i]].y }], 
