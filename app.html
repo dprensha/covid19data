@@ -29,9 +29,7 @@
 		<img id="loading" src="https://i.pinimg.com/originals/78/e8/26/78e826ca1b9351214dfdd5e47f7e2024.gif"/>
 	</div>
 	<div id="rollupGraph" style="width: 65vw; height: 400px; margin: auto;"></div>
-	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;">
-
-	</div>
+	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
 	<script>
 		function divify() {
 			for (i = 0; i < 97; i++) {
@@ -48,7 +46,7 @@
 			Plotly.d3.csv("https://raw.githubusercontent.com/dprensha/covid19data/master/Public-Dataset-County-New.csv", function (data) { processData(data) });
 
 		};
-
+		//https://upload.wikimedia.org/wikipedia/commons/d/dd/Rutherford_County_Tennessee.png
 		function processData(allRows) {
 
 			var countyData = {};
@@ -102,7 +100,7 @@
 			
 			Plotly.newPlot('rollupGraph', [{ x: stateData.x, y: stateData.y}], { title: "All Counties" }, { displaylogo: false, modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'] })
 
-			for (i = 0; i < sortedCountyKeys.length - 1; i++) {
+			for (i = 0; i < sortedCountyKeys.length; i++) {
 				Plotly.newPlot(
 					'myDiv' + i, 
 					[{ x: countyData[sortedCountyKeys[i]].x, y: countyData[sortedCountyKeys[i]].y }], 
