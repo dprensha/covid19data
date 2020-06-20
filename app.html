@@ -18,6 +18,10 @@
 		.selected {
 		  animation: yellowfade 4s;
 		}
+
+		.js-plotly-plot .plotly .modebar {
+			transform: translate(-50%, 150%);
+		}
 		</style>
 </head>
 
@@ -101,7 +105,22 @@
 				'path': 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'
 			};
 			
-			Plotly.newPlot('rollupGraph', [{ x: stateData.x, y: stateData.y}], { title: "All Counties" }, { displaylogo: false, modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'] })
+			Plotly.newPlot(
+				'rollupGraph', 
+				[
+					{
+						x: stateData.x, 
+						y: stateData.y
+					}
+				], 
+				{ 
+					title: "All Counties"
+				},
+				{ 
+					displaylogo: false, 
+					modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d']
+				}
+			);
 
 			for (i = 0; i < sortedCountyKeys.length; i++) {
 				Plotly.newPlot(
@@ -110,6 +129,12 @@
 					{ 
 						title: { 
 							text: countyData[sortedCountyKeys[i]].title, x: 0.5, y: .8 
+						},
+						yaxis: {
+							fixedrange: true
+						},
+						xaxis: {
+							fixedrange: true
 						}
 					}, 
 					{ 
@@ -117,7 +142,7 @@
 						modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
 						modeBarButtonsToAdd: [
 							{
-								name: 'Copy Link',
+								name: 'Copy County Link',
 								icon: copyIcon,
 								click: function(q){
 									navigator.clipboard.writeText("https://apps.prenshaw.com/TNCovid/index.html?county=" + q.id);
