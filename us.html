@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TN COVID-19</title>
+	<link rel="icon" type="image/png" href="favicon.ico"/>
+	<!-- Plotly.js -->
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+		@keyframes yellowfade {
+			from {
+				background: yellow;
+			}
+			to {
+				background: transparent;
+			}
+		}
+		.selected {
+		  animation: yellowfade 4s;
+		}
+
+		.js-plotly-plot .plotly .modebar {
+			transform: translate(-50%, 150%);
+		}
+		</style>
+</head>
+
+<body>
+	<div style="font-family: 'Open Sans', verdana, arial, sans-serif; font-size: 36px; text-align: center; padding: 16px;">
+		Tennessee County Active COVID-19 Cases
+	</div>
+	<div style="font-family: 'Open Sans', verdana, arial, sans-serif; font-size: 14px; text-align: center; padding-bottom: 16px;">
+		Source: <a href="https://www.tn.gov/health/cedep/ncov/data/downloadable-datasets.html">TN Department of Health</a>
+	</div>
+	<div style="position: absolute; left: calc(100vw/2 - 400px);">
+		<img id="loading" src="https://i.pinimg.com/originals/78/e8/26/78e826ca1b9351214dfdd5e47f7e2024.gif"/>
+	</div>
+	<div id="rollupGraph" style="width: 65vw; height: 400px; margin: auto;"></div>
+	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+	<script>
+		function divify() {
+			for (i = 0; i < 58; i++) {
+				var node = document.createElement("div");
+				node.id = 'myDiv' + i;
+				node.style = 'width:450px; height: 300px; padding: 8px;';
+				document.getElementById("countyGraphs").appendChild(node);
+			}
+		}
+		divify();
+	</script>
+	<script>
+		function makeplot() {
+			Plotly.d3.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv", function (data) { processData(data) });
+
+		};
+
+		function processData(allRows) {
+
+			var stateData = {};
+			var countryData = { x: [], y: [] };
+			var dates;
+			for (var i = 0; i < allRows.length; i++) {
+				row = allRows[i];
+				dates = Object.keys(row).filter(function(key) { return !isNaN(Date.parse(key)) });
+				if (Object.keys(stateData).indexOf(row['Province_State']) === -1) {
+					stateData[row['Province_State']] = {
+						x: [],
+						y: [],
+						title: row['Province_State']
+					}
+
+					for(var j = 0; j < dates.length; j++) {
+						stateData[row['Province_State']].x.push(dates[j]);
+						stateData[row['Province_State']].y.push(parseInt(row[dates[j]]));
+
+						if(countryData.y.length === 0) {
+							countryData.y = dates.map(function(date){ return 0});
+						}
+					}
+				}
+
+				else {
+					for(var j = 0; j < dates.length; j++) {
+						stateData[row['Province_State']].y[j] += parseInt((row[dates[j]]));
+						countryData.y[j] += parseInt((row[dates[j]]));
+					}
+				}
+
+
+			}
+
+			countryData.x = dates;
+
+			// //remove leading NULL data
+			// for(i = 0; i < countryData.y.length; i++) {
+			// 	if(!isNaN(countryData.y[i])) {
+			// 		break;
+			// 	}
+			// }
+			// countryData.y.splice(0, i);
+			// countryData.x.splice(0, i);
+
+			var sortedCountyKeys = Object.keys(stateData).sort();
+
+			var copyIcon = {
+				'width': 24,
+				'height': 24,
+				'path': 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'
+			};
+
+			Plotly.newPlot(
+				'rollupGraph',
+				[
+					{
+						x: countryData.x,
+						y: countryData.y
+					}
+				],
+				{
+					title: "All Counties"
+				},
+				{
+					displaylogo: false,
+					modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d']
+				}
+			);
+
+			for (i = 0; i < sortedCountyKeys.length; i++) {
+				Plotly.newPlot(
+					'myDiv' + i,
+					[{ x: stateData[sortedCountyKeys[i]].x, y: stateData[sortedCountyKeys[i]].y }],
+					{
+						title: {
+							text: stateData[sortedCountyKeys[i]].title, x: 0.5, y: .8
+						},
+						yaxis: {
+							fixedrange: true
+						},
+						xaxis: {
+							fixedrange: true
+						}
+					},
+					{
+						displaylogo: false,
+						modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
+						modeBarButtonsToAdd: [
+							{
+								name: 'Copy County Link',
+								icon: copyIcon,
+								click: function(q){
+									navigator.clipboard.writeText("https://apps.prenshaw.com/TNCovid/index.html?county=" + q.id);
+								}
+							}
+						]
+					}
+				);
+				document.getElementById('myDiv' + i).id = stateData[sortedCountyKeys[i]].title.toLowerCase();
+			}
+
+			var county = getQueryVariable("county");
+			if(county) {
+
+				setTimeout(function(){
+					$('html').animate({
+						scrollTop: $("#" + county).offset().top
+					}, 1000);
+					document.getElementById(county).classList.add("selected");
+				}, 100);
+
+			}
+		}
+
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split('&');
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split('=');
+				if (decodeURIComponent(pair[0]) == variable) {
+					return decodeURIComponent(pair[1]);
+				}
+			}
+			console.log('Query variable %s not found', variable);
+		}
+
+		makeplot();
+	</script>
+</body>
+</html>
