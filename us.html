@@ -97,13 +97,17 @@
 				}
 			}
 
+			var stateData2 = JSON.parse(JSON.stringify(stateData));
+
 			//implement a 14-day recovery window
 			var states = Object.keys(stateData);
 			for(var s = 0; s < states.length; s++) {
-				for( var t = 0; t < dates.length; t++) {
-					for(var u = t + 14; u < dates.length; u++) {
-						//stateData[states[s]].y[u] -= (parseInt(stateData[states[s]].y[t]) - parseInt(stateData[states[s]].y[t-1]));
-					}
+				for( var t = 1; t < dates.length; t++) {
+					var diff = parseInt(stateData2[states[s]].y[t]) - parseInt(stateData2[states[s]].y[t-1]);
+					
+					 for(var u = t + 21; u < dates.length; u++) {
+					 	stateData[states[s]].y[u] = parseInt(stateData[states[s]].y[u]) - diff;
+					 }
 				}
 			}
 
