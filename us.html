@@ -70,7 +70,6 @@
 			var dates;
 			for (var i = 0; i < confirmedRows.length; i++) {
 				confirmedRow = confirmedRows[i];
-				deathsRow = deathsRows[i];
 				dates = Object.keys(confirmedRow).filter(function(key) { return !isNaN(Date.parse(key)) });
 				if (Object.keys(stateData).indexOf(confirmedRow['Province_State']) === -1) {
 					stateData[confirmedRow['Province_State']] = {
@@ -81,7 +80,7 @@
 
 					for(var j = 0; j < dates.length; j++) {
 						stateData[confirmedRow['Province_State']].x.push(dates[j]);
-						stateData[confirmedRow['Province_State']].y.push(parseInt(confirmedRow[dates[j]]) - parseInt(deathsRow[dates[j]]));
+						stateData[confirmedRow['Province_State']].y.push(parseInt(confirmedRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
 
 						if(countryData.y.length === 0) {
 							countryData.y = dates.map(function(date){ return 0});
@@ -91,11 +90,43 @@
 
 				else {
 					for(var j = 0; j < dates.length; j++) {
-						stateData[confirmedRow['Province_State']].y[j] += (parseInt(confirmedRow[dates[j]]) - parseInt(deathsRow[dates[j]]));
-						countryData.y[j] += (parseInt((confirmedRow[dates[j]])) - parseInt((deathsRow[dates[j]])));
+						stateData[confirmedRow['Province_State']].y[j] += (parseInt(confirmedRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
+						countryData.y[j] += (parseInt((confirmedRow[dates[j]])) /*- parseInt((deathsRow[dates[j]]))*/);
 					}
 				}
 			}
+
+			var stateDataDeaths = {};
+			for (var i = 0; i < deathsRows.length; i++) {
+				deathsRow = deathsRows[i];
+				dates = Object.keys(deathsRow).filter(function(key) { return !isNaN(Date.parse(key)) });
+				if (Object.keys(stateDataDeaths).indexOf(deathsRow['Province_State']) === -1) {
+					stateDataDeaths[deathsRow['Province_State']] = {
+						x: [],
+						y: [],
+						title: deathsRow['Province_State']
+					}
+
+					for(var j = 0; j < dates.length; j++) {
+						stateDataDeaths[deathsRow['Province_State']].x.push(dates[j]);
+						stateDataDeaths[deathsRow['Province_State']].y.push(parseInt(deathsRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
+
+						//if(countryData.y.length === 0) {
+						//	countryData.y = dates.map(function(date){ return 0});
+						//}
+					}
+				}
+
+				else {
+					for(var j = 0; j < dates.length; j++) {
+						stateDataDeaths[deathsRow['Province_State']].y[j] += (parseInt(deathsRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
+						//countryData.y[j] += (parseInt((deathsRow[dates[j]])) /*- parseInt((deathsRow[dates[j]]))*/);
+					}
+				}
+			}
+
+
+
 
 			var stateData2 = JSON.parse(JSON.stringify(stateData));
 
@@ -104,7 +135,7 @@
 			for(var s = 0; s < states.length; s++) {
 				for( var t = 1; t < dates.length; t++) {
 					var diff = parseInt(stateData2[states[s]].y[t]) - parseInt(stateData2[states[s]].y[t-1]);
-					
+					//console.log(states[s], diff + " people infected on " + stateData2[states[s]].x[t] + "..." + "recovered by" + stateData2[states[s]].x[t+21] + " and onwards")
 					 for(var u = t + 21; u < dates.length; u++) {
 					 	stateData[states[s]].y[u] = parseInt(stateData[states[s]].y[u]) - diff;
 					 }
@@ -148,9 +179,17 @@
 			);
 
 			for (i = 0; i < sortedCountyKeys.length; i++) {
+				console.log(sortedCountyKeys[i]);
 				Plotly.newPlot(
 					'myDiv' + i,
-					[{ x: stateData[sortedCountyKeys[i]].x, y: stateData[sortedCountyKeys[i]].y }],
+					[
+						{ 
+							x: stateDataDeaths[sortedCountyKeys[i]].x,
+							y: stateData[sortedCountyKeys[i]].y
+							//y: stateData[sortedCountyKeys[i]].y.map(function(y, index) { return y - stateDataDeaths[sortedCountyKeys[i]].y[index] })
+							//y: stateDataDeaths[sortedCountyKeys[i]].y
+						}
+					],
 					{
 						title: {
 							text: stateData[sortedCountyKeys[i]].title, x: 0.5, y: .8
