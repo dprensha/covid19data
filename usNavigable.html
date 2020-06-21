@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TN COVID-19</title>
+	<link rel="icon" type="image/png" href="favicon.ico"/>
+	<!-- Plotly.js -->
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+		@keyframes yellowfade {
+			from {
+				background: yellow;
+			}
+			to {
+				background: transparent;
+			}
+		}
+		.selected {
+		  animation: yellowfade 4s;
+		}
+
+		.js-plotly-plot .plotly .modebar {
+			transform: translate(-50%, 150%);
+		}
+		.modebar-btn .icon path {
+			fill: rgba(68, 68, 68) !important;
+		}
+
+		.js-plotly-plot .plotly:hover .modebar-group {
+			background-color: transparent !important;
+		}
+
+		.graphDiv {
+			cursor: pointer;
+			transition: transform .8s ease;
+		}
+
+		.graphDiv:hover {
+			-ms-transform: scale(1.1); /* IE 9 */
+			-webkit-transform: scale(1.1); /* Safari 3-8 */
+			transform: scale(1.1);
+			box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+		}
+		</style>
+</head>
+
+<body>
+	<div style="font-family: 'Open Sans', verdana, arial, sans-serif; font-size: 36px; text-align: center; padding: 16px;">
+		USA Active COVID-19 Cases
+	</div>
+	<div style="font-family: 'Open Sans', verdana, arial, sans-serif; font-size: 14px; text-align: center; padding-bottom: 16px;">
+		Source: <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">COVID-19 Data Repository at Johns Hopkins University</a>
+	</div>
+	<div style="position: absolute; left: calc(100vw/2 - 400px);">
+		<img id="loading" src="https://i.pinimg.com/originals/78/e8/26/78e826ca1b9351214dfdd5e47f7e2024.gif"/>
+	</div>
+	<div id="rollupGraph" style="width: 65vw; height: 400px; margin: auto;"></div>
+	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+	<script>
+		function divify() {
+			for (i = 0; i < 58; i++) {
+				var node = document.createElement("div");
+				node.id = 'myDiv' + i;
+				node.classList.add('graphDiv')
+				node.style = 'width:450px; height: 300px; padding: 8px;';
+				document.getElementById("countyGraphs").appendChild(node);
+			}
+		}
+		divify();
+	</script>
+	<script>
+		function makeplot() {
+			var confirmedCSV, deathsCSV, remaining = 2;
+
+			Plotly.d3.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv", function(csv) {
+				confirmedCSV = csv;
+				if (!--remaining) processData(confirmedCSV, deathsCSV);
+			});
+
+			Plotly.d3.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv", function(csv) {
+				deathsCSV = csv;
+				if (!--remaining) processData(confirmedCSV, deathsCSV);
+			});
+		};
+
+		function processData(confirmedRows, deathsRows) {
+
+			var RECOVERY_PERIOD_DAYS = 14;
+			var stateData = {};
+			var dates;
+			for (var i = 0; i < confirmedRows.length; i++) {
+				confirmedRow = confirmedRows[i];
+				dates = Object.keys(confirmedRow).filter(function(key) { return !isNaN(Date.parse(key)) });
+				if (Object.keys(stateData).indexOf(confirmedRow['Province_State']) === -1) {
+					stateData[confirmedRow['Province_State']] = {
+						x: [],
+						yConfirmed: [],
+						yDeaths: [],
+						yRecovered: [],
+						title: confirmedRow['Province_State']
+					}
+
+					for(var j = 0; j < dates.length; j++) {
+						stateData[confirmedRow['Province_State']].x.push(dates[j]);
+						stateData[confirmedRow['Province_State']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
+					}
+				}
+
+				else {
+					for(var j = 0; j < dates.length; j++) {
+						stateData[confirmedRow['Province_State']].yConfirmed[j] += (parseInt(confirmedRow[dates[j]]));
+					}
+				}
+			}
+
+			stateDataDeaths = {};
+			for (var i = 0; i < deathsRows.length; i++) {
+				deathsRow = deathsRows[i];
+				dates = Object.keys(deathsRow).filter(function(key) { return !isNaN(Date.parse(key)) });
+				if (Object.keys(stateDataDeaths).indexOf(deathsRow['Province_State']) === -1) {
+					stateDataDeaths[deathsRow['Province_State']] = {
+						x: [],
+						y: [],
+						title: deathsRow['Province_State']
+					}
+
+					for(var j = 0; j < dates.length; j++) {
+						stateDataDeaths[deathsRow['Province_State']].x.push(dates[j]);
+						stateDataDeaths[deathsRow['Province_State']].y.push(parseInt(deathsRow[dates[j]]));
+					}
+				}
+
+				else {
+					for(var j = 0; j < dates.length; j++) {
+						stateDataDeaths[deathsRow['Province_State']].y[j] += (parseInt(deathsRow[dates[j]]) );
+					}
+				}
+			}
+
+
+			var sortedStateKeys = Object.keys(stateData).sort();
+			var countryData = {
+				x: dates,
+				yConfirmed: dates.map(function(date) { return 0; }),
+				yDeaths: dates.map(function(date) { return 0; }),
+				yRecovered: dates.map(function(date) { return 0; }),
+			};
+
+			for (var i = 0; i < sortedStateKeys.length; i++) {
+				stateData[sortedStateKeys[i]].yRecovered = stateData[sortedStateKeys[i]].yConfirmed.map(function(data, index) { 
+					if (index < RECOVERY_PERIOD_DAYS) { 
+						return 0; 
+					} 
+					else {
+						return stateData[sortedStateKeys[i]].yConfirmed[index - RECOVERY_PERIOD_DAYS]; 
+					}
+				});
+				stateData[sortedStateKeys[i]].yDeaths = stateDataDeaths[sortedStateKeys[i]].y;
+
+				stateData[sortedStateKeys[i]].yConfirmed.map(function(data, index) { return countryData.yConfirmed[index] += data; });
+				stateData[sortedStateKeys[i]].yDeaths.map(function(data, index) { return countryData.yDeaths[index] += data; });
+				stateData[sortedStateKeys[i]].yRecovered.map(function(data, index) { return countryData.yRecovered[index] += data; });
+			}
+
+
+			// var stateData2 = JSON.parse(JSON.stringify(stateData));
+
+			// //implement a 14-day recovery window
+			// var states = Object.keys(stateData);
+			// for(var s = 0; s < states.length; s++) {
+			// 	for( var t = 1; t < dates.length; t++) {
+			// 		var diff = parseInt(stateData2[states[s]].yConfirmed[t]) - parseInt(stateData2[states[s]].yConfirmed[t-1]);
+			// 		//console.log(states[s], diff + " people infected on " + stateData2[states[s]].x[t] + "..." + "recovered by" + stateData2[states[s]].x[t+21] + " and onwards")
+			// 		 for(var u = t + 21; u < dates.length; u++) {
+			// 		 	stateData[states[s]].yConfirmed[u] = parseInt(stateData[states[s]].yConfirmed[u]) - diff;
+			// 		 }
+			// 	}
+			// }
+
+
+			var copyIcon = {
+				'width': 24,
+				'height': 24,
+				'path': 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'
+			};
+
+			Plotly.newPlot(
+				'rollupGraph',
+				[
+					{
+						x: countryData.x,
+						y: countryData.yConfirmed.map(function(yConfirmed, index) { return yConfirmed - countryData.yRecovered[index] })
+					}
+				],
+				{
+					title: "All States"
+				},
+				{
+					displaylogo: false,
+					modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d']
+				}
+			);
+
+			for (i = 0; i < sortedStateKeys.length; i++) {
+				Plotly.newPlot(
+					'myDiv' + i,
+					[
+						{ 
+							x: stateData[sortedStateKeys[i]].x,
+							y: stateData[sortedStateKeys[i]].yConfirmed.map(function(yConfirmed, index) { return yConfirmed - stateData[sortedStateKeys[i]].yRecovered[index] })
+						}
+					],
+					{
+						title: {
+							text: stateData[sortedStateKeys[i]].title, x: 0.5, y: .8
+						},
+						yaxis: {
+							fixedrange: true
+						},
+						xaxis: {
+							fixedrange: true
+						},
+						plot_bgcolor:"transparent",
+      					paper_bgcolor:"transparent"
+					},
+					{
+						displaylogo: false,
+						modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
+						modeBarButtonsToAdd: [
+							{
+								name: 'Copy County Link',
+								icon: copyIcon,
+								click: function(q){
+									navigator.clipboard.writeText("https://apps.prenshaw.com/TNCovid/index.html?county=" + q.id);
+								}
+							}
+						]
+					}
+				);
+				var stateName = stateData[sortedStateKeys[i]].title.toLowerCase();
+				document.getElementById('myDiv' + i).addEventListener("click", onGraphClick);
+				document.getElementById('myDiv' + i).id = stateName;
+			}
+
+			var county = getQueryVariable("county");
+			if(county) {
+
+				setTimeout(function(){
+					$('html').animate({
+						scrollTop: $("#" + county).offset().top
+					}, 1000);
+					document.getElementById(county).classList.add("selected");
+				}, 100);
+
+			}
+		}
+
+		function onGraphClick(data, event) {
+			if(!(data.path[1].className === "modebar-btn" || data.path[2].className === "modebar-btn")) {
+				alert("Clicked" + data.currentTarget.id);
+			}
+		}
+
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split('&');
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split('=');
+				if (decodeURIComponent(pair[0]) == variable) {
+					return decodeURIComponent(pair[1]);
+				}
+			}
+			console.log('Query variable %s not found', variable);
+		}
+
+		makeplot();
+	</script>
+</body>
+</html>
