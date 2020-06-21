@@ -27,10 +27,10 @@
 
 <body>
 	<div style="font-family: 'Open Sans', verdana, arial, sans-serif; font-size: 36px; text-align: center; padding: 16px;">
-		Tennessee County Active COVID-19 Cases
+		USA Active COVID-19 Cases
 	</div>
 	<div style="font-family: 'Open Sans', verdana, arial, sans-serif; font-size: 14px; text-align: center; padding-bottom: 16px;">
-		Source: <a href="https://www.tn.gov/health/cedep/ncov/data/downloadable-datasets.html">TN Department of Health</a>
+		Source: <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">COVID-19 Data Repository at Johns Hopkins University</a>
 	</div>
 	<div style="position: absolute; left: calc(100vw/2 - 400px);">
 		<img id="loading" src="https://i.pinimg.com/originals/78/e8/26/78e826ca1b9351214dfdd5e47f7e2024.gif"/>
@@ -65,8 +65,8 @@
 
 		function processData(confirmedRows, deathsRows) {
 
+			var RECOVERY_PERIOD_DAYS = 14;
 			var stateData = {};
-			var countryData = { x: [], y: [] };
 			var dates;
 			for (var i = 0; i < confirmedRows.length; i++) {
 				confirmedRow = confirmedRows[i];
@@ -74,29 +74,26 @@
 				if (Object.keys(stateData).indexOf(confirmedRow['Province_State']) === -1) {
 					stateData[confirmedRow['Province_State']] = {
 						x: [],
-						y: [],
+						yConfirmed: [],
+						yDeaths: [],
+						yRecovered: [],
 						title: confirmedRow['Province_State']
 					}
 
 					for(var j = 0; j < dates.length; j++) {
 						stateData[confirmedRow['Province_State']].x.push(dates[j]);
-						stateData[confirmedRow['Province_State']].y.push(parseInt(confirmedRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
-
-						if(countryData.y.length === 0) {
-							countryData.y = dates.map(function(date){ return 0});
-						}
+						stateData[confirmedRow['Province_State']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
 					}
 				}
 
 				else {
 					for(var j = 0; j < dates.length; j++) {
-						stateData[confirmedRow['Province_State']].y[j] += (parseInt(confirmedRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
-						countryData.y[j] += (parseInt((confirmedRow[dates[j]])) /*- parseInt((deathsRow[dates[j]]))*/);
+						stateData[confirmedRow['Province_State']].yConfirmed[j] += (parseInt(confirmedRow[dates[j]]));
 					}
 				}
 			}
 
-			var stateDataDeaths = {};
+			stateDataDeaths = {};
 			for (var i = 0; i < deathsRows.length; i++) {
 				deathsRow = deathsRows[i];
 				dates = Object.keys(deathsRow).filter(function(key) { return !isNaN(Date.parse(key)) });
@@ -109,51 +106,57 @@
 
 					for(var j = 0; j < dates.length; j++) {
 						stateDataDeaths[deathsRow['Province_State']].x.push(dates[j]);
-						stateDataDeaths[deathsRow['Province_State']].y.push(parseInt(deathsRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
-
-						//if(countryData.y.length === 0) {
-						//	countryData.y = dates.map(function(date){ return 0});
-						//}
+						stateDataDeaths[deathsRow['Province_State']].y.push(parseInt(deathsRow[dates[j]]));
 					}
 				}
 
 				else {
 					for(var j = 0; j < dates.length; j++) {
-						stateDataDeaths[deathsRow['Province_State']].y[j] += (parseInt(deathsRow[dates[j]]) /*- parseInt(deathsRow[dates[j]])*/);
-						//countryData.y[j] += (parseInt((deathsRow[dates[j]])) /*- parseInt((deathsRow[dates[j]]))*/);
+						stateDataDeaths[deathsRow['Province_State']].y[j] += (parseInt(deathsRow[dates[j]]) );
 					}
 				}
 			}
 
 
+			var sortedStateKeys = Object.keys(stateData).sort();
+			var countryData = {
+				x: dates,
+				yConfirmed: dates.map(function(date) { return 0; }),
+				yDeaths: dates.map(function(date) { return 0; }),
+				yRecovered: dates.map(function(date) { return 0; }),
+			};
 
+			for (var i = 0; i < sortedStateKeys.length; i++) {
+				stateData[sortedStateKeys[i]].yRecovered = stateData[sortedStateKeys[i]].yConfirmed.map(function(data, index) { 
+					if (index < RECOVERY_PERIOD_DAYS) { 
+						return 0; 
+					} 
+					else {
+						return stateData[sortedStateKeys[i]].yConfirmed[index - RECOVERY_PERIOD_DAYS]; 
+					}
+				});
+				stateData[sortedStateKeys[i]].yDeaths = stateDataDeaths[sortedStateKeys[i]].y;
 
-			var stateData2 = JSON.parse(JSON.stringify(stateData));
-
-			//implement a 14-day recovery window
-			var states = Object.keys(stateData);
-			for(var s = 0; s < states.length; s++) {
-				for( var t = 1; t < dates.length; t++) {
-					var diff = parseInt(stateData2[states[s]].y[t]) - parseInt(stateData2[states[s]].y[t-1]);
-					//console.log(states[s], diff + " people infected on " + stateData2[states[s]].x[t] + "..." + "recovered by" + stateData2[states[s]].x[t+21] + " and onwards")
-					 for(var u = t + 21; u < dates.length; u++) {
-					 	stateData[states[s]].y[u] = parseInt(stateData[states[s]].y[u]) - diff;
-					 }
-				}
+				stateData[sortedStateKeys[i]].yConfirmed.map(function(data, index) { return countryData.yConfirmed[index] += data; });
+				stateData[sortedStateKeys[i]].yDeaths.map(function(data, index) { return countryData.yDeaths[index] += data; });
+				stateData[sortedStateKeys[i]].yRecovered.map(function(data, index) { return countryData.yRecovered[index] += data; });
 			}
 
-			countryData.x = dates;
 
-			// //remove leading NULL data
-			// for(i = 0; i < countryData.y.length; i++) {
-			// 	if(!isNaN(countryData.y[i])) {
-			// 		break;
+			// var stateData2 = JSON.parse(JSON.stringify(stateData));
+
+			// //implement a 14-day recovery window
+			// var states = Object.keys(stateData);
+			// for(var s = 0; s < states.length; s++) {
+			// 	for( var t = 1; t < dates.length; t++) {
+			// 		var diff = parseInt(stateData2[states[s]].yConfirmed[t]) - parseInt(stateData2[states[s]].yConfirmed[t-1]);
+			// 		//console.log(states[s], diff + " people infected on " + stateData2[states[s]].x[t] + "..." + "recovered by" + stateData2[states[s]].x[t+21] + " and onwards")
+			// 		 for(var u = t + 21; u < dates.length; u++) {
+			// 		 	stateData[states[s]].yConfirmed[u] = parseInt(stateData[states[s]].yConfirmed[u]) - diff;
+			// 		 }
 			// 	}
 			// }
-			// countryData.y.splice(0, i);
-			// countryData.x.splice(0, i);
 
-			var sortedCountyKeys = Object.keys(stateData).sort();
 
 			var copyIcon = {
 				'width': 24,
@@ -166,11 +169,11 @@
 				[
 					{
 						x: countryData.x,
-						y: countryData.y
+						y: countryData.yConfirmed.map(function(yConfirmed, index) { return yConfirmed - countryData.yRecovered[index] })
 					}
 				],
 				{
-					title: "All Counties"
+					title: "All States"
 				},
 				{
 					displaylogo: false,
@@ -178,28 +181,27 @@
 				}
 			);
 
-			for (i = 0; i < sortedCountyKeys.length; i++) {
-				console.log(sortedCountyKeys[i]);
+			for (i = 0; i < sortedStateKeys.length; i++) {
 				Plotly.newPlot(
 					'myDiv' + i,
 					[
 						{ 
-							x: stateDataDeaths[sortedCountyKeys[i]].x,
-							y: stateData[sortedCountyKeys[i]].y
-							//y: stateData[sortedCountyKeys[i]].y.map(function(y, index) { return y - stateDataDeaths[sortedCountyKeys[i]].y[index] })
-							//y: stateDataDeaths[sortedCountyKeys[i]].y
+							x: stateData[sortedStateKeys[i]].x,
+							y: stateData[sortedStateKeys[i]].yConfirmed.map(function(yConfirmed, index) { return yConfirmed - stateData[sortedStateKeys[i]].yRecovered[index] })
 						}
 					],
 					{
 						title: {
-							text: stateData[sortedCountyKeys[i]].title, x: 0.5, y: .8
+							text: stateData[sortedStateKeys[i]].title, x: 0.5, y: .8
 						},
 						yaxis: {
 							fixedrange: true
 						},
 						xaxis: {
 							fixedrange: true
-						}
+						},
+						plot_bgcolor:"transparent",
+      					paper_bgcolor:"transparent"
 					},
 					{
 						displaylogo: false,
@@ -215,7 +217,7 @@
 						]
 					}
 				);
-				document.getElementById('myDiv' + i).id = stateData[sortedCountyKeys[i]].title.toLowerCase();
+				document.getElementById('myDiv' + i).id = stateData[sortedStateKeys[i]].title.toLowerCase();
 			}
 
 			var county = getQueryVariable("county");
