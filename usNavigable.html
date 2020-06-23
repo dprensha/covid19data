@@ -57,18 +57,6 @@
 	<div id="rollupGraph" style="width: 65vw; height: 400px; margin: auto;"></div>
 	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
 	<script>
-		function divify() {
-			for (i = 0; i < 58; i++) {
-				var node = document.createElement("div");
-				node.id = 'myDiv' + i;
-				node.classList.add('graphDiv')
-				node.style = 'width:450px; height: 300px; padding: 8px;';
-				document.getElementById("countyGraphs").appendChild(node);
-			}
-		}
-		divify();
-	</script>
-	<script>
 		function makeplot() {
 			var confirmedCSV, deathsCSV, remaining = 2;
 
@@ -147,12 +135,12 @@
 			};
 
 			for (var i = 0; i < sortedStateKeys.length; i++) {
-				stateData[sortedStateKeys[i]].yRecovered = stateData[sortedStateKeys[i]].yConfirmed.map(function(data, index) { 
-					if (index < RECOVERY_PERIOD_DAYS) { 
-						return 0; 
-					} 
+				stateData[sortedStateKeys[i]].yRecovered = stateData[sortedStateKeys[i]].yConfirmed.map(function(data, index) {
+					if (index < RECOVERY_PERIOD_DAYS) {
+						return 0;
+					}
 					else {
-						return stateData[sortedStateKeys[i]].yConfirmed[index - RECOVERY_PERIOD_DAYS]; 
+						return stateData[sortedStateKeys[i]].yConfirmed[index - RECOVERY_PERIOD_DAYS];
 					}
 				});
 				stateData[sortedStateKeys[i]].yDeaths = stateDataDeaths[sortedStateKeys[i]].y;
@@ -202,44 +190,14 @@
 			);
 
 			for (i = 0; i < sortedStateKeys.length; i++) {
-				Plotly.newPlot(
-					'myDiv' + i,
-					[
-						{ 
-							x: stateData[sortedStateKeys[i]].x,
-							y: stateData[sortedStateKeys[i]].yConfirmed.map(function(yConfirmed, index) { return yConfirmed - stateData[sortedStateKeys[i]].yRecovered[index] })
-						}
-					],
-					{
-						title: {
-							text: stateData[sortedStateKeys[i]].title, x: 0.5, y: .8
-						},
-						yaxis: {
-							fixedrange: true
-						},
-						xaxis: {
-							fixedrange: true
-						},
-						plot_bgcolor:"transparent",
-      					paper_bgcolor:"transparent"
-					},
-					{
-						displaylogo: false,
-						modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
-						modeBarButtonsToAdd: [
-							{
-								name: 'Copy County Link',
-								icon: copyIcon,
-								click: function(q){
-									navigator.clipboard.writeText("https://apps.prenshaw.com/TNCovid/index.html?county=" + q.id);
-								}
-							}
-						]
-					}
-				);
-				var stateName = stateData[sortedStateKeys[i]].title.toLowerCase();
-				document.getElementById('myDiv' + i).addEventListener("click", onGraphClick);
-				document.getElementById('myDiv' + i).id = stateName;
+				
+				var node = document.createElement("div");
+				node.id = 'myDiv' + i;
+				node.classList.add('graphDiv')
+				node.style = 'width:450px; height: 300px; padding: 8px;';
+				document.getElementById("countyGraphs").appendChild(node);
+
+				this.graphChildData(stateData[sortedStateKeys[i]], copyIcon, i);
 			}
 
 			var county = getQueryVariable("county");
@@ -271,6 +229,48 @@
 				}
 			}
 			console.log('Query variable %s not found', variable);
+		}
+
+		function graphChildData(state, copyIcon, i) {
+
+			Plotly.newPlot(
+					'myDiv' + i,
+					[
+						{
+							x: state.x,
+							y: state.yConfirmed.map(function(yConfirmed, index) { return yConfirmed - state.yRecovered[index] })
+						}
+					],
+					{
+						title: {
+							text: state.title, x: 0.5, y: .8
+						},
+						yaxis: {
+							fixedrange: true
+						},
+						xaxis: {
+							fixedrange: true
+						},
+						plot_bgcolor:"transparent",
+      					paper_bgcolor:"transparent"
+					},
+					{
+						displaylogo: false,
+						modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
+						modeBarButtonsToAdd: [
+							{
+								name: 'Copy County Link',
+								icon: copyIcon,
+								click: function(q){
+									navigator.clipboard.writeText("https://apps.prenshaw.com/TNCovid/index.html?county=" + q.id);
+								}
+							}
+						]
+					}
+				);
+				var stateName = state.title.toLowerCase();
+				document.getElementById('myDiv' + i).addEventListener("click", onGraphClick);
+				document.getElementById('myDiv' + i).id = stateName;
 		}
 
 		makeplot();
