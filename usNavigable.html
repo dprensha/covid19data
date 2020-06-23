@@ -79,16 +79,16 @@
 				confirmedRow = confirmedRows[i];
 				deathsRow = deathsRows.filter(function(i) { return i["UID"] === confirmedRow["UID"] })[0];
 				dates = Object.keys(confirmedRow).filter(function(key) { return !isNaN(Date.parse(key)) });
-				if (Object.keys(allData).indexOf(confirmedRow['Province_State']) === -1) {
-					allData[confirmedRow['Province_State']] = {
+				if (Object.keys(allData).indexOf(confirmedRow['Province_State'].toLowerCase()) === -1) {
+					allData[confirmedRow['Province_State'].toLowerCase()] = {
 						x: [],
 						yConfirmed: [],
 						yDeaths: [],
 						yRecovered: [],
-						title: confirmedRow['Province_State'],
+						title: confirmedRow['Province_State'].toLowerCase(),
 						children: {}
 					};
-					allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']] = {
+					allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']] = {
 						x: [],
 						yConfirmed: [],
 						yDeaths: [],
@@ -97,18 +97,18 @@
 					};
 
 					for(var j = 0; j < dates.length; j++) {
-						allData[confirmedRow['Province_State']].x.push(dates[j]);
-						allData[confirmedRow['Province_State']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
-						allData[confirmedRow['Province_State']].yDeaths.push(parseInt(deathsRow[dates[j]]));
+						allData[confirmedRow['Province_State'].toLowerCase()].x.push(dates[j]);
+						allData[confirmedRow['Province_State'].toLowerCase()].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State'].toLowerCase()].yDeaths.push(parseInt(deathsRow[dates[j]]));
 
-						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].x.push(dates[j]);
-						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
-						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
+						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].x.push(dates[j]);
+						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
 					}
 				}
 
 				else {
-					allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']] = {
+					allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']] = {
 						x: [],
 						yConfirmed: [],
 						yDeaths: [],
@@ -117,17 +117,17 @@
 					};
 
 					for(var j = 0; j < dates.length; j++) {
-						allData[confirmedRow['Province_State']].yConfirmed[j] += (parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State'].toLowerCase()].yConfirmed[j] += (parseInt(confirmedRow[dates[j]]));
 
-						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].x.push(dates[j]);
-						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
-						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
+						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].x.push(dates[j]);
+						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
 					}
 				}
 			}
 
 
-
+			Window.allData = JSON.parse(JSON.stringify(allData));;
 
 
 
@@ -275,7 +275,20 @@
 
 		function onGraphClick(data, event) {
 			if(!(data.path[1].className === "modebar-btn" || data.path[2].className === "modebar-btn")) {
-				alert("Clicked" + data.currentTarget.id);
+				//alert("Clicked" + data.currentTarget.id);
+				//document.getElementById('countyGraphs').innerHTML = "";
+				console.log(Window.allData[data.currentTarget.id]);
+
+				// for (i = 0; i < sortedStateKeys.length; i++) {
+				// 	var node = document.createElement("div");
+				// 	node.id = 'myDiv' + i;
+				// 	node.classList.add('graphDiv')
+				// 	node.style = 'width:450px; height: 300px; padding: 8px;';
+				// 	document.getElementById("countyGraphs").appendChild(node);
+
+				// 	this.graphChildData(stateData[sortedStateKeys[i]], copyIcon, i);
+				// }
+
 			}
 		}
 
