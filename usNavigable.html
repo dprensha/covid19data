@@ -126,6 +126,30 @@
 				}
 			}
 
+			var sortedKeys = Object.keys(allData).sort();
+			for (var i = 0; i < sortedKeys.length; i++) {
+				allData[sortedKeys[i]].yRecovered = allData[sortedKeys[i]].yConfirmed.map(function(data, index) {
+					if (index < RECOVERY_PERIOD_DAYS) {
+						return 0;
+					}
+					else {
+						return allData[sortedKeys[i]].yConfirmed[index - RECOVERY_PERIOD_DAYS];
+					}
+				});
+
+				// var sortedChildKeys = Object.keys(allData[sortedKeys[i]].children).sort();
+				// for(var j = 0; j < sortedChildKeys.length; j++) {
+				// 	allData[sortedKeys[i]].children[sortedChildKeys[j]] = allData[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function(data, index) {
+				// 	if (index < RECOVERY_PERIOD_DAYS) {
+				// 		return 0;
+				// 	}
+				// 	else {
+				// 		return allData[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed[index - RECOVERY_PERIOD_DAYS];
+				// 	}
+				// });
+				// }
+			}
+
 
 			Window.allData = JSON.parse(JSON.stringify(allData));;
 
@@ -249,16 +273,7 @@
 				}
 			);
 
-			for (i = 0; i < sortedStateKeys.length; i++) {
-				
-				var node = document.createElement("div");
-				node.id = 'myDiv' + i;
-				node.classList.add('graphDiv')
-				node.style = 'width:450px; height: 300px; padding: 8px;';
-				document.getElementById("countyGraphs").appendChild(node);
-
-				this.graphChildData(stateData[sortedStateKeys[i]], copyIcon, i);
-			}
+			this.graphChildData(stateData);
 
 			var county = getQueryVariable("county");
 			if(county) {
@@ -276,19 +291,10 @@
 		function onGraphClick(data, event) {
 			if(!(data.path[1].className === "modebar-btn" || data.path[2].className === "modebar-btn")) {
 				//alert("Clicked" + data.currentTarget.id);
-				//document.getElementById('countyGraphs').innerHTML = "";
-				console.log(Window.allData[data.currentTarget.id]);
+				document.getElementById('countyGraphs').innerHTML = "";
+				//console.log(Window.allData[data.currentTarget.id]);
 
-				// for (i = 0; i < sortedStateKeys.length; i++) {
-				// 	var node = document.createElement("div");
-				// 	node.id = 'myDiv' + i;
-				// 	node.classList.add('graphDiv')
-				// 	node.style = 'width:450px; height: 300px; padding: 8px;';
-				// 	document.getElementById("countyGraphs").appendChild(node);
-
-				// 	this.graphChildData(stateData[sortedStateKeys[i]], copyIcon, i);
-				// }
-
+				graphChildData(Window.allData[data.currentTarget.id].children);
 			}
 		}
 
@@ -304,14 +310,29 @@
 			console.log('Query variable %s not found', variable);
 		}
 
-		function graphChildData(state, copyIcon, i) {
+		function graphChildData(stateData) {
+			var sortedStateKeys = Object.keys(stateData).sort();
+			var copyIcon = {
+				'width': 24,
+				'height': 24,
+				'path': 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'
+			};
 
-			Plotly.newPlot(
+			for (i = 0; i < sortedStateKeys.length; i++) {
+				var state = stateData[sortedStateKeys[i]];
+				var node = document.createElement("div");
+				node.id = 'myDiv' + i;
+				node.classList.add('graphDiv')
+				node.style = 'width:450px; height: 300px; padding: 8px;';
+				document.getElementById("countyGraphs").appendChild(node);
+
+
+				Plotly.newPlot(
 					'myDiv' + i,
 					[
 						{
 							x: state.x,
-							y: state.yConfirmed.map(function(yConfirmed, index) { return yConfirmed - state.yRecovered[index] })
+							y: state.yConfirmed//.map(function(yConfirmed, index) { return yConfirmed - state.yRecovered[index] })
 						}
 					],
 					{
@@ -325,7 +346,7 @@
 							fixedrange: true
 						},
 						plot_bgcolor:"transparent",
-      					paper_bgcolor:"transparent"
+						paper_bgcolor:"transparent"
 					},
 					{
 						displaylogo: false,
@@ -344,6 +365,7 @@
 				var stateName = state.title.toLowerCase();
 				document.getElementById('myDiv' + i).addEventListener("click", onGraphClick);
 				document.getElementById('myDiv' + i).id = stateName;
+			}
 		}
 
 		makeplot();
