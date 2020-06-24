@@ -55,6 +55,9 @@
 		<img id="loading" src="https://i.pinimg.com/originals/78/e8/26/78e826ca1b9351214dfdd5e47f7e2024.gif"/>
 	</div>
 	<div id="rollupGraph" style="width: 65vw; height: 400px; margin: auto;"></div>
+	<div>
+		<button onclick="onHomeClick()">Home</button>
+	</div>
 	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
 	<script>
 		function makeplot() {
@@ -72,23 +75,23 @@
 		};
 
 		function processData(confirmedRows, deathsRows) {
-
+			var RECOVERY_PERIOD_DAYS = 14;
 
 			var allData = {};
 			for (var i = 0; i < confirmedRows.length; i++) {
 				confirmedRow = confirmedRows[i];
 				deathsRow = deathsRows.filter(function(i) { return i["UID"] === confirmedRow["UID"] })[0];
 				dates = Object.keys(confirmedRow).filter(function(key) { return !isNaN(Date.parse(key)) });
-				if (Object.keys(allData).indexOf(confirmedRow['Province_State'].toLowerCase()) === -1) {
-					allData[confirmedRow['Province_State'].toLowerCase()] = {
+				if (Object.keys(allData).indexOf(confirmedRow['Province_State']) === -1) {
+					allData[confirmedRow['Province_State']] = {
 						x: [],
 						yConfirmed: [],
 						yDeaths: [],
 						yRecovered: [],
-						title: confirmedRow['Province_State'].toLowerCase(),
+						title: confirmedRow['Province_State'],
 						children: {}
 					};
-					allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']] = {
+					allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']] = {
 						x: [],
 						yConfirmed: [],
 						yDeaths: [],
@@ -97,18 +100,18 @@
 					};
 
 					for(var j = 0; j < dates.length; j++) {
-						allData[confirmedRow['Province_State'].toLowerCase()].x.push(dates[j]);
-						allData[confirmedRow['Province_State'].toLowerCase()].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
-						allData[confirmedRow['Province_State'].toLowerCase()].yDeaths.push(parseInt(deathsRow[dates[j]]));
+						allData[confirmedRow['Province_State']].x.push(dates[j]);
+						allData[confirmedRow['Province_State']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State']].yDeaths.push(parseInt(deathsRow[dates[j]]));
 
-						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].x.push(dates[j]);
-						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
-						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
+						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].x.push(dates[j]);
+						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
 					}
 				}
 
 				else {
-					allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']] = {
+					allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']] = {
 						x: [],
 						yConfirmed: [],
 						yDeaths: [],
@@ -117,11 +120,11 @@
 					};
 
 					for(var j = 0; j < dates.length; j++) {
-						allData[confirmedRow['Province_State'].toLowerCase()].yConfirmed[j] += (parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State']].yConfirmed[j] += (parseInt(confirmedRow[dates[j]]));
 
-						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].x.push(dates[j]);
-						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
-						allData[confirmedRow['Province_State'].toLowerCase()].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
+						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].x.push(dates[j]);
+						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yConfirmed.push(parseInt(confirmedRow[dates[j]]));
+						allData[confirmedRow['Province_State']].children[confirmedRow['Admin2']].yDeaths.push(parseInt(deathsRow[dates[j]]));
 					}
 				}
 			}
@@ -137,27 +140,27 @@
 					}
 				});
 
-				// var sortedChildKeys = Object.keys(allData[sortedKeys[i]].children).sort();
-				// for(var j = 0; j < sortedChildKeys.length; j++) {
-				// 	allData[sortedKeys[i]].children[sortedChildKeys[j]] = allData[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function(data, index) {
-				// 	if (index < RECOVERY_PERIOD_DAYS) {
-				// 		return 0;
-				// 	}
-				// 	else {
-				// 		return allData[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed[index - RECOVERY_PERIOD_DAYS];
-				// 	}
-				// });
-				// }
+				var sortedChildKeys = Object.keys(allData[sortedKeys[i]].children).sort();
+				for(var j = 0; j < sortedChildKeys.length; j++) {
+					allData[sortedKeys[i]].children[sortedChildKeys[j]].yRecovered = allData[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function(data, index) {
+					if (index < RECOVERY_PERIOD_DAYS) {
+						return 0;
+					}
+					else {
+						return allData[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed[index - RECOVERY_PERIOD_DAYS];
+					}
+				});
+				}
 			}
 
 
-			Window.allData = JSON.parse(JSON.stringify(allData));;
+			Window.allData = JSON.parse(JSON.stringify(allData));
 
 
 
 
 
-			var RECOVERY_PERIOD_DAYS = 14;
+
 			var stateData = {};
 			var dates;
 			for (var i = 0; i < confirmedRows.length; i++) {
@@ -216,6 +219,7 @@
 				yConfirmed: dates.map(function(date) { return 0; }),
 				yDeaths: dates.map(function(date) { return 0; }),
 				yRecovered: dates.map(function(date) { return 0; }),
+				title: "All States"
 			};
 
 			for (var i = 0; i < sortedStateKeys.length; i++) {
@@ -234,44 +238,9 @@
 				stateData[sortedStateKeys[i]].yRecovered.map(function(data, index) { return countryData.yRecovered[index] += data; });
 			}
 
+			Window.countryData = JSON.parse(JSON.stringify(countryData));
 
-			// var stateData2 = JSON.parse(JSON.stringify(stateData));
-
-			// //implement a 14-day recovery window
-			// var states = Object.keys(stateData);
-			// for(var s = 0; s < states.length; s++) {
-			// 	for( var t = 1; t < dates.length; t++) {
-			// 		var diff = parseInt(stateData2[states[s]].yConfirmed[t]) - parseInt(stateData2[states[s]].yConfirmed[t-1]);
-			// 		//console.log(states[s], diff + " people infected on " + stateData2[states[s]].x[t] + "..." + "recovered by" + stateData2[states[s]].x[t+21] + " and onwards")
-			// 		 for(var u = t + 21; u < dates.length; u++) {
-			// 		 	stateData[states[s]].yConfirmed[u] = parseInt(stateData[states[s]].yConfirmed[u]) - diff;
-			// 		 }
-			// 	}
-			// }
-
-
-			var copyIcon = {
-				'width': 24,
-				'height': 24,
-				'path': 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'
-			};
-
-			Plotly.newPlot(
-				'rollupGraph',
-				[
-					{
-						x: countryData.x,
-						y: countryData.yConfirmed.map(function(yConfirmed, index) { return yConfirmed - countryData.yRecovered[index] })
-					}
-				],
-				{
-					title: "All States"
-				},
-				{
-					displaylogo: false,
-					modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d']
-				}
-			);
+			this.graphParentData(countryData);
 
 			this.graphChildData(stateData);
 
@@ -288,13 +257,15 @@
 			}
 		}
 
+		function onHomeClick(data, event) {
+			graphChildData(Window.allData);
+			graphParentData(Window.countryData);
+		}
+		
 		function onGraphClick(data, event) {
 			if(!(data.path[1].className === "modebar-btn" || data.path[2].className === "modebar-btn")) {
-				//alert("Clicked" + data.currentTarget.id);
-				document.getElementById('countyGraphs').innerHTML = "";
-				//console.log(Window.allData[data.currentTarget.id]);
-
 				graphChildData(Window.allData[data.currentTarget.id].children);
+				graphParentData(Window.allData[data.currentTarget.id])
 			}
 		}
 
@@ -310,7 +281,34 @@
 			console.log('Query variable %s not found', variable);
 		}
 
+		function graphParentData(countryData) {
+			document.getElementById('rollupGraph').innerHTML = "";
+			var copyIcon = {
+				'width': 24,
+				'height': 24,
+				'path': 'M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z'
+			};
+
+			Plotly.newPlot(
+				'rollupGraph',
+				[
+					{
+						x: countryData.x,
+						y: countryData.yConfirmed.map(function(yConfirmed, index) { return yConfirmed - countryData.yRecovered[index] })
+					}
+				],
+				{
+					title: countryData.title
+				},
+				{
+					displaylogo: false,
+					modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d']
+				}
+			);
+		}
+
 		function graphChildData(stateData) {
+			document.getElementById('countyGraphs').innerHTML = "";
 			var sortedStateKeys = Object.keys(stateData).sort();
 			var copyIcon = {
 				'width': 24,
@@ -332,7 +330,7 @@
 					[
 						{
 							x: state.x,
-							y: state.yConfirmed//.map(function(yConfirmed, index) { return yConfirmed - state.yRecovered[index] })
+							y: state.yConfirmed.map(function(yConfirmed, index) { return yConfirmed - state.yRecovered[index] })
 						}
 					],
 					{
@@ -362,7 +360,7 @@
 						]
 					}
 				);
-				var stateName = state.title.toLowerCase();
+				var stateName = state.title;
 				document.getElementById('myDiv' + i).addEventListener("click", onGraphClick);
 				document.getElementById('myDiv' + i).id = stateName;
 			}
