@@ -319,14 +319,15 @@
 			for (i = 0; i < sortedStateKeys.length; i++) {
 				var state = stateData[sortedStateKeys[i]];
 				var node = document.createElement("div");
-				node.id = 'myDiv' + i;
-				node.classList.add('graphDiv')
+				node.id = state.title;
+				node.classList.add('graphDiv');
+				node.addEventListener("click", onGraphClick);
 				node.style = 'width:450px; height: 300px; padding: 8px;';
 				document.getElementById("countyGraphs").appendChild(node);
 
 
 				Plotly.newPlot(
-					'myDiv' + i,
+					state.title,
 					[
 						{
 							x: state.x,
@@ -360,9 +361,7 @@
 						]
 					}
 				);
-				var stateName = state.title;
-				document.getElementById('myDiv' + i).addEventListener("click", onGraphClick);
-				document.getElementById('myDiv' + i).id = stateName;
+				//document.getElementById(state.title).addEventListener("click", onGraphClick);
 			}
 		}
 
