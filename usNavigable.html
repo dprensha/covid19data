@@ -264,8 +264,8 @@
 		
 		function onGraphClick(data, event) {
 			if(!(data.path[1].className === "modebar-btn" || data.path[2].className === "modebar-btn")) {
-				graphChildData(Window.allData[data.currentTarget.id].children);
-				graphParentData(Window.allData[data.currentTarget.id])
+				graphChildData(Window.allData[data.currentTarget.getAttribute("name")].children);
+				graphParentData(Window.allData[data.currentTarget.getAttribute("name")])
 			}
 		}
 
@@ -282,7 +282,7 @@
 		}
 
 		function graphParentData(countryData) {
-			document.getElementById('rollupGraph').innerHTML = "";
+			//document.getElementById('rollupGraph').innerHTML = "";
 			var copyIcon = {
 				'width': 24,
 				'height': 24,
@@ -319,7 +319,8 @@
 			for (i = 0; i < sortedStateKeys.length; i++) {
 				var state = stateData[sortedStateKeys[i]];
 				var node = document.createElement("div");
-				node.id = state.title;
+				node.id = "graph" + i;
+				node.setAttribute("name", state.title);
 				node.classList.add('graphDiv');
 				node.addEventListener("click", onGraphClick);
 				node.style = 'width:450px; height: 300px; padding: 8px;';
@@ -327,7 +328,7 @@
 
 
 				Plotly.newPlot(
-					state.title,
+					"graph" + i,
 					[
 						{
 							x: state.x,
