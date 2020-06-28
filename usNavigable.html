@@ -32,7 +32,7 @@
 
 		.graphDiv {
 			cursor: pointer;
-			transition: transform .8s ease;
+			transition: transform .8s ease, box-shadow .8s ease;
 		}
 
 		.graphDiv:hover {
@@ -56,7 +56,7 @@
 	</div>
 	<div id="rollupGraph" style="width: 65vw; height: 400px; margin: auto;"></div>
 	<div>
-		<button onclick="onHomeClick()">Home</button>
+		<button onclick="onHomeClick()">Jank Home Button</button>
 	</div>
 	<div id="countyGraphs" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
 	<script>
@@ -282,7 +282,7 @@
 		}
 
 		function graphParentData(countryData) {
-			//document.getElementById('rollupGraph').innerHTML = "";
+			document.getElementById('rollupGraph').innerHTML = "";
 			var copyIcon = {
 				'width': 24,
 				'height': 24,
@@ -302,7 +302,8 @@
 				},
 				{
 					displaylogo: false,
-					modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d']
+					//modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d']
+					displayModeBar: false
 				}
 			);
 		}
@@ -319,15 +320,18 @@
 			for (i = 0; i < sortedStateKeys.length; i++) {
 				var state = stateData[sortedStateKeys[i]];
 				var node = document.createElement("div");
+				//var button = document.createElement("button");
+				//button.innerHTML = "Click Me!"
 				node.id = "graph" + i;
 				node.setAttribute("name", state.title);
 				node.classList.add('graphDiv');
 				node.addEventListener("click", onGraphClick);
-				node.style = 'width:450px; height: 300px; padding: 8px;';
+				node.style = 'width:450px; height: 280px; padding: 8px;';
 				document.getElementById("countyGraphs").appendChild(node);
+				//node.appendChild(button);
 
 
-				Plotly.newPlot(
+				var q = Plotly.newPlot(
 					"graph" + i,
 					[
 						{
@@ -350,18 +354,21 @@
 					},
 					{
 						displaylogo: false,
-						modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
-						modeBarButtonsToAdd: [
-							{
-								name: 'Copy County Link',
-								icon: copyIcon,
-								click: function(q){
-									navigator.clipboard.writeText("https://apps.prenshaw.com/TNCovid/index.html?county=" + q.id);
-								}
-							}
-						]
+						//modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
+						// modeBarButtonsToAdd: [
+						// 	{
+						// 		name: 'Copy County Link',
+						// 		icon: copyIcon,
+						// 		click: function(q){
+						// 			navigator.clipboard.writeText("https://apps.prenshaw.com/TNCovid/index.html?county=" + q.id);
+						// 		}
+						// 	}
+						// ]
+						displayModeBar: false
 					}
 				);
+				console.log(q);
+				//window.requestAnimationFrame(setTimeout(function() {return 0; }, 1));
 				//document.getElementById(state.title).addEventListener("click", onGraphClick);
 			}
 		}
