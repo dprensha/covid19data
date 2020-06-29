@@ -124,7 +124,7 @@ class RallyWrapper extends Component {
                                 y: this.props.cases.yActive
                             },
                         ]}
-                        layout={{ autosize:true, title: this.props.cases.title, showLegend: false, margin: {
+                        layout={{ height: 400, autosize:true, title: this.props.cases.title, showLegend: false, margin: {
                             l: 60,
                             r: 44,
                             b: 72,
