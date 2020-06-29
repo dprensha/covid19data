@@ -124,12 +124,19 @@ class RallyWrapper extends Component {
                                 y: this.props.cases.yActive
                             },
                         ]}
-                        layout={{ width: 1200, height: 400, title: this.props.cases.title, showLegend: false }}
+                        layout={{ autosize:true, title: this.props.cases.title, showLegend: false, margin: {
+                            l: 60,
+                            r: 44,
+                            b: 72,
+                            t: 72,
+                            pad: 4
+                          } }}
                         config={{
                             displaylogo: false,
-                            modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d', 'lasso2d', 'select2d'],
-                            responsive: true
+                            modeBarButtonsToRemove: ['zoom2d', 'toggleSpikelines', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d', 'resetScale2d', 'zoomIn2d', 'zoomOut2d', 'lasso2d', 'select2d']
                         }}
+                        useResizeHandler={true}
+                        style={{width: "100%", height: "100%"}}
                     />
                 </div>
                 <div className={styles.childPlotContainer}>

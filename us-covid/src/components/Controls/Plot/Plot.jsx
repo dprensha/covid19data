@@ -8,7 +8,9 @@ const propTypes = {
     data: PropTypes.array,
     layout: PropTypes.object,
     config: PropTypes.object,
-    className: PropTypes.string
+    className: PropTypes.string,
+    useResizeHandler: PropTypes.bool,
+    style: PropTypes.object
 }
 
 class Plot extends Component {
@@ -24,6 +26,8 @@ class Plot extends Component {
                 data={this.props.data}
                 layout={this.props.layout}
                 config={this.props.config}
+                useResizeHandler={this.props.useResizeHandler}
+                style={this.props.style}
             />
         );
     }
