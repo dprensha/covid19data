@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux';
-import { actionCreators } from '../../store/CasesRedux'
-import { bindActionCreators } from 'redux';
 import PropTypes from "prop-types";
 
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -14,56 +11,29 @@ import green from '@material-ui/core/colors/green';
 import amber from '@material-ui/core/colors/amber';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import { withStyles } from '@material-ui/core/styles';
-import { Typography, Toolbar, AppBar, IconButton, Snackbar, SnackbarContent, Plot } from "../Controls";
+import { Typography, Toolbar, AppBar, IconButton, Snackbar, SnackbarContent, Plot } from "../../Controls";
 
 import classNames from 'classnames';
-import styles from './RallyWrapper.module.scss'
+import styles from './EntityPlotter.module.scss'
 import { style } from "d3";
 
 
 const propTypes = {
     //from Redux
-    requests: PropTypes.array,
-    teams: PropTypes.array
+    entity: PropTypes.object,
+    handlePlotClick: PropTypes.func
 }
 
-class RallyWrapper extends Component {
+class EntityPlotter extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            currentEntity:"All States"
-            // releases: null,
-            // teams: null,
-            // features: [],
-            // defects: [],
-            // selectedRelease: "",
-            // selectedTeam: "",
-            // isSnackbarVisible: false,
-            // isErrorSnackbarVisible: false,
-            // type: "feature"
-        }
-
-        this.handlePlotClick = this.handlePlotClick.bind(this);
-
-    }
-
-    componentDidMount() {
-        this.props.requestCases();
-    }
-
-    componentDidUpdate() {
-        console.log("updated", this.props.cases);
-    }
-
-    handlePlotClick(data) {
-        console.log(data);
     }
 
     render() {
+        //console.log(this.props.entity);
         const childPlots = [];
-        if(this.props.cases.children) {
-            const childKeys = Object.keys(this.props.cases.children).sort();
+        if(this.props.entity.children) {
+            const childKeys = Object.keys(this.props.entity.children).sort();
             childKeys.forEach(childKey => {
                 childPlots.push(
                     <div
@@ -72,10 +42,10 @@ class RallyWrapper extends Component {
                     >
                         <div className={styles.childPlotTitleBar}>
                             <div className={styles.childPlotTitleBarTitle}>
-                                {this.props.cases.children[childKey].title}
+                                {this.props.entity.children[childKey].title}
                             </div>
                             <div className={styles.childPlotTitleBarIcon}
-                                onClick={() => { this.handlePlotClick(this.props.cases.children[childKey].children)}}>
+                                onClick={() => { this.props.handlePlotClick(this.props.entity.children[childKey])}}>
                                 <ArrowForwardIcon style={{fill: "#444"}}/>
                             </div>
                         </div>
@@ -86,8 +56,8 @@ class RallyWrapper extends Component {
                         
                         data={[
                             {
-                                x: this.props.cases.children[childKey].x,
-                                y: this.props.cases.children[childKey].yActive
+                                x: this.props.entity.children[childKey].x,
+                                y: this.props.entity.children[childKey].yActive
                             },
                         ]}
                         layout={{ width: 450, height: 220, showLegend: false, margin: {
@@ -120,11 +90,11 @@ class RallyWrapper extends Component {
                     <Plot
                         data={[
                             {
-                                x: this.props.cases.x,
-                                y: this.props.cases.yActive
+                                x: this.props.entity.x,
+                                y: this.props.entity.yActive
                             },
                         ]}
-                        layout={{ height: 400, autosize:true, title: this.props.cases.title, showLegend: false, margin: {
+                        layout={{ height: 400, autosize:true, title: this.props.entity.title, showLegend: false, margin: {
                             l: 60,
                             r: 44,
                             b: 72,
@@ -147,8 +117,5 @@ class RallyWrapper extends Component {
     }
 }
 
-RallyWrapper.propTypes = propTypes;
-export default connect(
-    state => state.cases,
-    dispatch => bindActionCreators(actionCreators, dispatch)
-)(RallyWrapper);
+EntityPlotter.propTypes = propTypes;
+export default EntityPlotter;

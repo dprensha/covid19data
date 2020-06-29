@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import RallyWrapper from './RallyWrapper/RallyWrapper';
+import PlotWrapper from './PlotWrapper/PlotWrapper';
 //import Request from './Request/Request';
 
 // The Main component renders one of the three provided
@@ -11,7 +11,7 @@ import RallyWrapper from './RallyWrapper/RallyWrapper';
 const Main = () => (
   <main>
     <Switch>
-      <Route exact path='/' component={RallyWrapper}/>
+      <Route exact path='/' component={PlotWrapper}/>
       {/* <Route path='/request/:id' component={Request}/> */}
     </Switch>
   </main>
