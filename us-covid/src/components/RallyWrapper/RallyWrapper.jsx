@@ -27,44 +27,12 @@ const propTypes = {
     teams: PropTypes.array
 }
 
-const variantIcon = {
-    success: CheckCircleIcon,
-    warning: WarningIcon,
-    error: ErrorIcon,
-    info: InfoIcon,
-};
-
-const snackbarStyles = theme => ({
-    success: {
-        backgroundColor: green[600],
-    },
-    error: {
-        backgroundColor: theme.palette.error.dark,
-    },
-    info: {
-        backgroundColor: theme.palette.primary.dark,
-    },
-    warning: {
-        backgroundColor: amber[700],
-    },
-    icon: {
-        fontSize: 20,
-    },
-    iconVariant: {
-        opacity: 0.9,
-        marginRight: theme.spacing.unit,
-    },
-    message: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-});
-
 class RallyWrapper extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            currentEntity:"All States"
             // releases: null,
             // teams: null,
             // features: [],
@@ -76,7 +44,6 @@ class RallyWrapper extends Component {
             // type: "feature"
         }
 
-        this.handleTeamChange = this.handleTeamChange.bind(this);
         this.handlePlotClick = this.handlePlotClick.bind(this);
 
     }
@@ -86,29 +53,11 @@ class RallyWrapper extends Component {
     }
 
     componentDidUpdate() {
-        //TODO: Make the snackbar appear instead of a dumb alert
-        if (this.props.errorMessage) {
-            alert(this.props.errorMessage);
-        }
+        console.log("updated", this.props.cases);
     }
 
-    handleTeamChange(event) {
-        this.setState({
-            selectedTeam: event.target.value,
-            selectedFeature: {},
-            selectedUserStory: {},
-            description: ""
-        })
-        if (this.state.selectedRelease && this.state.type === "feature") {
-            this.requestFeatures(event.target.value, this.state.selectedRelease);
-        }
-        else if (this.state.selectedRelease && this.state.type === "defect") {
-            this.requestDefects(event.target.value, this.state.selectedRelease);
-        }
-    }
-
-    handlePlotClick(data, event) {
-        console.log(data, event);
+    handlePlotClick(data) {
+        console.log(data);
     }
 
     render() {
@@ -126,8 +75,8 @@ class RallyWrapper extends Component {
                                 {this.props.cases.children[childKey].title}
                             </div>
                             <div className={styles.childPlotTitleBarIcon}
-                                onClick={this.handlePlotClick}>
-                                <ArrowForwardIcon/>
+                                onClick={() => { this.handlePlotClick(this.props.cases.children[childKey].children)}}>
+                                <ArrowForwardIcon style={{fill: "#444"}}/>
                             </div>
                         </div>
                     <Plot
@@ -143,7 +92,7 @@ class RallyWrapper extends Component {
                         ]}
                         layout={{ width: 450, height: 220, showLegend: false, margin: {
                             l: 72,
-                            r: 72,
+                            r: 56,
                             b: 72,
                             t: 32,
                             pad: 4
