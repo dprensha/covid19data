@@ -46,7 +46,9 @@ class EntityPlotter extends Component {
                             </div>
                             <div className={styles.childPlotTitleBarIcon}
                                 onClick={() => { this.props.handlePlotClick(this.props.entity.children[childKey])}}>
-                                <ArrowForwardIcon style={{fill: "#444"}}/>
+                                <ButtonBase>
+                                    <ArrowForwardIcon style={{fill: "#444"}}/>
+                                </ButtonBase>
                             </div>
                         </div>
                     <Plot

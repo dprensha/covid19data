@@ -26,7 +26,7 @@ const propTypes = {
     history: PropTypes.object,
     match: PropTypes.object,
     location: PropTypes.object,
-    
+
     //from Redux
     requests: PropTypes.array,
     teams: PropTypes.array
@@ -51,7 +51,7 @@ class PlotWrapper extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log(nextProps.cases);
-        if(prevState.navigableTitle !== nextProps.match.params.title && nextProps.cases.children && nextProps.match.params.title) {
+        if (prevState.navigableTitle !== nextProps.match.params.title && nextProps.cases.children && nextProps.match.params.title) {
             console.log("here", nextProps)
             return {
                 navigableTitle: nextProps.match.params.title,
@@ -66,51 +66,23 @@ class PlotWrapper extends Component {
         }
     }
 
-    // componentDidUpdate(prevProps) {
-    //     if(prevProps.isFetchingCaseData === true && this.props.isFetchingCaseData === false){
-    //         this.state.currentEntity = this.props.cases
-    //     }
-    //     console.log("will receive props", this.props.match.params.title);
-        
-    //     if(this.state.currentEntity.children){
-    //         console.log(Object.keys(this.state.currentEntity.children).indexOf(this.props.match.params.title));
-    //         this.state.currentEntity = this.props.cases.children[this.props.match.params.title];
-    //     }
-
-    // }
-
     handlePlotClick(data) {
-        console.log(data.navigableTitle);
         this.props.history.push(`/${data.navigableTitle}`);
-
-        // this.setState({
-        //     currentEntity: data
-        // })
     }
 
     render() {
-        //let entityToRender = this.state.currentEntity.length > 0 ? this.state.currentEntity : this.props.cases;
-        let entityToRender = this.state.currentEntity;
-         if(this.props.cases.children) {
-        //     if(this.props.match.params.title === "AllStates" || this.props.match.params.title === undefined) {
-        //         entityToRender = this.props.cases
-        //     }
-        //     else {
-        //         entityToRender = this.props.cases.children[this.props.match.params.title];
-        //     }
-        //     console.log(entityToRender);
-        return (
-            <div>
-                {this.props.match.params.title}
-            <EntityPlotter 
-                entity={entityToRender}
-                handlePlotClick={this.handlePlotClick}
-            ></EntityPlotter>
-            </div>
-        )
+        if (this.props.cases.children) {
+            return (
+                <div>
+                    <EntityPlotter
+                        entity={this.state.currentEntity}
+                        handlePlotClick={this.handlePlotClick}
+                    ></EntityPlotter>
+                </div>
+            )
         }
-        else{
-            return( <div>Loading...</div> )
+        else {
+            return (<div>Loading...</div>)
         }
     }
 }
