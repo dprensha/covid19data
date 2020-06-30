@@ -78,10 +78,10 @@ class EntityPlotter extends Component {
 
         return (
             <div>
-                <AppBar style={{ position: "relative" }}>
+                <AppBar style={{ position: "fixed" }}>
                     <Toolbar style={{ justifyContent: "space-between" }}>
                         <Typography variant="h5" style={{ color: "white", flex: "1" }}>
-                            US COVID-19 Data
+                            {this.props.entity.title}
                         </Typography>
                         <InfoIcon/>
                     </Toolbar>
@@ -94,7 +94,7 @@ class EntityPlotter extends Component {
                                 y: this.props.entity.yActive
                             },
                         ]}
-                        layout={{ height: 400, autosize:true, title: this.props.entity.title, showLegend: false, margin: {
+                        layout={{ height: 400, autosize:true, title: "Active COVID-19 Cases", showLegend: false, margin: {
                             l: 60,
                             r: 44,
                             b: 72,

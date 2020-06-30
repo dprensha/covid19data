@@ -11,7 +11,7 @@ import PlotWrapper from './PlotWrapper/PlotWrapper';
 const Main = () => (
   <main>
     <Switch>
-      <Route exact path='/' component={PlotWrapper}/>
+      <Route exact path='/:title?' component={PlotWrapper}/>
       {/* <Route path='/request/:id' component={Request}/> */}
     </Switch>
   </main>

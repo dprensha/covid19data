@@ -59,6 +59,7 @@ export const actionCreators = {
                     yRecovered: [],
                     yActive: [],
                     title: data.Province_State,
+                    navigableTitle: data.Province_State.replace(/[\.\W]/g,''),
                     children: {}
                 };
                 allData.children[data.Province_State].children[data.Admin2] = {
@@ -68,6 +69,7 @@ export const actionCreators = {
                     yRecovered: [],
                     yActive: [],
                     title: data.Admin2,
+                    navigableTitle: data.Admin2.replace(/[\.\W]/g,'')
                 };
                 
                 for(var j = 0; j < dates.length; j++) {
@@ -90,6 +92,7 @@ export const actionCreators = {
                     yRecovered: [],
                     yActive: [],
                     title: data.Admin2,
+                    navigableTitle: data.Admin2.replace(/[\.\W]/g,'')
                 };
 
                 for(var j = 0; j < dates.length; j++) {
