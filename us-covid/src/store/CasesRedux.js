@@ -164,13 +164,15 @@ export const reducer = (state, action) => {
         case requestCases: 
             return {
                 ...state,
+                isFetchingCaseData: true
             };
 
         case receiveCases:
             //console.log(action.payload)
             return {
                 ...state,
-                cases: action.payload
+                cases: action.payload,
+                isFetchingCaseData: false
             };
 
         // case requestTeams: 

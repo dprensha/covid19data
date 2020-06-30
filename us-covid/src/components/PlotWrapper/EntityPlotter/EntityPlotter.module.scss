@@ -1,3 +1,15 @@
+
+@media only screen and (max-width: 600px) {
+    .childPlot {
+        width:300px; 
+        height:186px;
+    }
+
+    .parentGraphContainer {
+        height: 186px;
+    }
+  }
+
 .parentGraphContainer {
    height: 400px;
    width: 100%;

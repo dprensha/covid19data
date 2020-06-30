@@ -60,7 +60,7 @@ class EntityPlotter extends Component {
                                 y: this.props.entity.children[childKey].yActive
                             },
                         ]}
-                        layout={{ width: 450, height: 220, showLegend: false, margin: {
+                        layout={{ autosize: true, showLegend: false, margin: {
                             l: 72,
                             r: 56,
                             b: 72,
@@ -68,8 +68,11 @@ class EntityPlotter extends Component {
                             pad: 4
                           } }}
                         config={{
-                            displayModeBar: false
+                            displayModeBar: false, 
+                            staticPlot: true
                         }}
+                        useResizeHandler={true}
+                        style={{width: "100%", height: "80%"}}
                     />
                     </div>
                 )
@@ -94,7 +97,7 @@ class EntityPlotter extends Component {
                                 y: this.props.entity.yActive
                             },
                         ]}
-                        layout={{ height: 400, autosize:true, title: "Active COVID-19 Cases", showLegend: false, margin: {
+                        layout={{ autosize:true, title: "Active COVID-19 Cases", showLegend: false, margin: {
                             l: 60,
                             r: 44,
                             b: 72,

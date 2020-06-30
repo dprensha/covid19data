@@ -38,7 +38,7 @@ class PlotWrapper extends Component {
 
         this.state = {
             navigableTitle: props.match.params.title,
-            currentEntity: null
+            currentEntity: this.props.cases
         }
 
         this.handlePlotClick = this.handlePlotClick.bind(this);
@@ -49,31 +49,48 @@ class PlotWrapper extends Component {
         this.props.requestCases();
     }
 
-    componentWillReceiveProps() {
-        //console.log("will receive props", this.state);
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log(nextProps.cases);
+        if(prevState.navigableTitle !== nextProps.match.params.title && nextProps.cases.children && nextProps.match.params.title) {
+            console.log("here", nextProps)
+            return {
+                navigableTitle: nextProps.match.params.title,
+                currentEntity: nextProps.cases.children[nextProps.match.params.title]
+            }
+        }
+        else {
+            return {
+                navigableTitle: "AllStates",
+                currentEntity: nextProps.cases
+            }
+        }
     }
 
+    // componentDidUpdate(prevProps) {
+    //     if(prevProps.isFetchingCaseData === true && this.props.isFetchingCaseData === false){
+    //         this.state.currentEntity = this.props.cases
+    //     }
+    //     console.log("will receive props", this.props.match.params.title);
+        
+    //     if(this.state.currentEntity.children){
+    //         console.log(Object.keys(this.state.currentEntity.children).indexOf(this.props.match.params.title));
+    //         this.state.currentEntity = this.props.cases.children[this.props.match.params.title];
+    //     }
+
+    // }
+
     handlePlotClick(data) {
-        const entity = this.props.location.pathname.replace(`/${this.props.match.params.navigableTitle}`, `/${data.navigableTitle}`);
+        console.log(data.navigableTitle);
+        this.props.history.push(`/${data.navigableTitle}`);
 
-        console.log(entity)
-
-        const newEntity = {
-            pathname: entity,
-            state: {
-
-            }
-        };
-
-        this.props.history.push(newEntity);
-
-        this.setState({
-            currentEntity: data
-        })
+        // this.setState({
+        //     currentEntity: data
+        // })
     }
 
     render() {
-        let entityToRender = this.state.currentEntity || this.props.cases;
+        //let entityToRender = this.state.currentEntity.length > 0 ? this.state.currentEntity : this.props.cases;
+        let entityToRender = this.state.currentEntity;
          if(this.props.cases.children) {
         //     if(this.props.match.params.title === "AllStates" || this.props.match.params.title === undefined) {
         //         entityToRender = this.props.cases
@@ -83,7 +100,7 @@ class PlotWrapper extends Component {
         //     }
         //     console.log(entityToRender);
         return (
-            <div style={{marginTop: "100px"}}>
+            <div>
                 {this.props.match.params.title}
             <EntityPlotter 
                 entity={entityToRender}
