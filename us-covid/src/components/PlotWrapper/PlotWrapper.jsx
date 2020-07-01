@@ -89,18 +89,18 @@ class PlotWrapper extends Component {
 
     componentDidMount() {
         this.props.requestCases();
-        window.onscroll = function() {
-            console.log(window.scrollY);
-        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log(nextProps.cases);
         if (prevState.navigableTitle !== nextProps.match.params.title && nextProps.cases.children && nextProps.match.params.title) {
-            console.log("here", nextProps)
+            const newEntity = Object.keys(nextProps.cases.children).map((key) => { return nextProps.cases.children[key]; }).filter((val) => val.navigableTitle === nextProps.match.params.title)[0];
+            console.log("here", newEntity);
+
+
             return {
                 navigableTitle: nextProps.match.params.title,
-                currentEntity: nextProps.cases.children[nextProps.match.params.title]
+                currentEntity: newEntity
             }
         }
         else {
