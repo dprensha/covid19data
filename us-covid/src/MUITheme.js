@@ -58,7 +58,7 @@ const styles = createMuiTheme({
         },
         MuiPaper: {
             root: {
-                backgroundColor: "#121212"
+                backgroundColor: "white"
             }
         },
         MuiButton: {

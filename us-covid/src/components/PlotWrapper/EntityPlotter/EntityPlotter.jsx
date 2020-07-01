@@ -10,11 +10,13 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import green from '@material-ui/core/colors/green';
 import amber from '@material-ui/core/colors/amber';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import Popover from '@material-ui/core/Popover';
 import { withStyles } from '@material-ui/core/styles';
-import { Typography, Toolbar, AppBar, IconButton, Snackbar, SnackbarContent, Plot } from "../../Controls";
+import { Typography, Toolbar, AppBar, IconButton, Snackbar, SnackbarContent, Plot, List, ListItem, Divider } from "../../Controls";
 
 import classNames from 'classnames';
 import styles from './EntityPlotter.module.scss'
+import './EntityPlotter.css';
 import { style } from "d3";
 
 
@@ -27,6 +29,26 @@ const propTypes = {
 class EntityPlotter extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            isInfoExpanded: false
+        }
+
+        this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
+        this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
+    }
+
+    handleCloseInfoIcon() {
+        this.setState({
+            isInfoExpanded: false
+        })
+    }
+
+    handleInfoIconClick(event) {
+        this.setState({
+            isInfoExpanded: true,
+            popoverAnchorElement: event.currentTarget
+        })
     }
 
     render() {
@@ -46,9 +68,9 @@ class EntityPlotter extends Component {
                             </div>
                             <div className={styles.childPlotTitleBarIcon}
                                 onClick={() => { this.props.handlePlotClick(this.props.entity.children[childKey])}}>
-                                <ButtonBase>
+                                <IconButton>
                                     <ArrowForwardIcon style={{fill: "#444"}}/>
-                                </ButtonBase>
+                                </IconButton>
                             </div>
                         </div>
                     <Plot
@@ -62,13 +84,7 @@ class EntityPlotter extends Component {
                                 y: this.props.entity.children[childKey].yActive
                             },
                         ]}
-                        layout={{ autosize: true, showLegend: false, margin: {
-                            l: 72,
-                            r: 56,
-                            b: 72,
-                            t: 32,
-                            pad: 4
-                          } }}
+                        layout={{ autosize: true, showLegend: false, plot_bgcolor: "transparent"}}
                         config={{
                             displayModeBar: false, 
                             staticPlot: true
@@ -88,9 +104,39 @@ class EntityPlotter extends Component {
                         <Typography variant="h5" style={{ color: "white", flex: "1" }}>
                             {this.props.entity.title}
                         </Typography>
-                        <InfoIcon/>
+                        <IconButton
+                            style={{ color: "white" }}
+                            onClick={this.handleInfoIconClick}
+                        >
+                            <InfoIcon/>
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
+                <Popover
+                    className={styles.infoPopover}
+                    open={this.state.isInfoExpanded}
+                    anchorEl={this.state.popoverAnchorElement}
+                    onClose={this.handleCloseInfoIcon}
+                    anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                    }}
+
+                >
+                    <List>
+                        <ListItem>
+                    Source: <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">COVID-19 Data Repository at Johns Hopkins University</a>
+                    </ListItem>
+                    <Divider />
+                    <ListItem>
+                        Active cases are assumed to be over 14 days after originally reported.
+                    </ListItem>
+                    </List>
+                </Popover>
                 <div className={styles.parentGraphContainer}>
                     <Plot
                         data={[
@@ -99,7 +145,7 @@ class EntityPlotter extends Component {
                                 y: this.props.entity.yActive
                             },
                         ]}
-                        layout={{ autosize:true, title: "Active COVID-19 Cases", showLegend: false, margin: {
+                        layout={{ autosize:true, title: "Active COVID-19 Cases", showLegend: false, plot_bgcolor: "transparent", margin: {
                             l: 60,
                             r: 44,
                             b: 72,
