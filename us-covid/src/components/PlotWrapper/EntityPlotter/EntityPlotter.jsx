@@ -84,7 +84,13 @@ class EntityPlotter extends Component {
                                 y: this.props.entity.children[childKey].yActive
                             },
                         ]}
-                        layout={{ autosize: true, showLegend: false, plot_bgcolor: "transparent"}}
+                        layout={{ xaxis: {nticks: 20 }, autosize: true, showLegend: false, plot_bgcolor: "transparent", margin: {
+                            l: 48,
+                            r: 32,
+                            b: 68,
+                            t: 24,
+                            pad: 4
+                          }}}
                         config={{
                             displayModeBar: false, 
                             staticPlot: true
