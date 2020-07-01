@@ -13,13 +13,24 @@ import PropTypes from "prop-types";
 // import green from '@material-ui/core/colors/green';
 // import amber from '@material-ui/core/colors/amber';
 // import ButtonBase from '@material-ui/core/ButtonBase';
-// import { withStyles } from '@material-ui/core/styles';
+import Zoom from '@material-ui/core/Zoom';
+import { makeStyles } from '@material-ui/core/styles';
+import  useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import Fab from '@material-ui/core/Fab';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { Typography, Toolbar, AppBar, IconButton, Snackbar, SnackbarContent, Plot } from "../Controls";
 
 import EntityPlotter from './EntityPlotter/EntityPlotter';
 
 import classNames from 'classnames';
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+  }));
 
 const propTypes = {
     // Props coming from React Router
@@ -32,6 +43,36 @@ const propTypes = {
     teams: PropTypes.array
 }
 
+function ScrollTop(props) {
+    const { children, window } = props;
+    const classes = useStyles();
+    // Note that you normally won't need to set the window ref as useScrollTrigger
+    // will default to window.
+    // This is only being set here because the demo is in an iframe.
+    const trigger = useScrollTrigger({
+      target: window ? window() : undefined,
+      disableHysteresis: true,
+      threshold: 100,
+    });
+  
+    const handleClick = (event) => {
+      const anchor = (event.target.ownerDocument || document).querySelector('#back-to-top-anchor');
+  
+      if (anchor) {
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    };
+  
+    return (
+      <Zoom in={trigger}>
+        <div onClick={handleClick} role="presentation" className={classes.root}>
+          {children}
+        </div>
+      </Zoom>
+    );
+  }
+
+
 class PlotWrapper extends Component {
     constructor(props) {
         super(props);
@@ -42,11 +83,15 @@ class PlotWrapper extends Component {
         }
 
         this.handlePlotClick = this.handlePlotClick.bind(this);
+        this.scrollToTop = this.scrollToTop.bind(this);
 
     }
 
     componentDidMount() {
         this.props.requestCases();
+        window.onscroll = function() {
+            console.log(window.scrollY);
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -66,8 +111,17 @@ class PlotWrapper extends Component {
         }
     }
 
+    scrollToTop() {
+        const c = document.documentElement.scrollTop || document.body.scrollTop;
+        if (c > 0) {
+            window.requestAnimationFrame(this.scrollToTop);
+            window.scrollTo(0, c - c / 4);
+        }
+    }
+
     handlePlotClick(data) {
         this.props.history.push(`/${data.navigableTitle}`);
+        this.scrollToTop();
     }
 
     render() {
@@ -78,6 +132,14 @@ class PlotWrapper extends Component {
                         entity={this.state.currentEntity}
                         handlePlotClick={this.handlePlotClick}
                     ></EntityPlotter>
+                    <ScrollTop>
+                    <Fab 
+                        color="primary"
+                        size="medium"
+                        onClick={this.scrollToTop}
+                    >
+                        <KeyboardArrowUpIcon />
+                    </Fab></ScrollTop>
                 </div>
             )
         }
