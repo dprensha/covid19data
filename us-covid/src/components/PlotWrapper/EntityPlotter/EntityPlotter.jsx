@@ -1,23 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ErrorIcon from '@material-ui/icons/Error';
-import InfoIcon from '@material-ui/icons/Info';
-import CloseIcon from '@material-ui/icons/Close';
-import WarningIcon from '@material-ui/icons/Warning';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import green from '@material-ui/core/colors/green';
-import amber from '@material-ui/core/colors/amber';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import PlotContainer from './PlotContainer/PlotContainer'
 import Popover from '@material-ui/core/Popover';
-import { withStyles } from '@material-ui/core/styles';
-import { Typography, Toolbar, AppBar, IconButton, Snackbar, SnackbarContent, Plot, List, ListItem, Divider } from "../../Controls";
-
-import classNames from 'classnames';
+import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
-import { style } from "d3";
 
 
 const propTypes = {
@@ -56,58 +44,13 @@ class EntityPlotter extends Component {
         const childPlots = [];
         if(this.props.entity.children) {
             const childKeys = Object.keys(this.props.entity.children).sort();
-            childKeys.forEach(childKey => {
-                let iconContent = null;
-                
-                if(this.props.entity.children[childKey].children && Object.keys(this.props.entity.children[childKey].children).length > 0) {
-                    iconContent = (
-                        <IconButton
-                            onClick={() => { this.props.handlePlotClick(this.props.entity.children[childKey])}}
-                        >
-                            <ArrowForwardIcon style={{fill: "#444"}}/>
-                        </IconButton>
-                    )
-                }
-                
+            childKeys.forEach(childKey => {                
                 childPlots.push(
-                    <div
-                    key={childKey}
-                    className={styles.childPlot}
-                    >
-                        <div className={styles.childPlotTitleBar}>
-                            <div className={styles.childPlotTitleBarTitle}>
-                                {this.props.entity.children[childKey].title}
-                            </div>
-                            <div className={styles.childPlotTitleBarIcon}>
-                                {iconContent}
-                            </div>
-                        </div>
-                    <Plot
+                    <PlotContainer
                         key={childKey}
-                        onClick={this.handlePlotClick}
-                        
-                        
-                        data={[
-                            {
-                                x: this.props.entity.children[childKey].x,
-                                y: this.props.entity.children[childKey].yActive
-                            },
-                        ]}
-                        layout={{ xaxis: {nticks: 20 }, autosize: true, showLegend: false, plot_bgcolor: "transparent", margin: {
-                            l: 48,
-                            r: 32,
-                            b: 68,
-                            t: 24,
-                            pad: 4
-                          }}}
-                        config={{
-                            displayModeBar: false, 
-                            staticPlot: true
-                        }}
-                        useResizeHandler={true}
-                        style={{width: "100%", height: "80%"}}
+                        entity={this.props.entity.children[childKey]}
+                        handlePlotClick={this.props.handlePlotClick}
                     />
-                    </div>
                 )
             });
         }
@@ -123,7 +66,7 @@ class EntityPlotter extends Component {
                             style={{ color: "white" }}
                             onClick={this.handleInfoIconClick}
                         >
-                            <InfoIcon/>
+                            <InfoOutlinedIcon/>
                         </IconButton>
                     </Toolbar>
                 </AppBar>
