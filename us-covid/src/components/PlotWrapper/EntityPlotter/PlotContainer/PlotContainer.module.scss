@@ -36,14 +36,14 @@
 
 .childPlotTitleBarIcon {
     position: absolute;
-    right: 16px;
+    right: 6px;
     cursor: pointer;
     fill: rgb(68, 68, 68);
 }
 
 .childPlotTitleBarInfoIcon {
     position: absolute;
-    right: 64px;
+    right: 54px;
     cursor: pointer;
     fill: rgb(68, 68, 68);
 }
@@ -54,5 +54,4 @@
     color: black;
     background: white;
     margin-top: -40px;
-    transition: all 1s;
 }

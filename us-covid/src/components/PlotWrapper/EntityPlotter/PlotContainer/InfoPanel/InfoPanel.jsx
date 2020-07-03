@@ -37,8 +37,8 @@ class InfoPanel extends Component {
 
         return (
             <div>
-                <div>
-                    <IconButton onClick={this.props.toggleInfoPanel}>
+                <div className={styles.closeIcon}>
+                    <IconButton onClick={this.props.toggleInfoPanel} >
                         <CloseIcon />
                     </IconButton>
                 </div>
