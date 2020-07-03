@@ -28,7 +28,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
 import Plot from './Plot';
-import AgGrid from './Ag-Grid';
 
 //import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 //import ErrorIcon from '@material-ui/icons/Error';
@@ -69,7 +68,5 @@ export {
     List,
     ListItem,
     Divider,
-
-    AgGrid,
     Plot
 };

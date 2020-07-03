@@ -57,6 +57,18 @@ class EntityPlotter extends Component {
         if(this.props.entity.children) {
             const childKeys = Object.keys(this.props.entity.children).sort();
             childKeys.forEach(childKey => {
+                let iconContent = null;
+                
+                if(this.props.entity.children[childKey].children && Object.keys(this.props.entity.children[childKey].children).length > 0) {
+                    iconContent = (
+                        <IconButton
+                            onClick={() => { this.props.handlePlotClick(this.props.entity.children[childKey])}}
+                        >
+                            <ArrowForwardIcon style={{fill: "#444"}}/>
+                        </IconButton>
+                    )
+                }
+                
                 childPlots.push(
                     <div
                     key={childKey}
@@ -66,11 +78,8 @@ class EntityPlotter extends Component {
                             <div className={styles.childPlotTitleBarTitle}>
                                 {this.props.entity.children[childKey].title}
                             </div>
-                            <div className={styles.childPlotTitleBarIcon}
-                                onClick={() => { this.props.handlePlotClick(this.props.entity.children[childKey])}}>
-                                <IconButton>
-                                    <ArrowForwardIcon style={{fill: "#444"}}/>
-                                </IconButton>
+                            <div className={styles.childPlotTitleBarIcon}>
+                                {iconContent}
                             </div>
                         </div>
                     <Plot

@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useRouteMatch, BrowserRouter } from 'react-router-dom';
 import PlotWrapper from './PlotWrapper/PlotWrapper';
 //import Request from './Request/Request';
 
@@ -10,10 +10,13 @@ import PlotWrapper from './PlotWrapper/PlotWrapper';
 // when the pathname is exactly the string "/"
 const Main = () => (
   <main>
-    <Switch>
-      <Route exact path='/:title?' component={PlotWrapper}/>
-      {/* <Route path='/request/:id' component={Request}/> */}
-    </Switch>
+     {console.log(useRouteMatch().url)}
+     <BrowserRouter basename="/USCovidReact/">
+      <Switch>
+        <Route exact path='/:title?' component={PlotWrapper}/>
+        {/* <Route path='/request/:id' component={Request}/> */}
+      </Switch>
+    </BrowserRouter>
   </main>
 )
 
