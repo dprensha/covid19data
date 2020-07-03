@@ -30,6 +30,7 @@ class PlotContainer extends Component {
     }
 
     render() {
+        let COMPARISON_DAYS = 7;
         let iconContent = null;
                 
         if(this.props.entity.children && Object.keys(this.props.entity.children).length > 0) {
@@ -44,11 +45,19 @@ class PlotContainer extends Component {
 
         let infoPanelContent = null;
         if(this.state.isInfoExpanded) {
+            const currentActive = this.props.entity.yActive[this.props.entity.yActive.length - 1];
+            const prevActive = this.props.entity.yActive[this.props.entity.yActive.length - 1 - COMPARISON_DAYS];
+
+            const currentTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1];
+            const prevTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - COMPARISON_DAYS];
+
             infoPanelContent = (
                 <div className={styles.infoPanel}>
                     <InfoPanel 
-                        activeCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]}
-                        totalCases={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1]}
+                        activeCases={currentActive}
+                        prevActiveCases={prevActive}
+                        totalCases={currentTotal}
+                        prevTotalCases={prevTotal}
                         toggleInfoPanel={this.toggleInfoPanel}
                     />
                 </div>

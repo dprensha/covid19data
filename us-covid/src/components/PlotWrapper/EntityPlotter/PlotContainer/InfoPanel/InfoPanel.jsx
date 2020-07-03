@@ -6,7 +6,9 @@ import styles from './InfoPanel.module.scss';
 
 const propTypes = {
     activeCases: PropTypes.number,
+    prevActiveCases: PropTypes.number,
     totalCases: PropTypes.number,
+    prevTotalCases: PropTypes.number,
     toggleInfoPanel: PropTypes.func
 }
 
@@ -19,9 +21,19 @@ class InfoPanel extends Component {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    formatPercentage(value) {
+        const percentage = Math.round((isNaN(value) ? 0 : value + Number.EPSILON) * 100) / 100;
+        return `${(percentage > 0) ? '+' : ''}${percentage}%`;
+    }
+
     render() {
-        const formattedTotalCases = this.addThousandSeparators(this.props.totalCases);
-        const formattedActiveCases = this.addThousandSeparators(this.props.activeCases);
+        const { totalCases, activeCases, prevTotalCases, prevActiveCases } = this.props;
+
+        const formattedTotalCases = this.addThousandSeparators(totalCases);
+        const totalDelta = `+${this.addThousandSeparators(totalCases - prevTotalCases)}`;
+
+        const formattedActiveCases = this.addThousandSeparators(activeCases);
+        const activeDelta = ((activeCases - prevActiveCases) / prevActiveCases * 100) || 0;
 
         return (
             <div>
@@ -38,6 +50,14 @@ class InfoPanel extends Component {
                         <div className={styles.kpiValue}>
                             {formattedActiveCases}
                         </div>
+                        <div>
+                            <span className={styles.baselineValue} style={(activeDelta <= 0 ? {color: "#34d400"} : {color: "#FF0000"})}>
+                                {this.formatPercentage(activeDelta)}
+                            </span>
+                            <span className={styles.baselineTitle}>
+                                7-Day Change
+                            </span>
+                        </div>
                     </div>
                     <div className={styles.kpi}>
                         <div className={styles.kpiTitle}>
@@ -45,6 +65,14 @@ class InfoPanel extends Component {
                         </div>
                         <div className={styles.kpiValue}>
                             {formattedTotalCases}
+                        </div>
+                        <div>
+                            <span className={styles.baselineValue}>
+                                {totalDelta}
+                            </span>
+                            <span className={styles.baselineTitle}>
+                                7-Day Change
+                            </span>
                         </div>
                     </div>
                 </div>
