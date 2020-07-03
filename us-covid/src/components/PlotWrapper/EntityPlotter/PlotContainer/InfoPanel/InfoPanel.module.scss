@@ -1,0 +1,19 @@
+.kpiContainer { 
+    display: flex;
+    justify-content: center;
+}
+
+.kpi {
+    margin: 24px;
+}
+
+.kpiTitle {
+    font-size: 18px;
+    color: rgba(0, 0, 0, .54);
+    text-align: right;
+}
+
+.kpiValue {
+    font-size: 34px;
+    text-align: right;
+}

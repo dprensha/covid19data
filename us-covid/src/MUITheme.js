@@ -10,6 +10,12 @@ const styles = createMuiTheme({
         }
     },
     typography: {
+        fontFamily: [
+            "Open Sans",
+            "Helvetica",
+            "Arial",
+            "sans-serif"
+        ],
         useNextVariants: true,
         //color: "blue",
         body1: {
@@ -64,6 +70,11 @@ const styles = createMuiTheme({
         MuiButton: {
             root: {
                 fontWeight: "500"
+            }
+        },
+        MuiIconButton: {
+            root: {
+                color: "#444"
             }
         }
     }

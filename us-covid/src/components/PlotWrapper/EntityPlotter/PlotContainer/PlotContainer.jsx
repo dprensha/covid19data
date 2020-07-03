@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Plot, IconButton } from "../../../Controls";
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import InfoPanel from './InfoPanel/InfoPanel';
 import styles from './PlotContainer.module.scss';
 import '../EntityPlotter.css';
 
@@ -19,14 +20,12 @@ class PlotContainer extends Component {
             isInfoExpanded: false
         }
 
-        this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
+        this.toggleInfoPanel = this.toggleInfoPanel.bind(this);
     }
 
-    handleInfoIconClick(data) {
-        console.log("Active", data.yActive[data.yActive.length - 1]);
-        console.log("Total", data.yConfirmed[data.yConfirmed.length - 1]);
+    toggleInfoPanel() {
         this.setState({
-            isInfoExpanded: true
+            isInfoExpanded: !this.state.isInfoExpanded
         })
     }
 
@@ -38,7 +37,7 @@ class PlotContainer extends Component {
                 <IconButton
                     onClick={() => { this.props.handlePlotClick(this.props.entity)}}
                 >
-                    <ArrowForwardIcon style={{fill: "#444"}}/>
+                    <ArrowForwardIcon />
                 </IconButton>
             )
         }
@@ -46,33 +45,20 @@ class PlotContainer extends Component {
         let infoPanelContent = null;
         if(this.state.isInfoExpanded) {
             infoPanelContent = (
-                <div>
-                    InfoPanel
+                <div className={styles.infoPanel}>
+                    <InfoPanel 
+                        activeCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]}
+                        totalCases={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1]}
+                        toggleInfoPanel={this.toggleInfoPanel}
+                    />
                 </div>
             )
         }
 
-        return (
-            <div
-                    key={this.props.entity.title}
-                    className={styles.childPlot}
-                    >
-                        <div className={styles.childPlotTitleBar}>
-                            <div className={styles.childPlotTitleBarTitle}>
-                                {this.props.entity.title}
-                            </div>
-                            <div className={styles.childPlotTitleBarInfoIcon}>
-                                <IconButton
-                                    onClick={() => { this.handleInfoIconClick(this.props.entity)}}
-                                >
-                                    <InfoOutlinedIcon style={{fill: "#444"}}/>
-                                </IconButton>
-                            </div>
-                            <div className={styles.childPlotTitleBarIcon}>
-                                {iconContent}
-                            </div>
-                        </div>
-                    <Plot
+        let plotContent = null;
+        if(!this.state.isInfoExpanded) {
+            plotContent = (
+                <Plot
                         onClick={this.handlePlotClick}
                         data={[
                             {
@@ -100,9 +86,34 @@ class PlotContainer extends Component {
                         useResizeHandler={true}
                         style={{width: "100%", height: "80%"}}
                     />
-                    <div className={styles.infoPanel}>
-                        {infoPanelContent}
-                    </div>
+            )
+        }
+
+        return (
+            <div
+                    key={this.props.entity.title}
+                    className={styles.childPlot}
+                    >
+                        <div 
+                            className={styles.childPlotTitleBar}
+                            style={(this.state.isInfoExpanded) ? { zIndex: -1 } : { zIndex: 0 }}
+                        >
+                            <div className={styles.childPlotTitleBarTitle}>
+                                {this.props.entity.title}
+                            </div>
+                            <div className={styles.childPlotTitleBarInfoIcon}>
+                                <IconButton
+                                    onClick={this.toggleInfoPanel}
+                                >
+                                    <InfoOutlinedIcon/>
+                                </IconButton>
+                            </div>
+                            <div className={styles.childPlotTitleBarIcon}>
+                                {iconContent}
+                            </div>
+                        </div>
+                    {plotContent}
+                    {infoPanelContent}
                     </div>
         )
     }
