@@ -115,7 +115,7 @@ class PlotWrapper extends Component {
         const c = document.documentElement.scrollTop || document.body.scrollTop;
         if (c > 0) {
             window.requestAnimationFrame(this.scrollToTop);
-            window.scrollTo(0, c - c / 4);
+            window.scrollTo(0, c - c / 2);
         }
     }
 

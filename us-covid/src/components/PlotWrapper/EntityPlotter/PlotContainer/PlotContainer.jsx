@@ -31,17 +31,7 @@ class PlotContainer extends Component {
 
     render() {
         let COMPARISON_DAYS = 7;
-        let iconContent = null;
-                
-        if(this.props.entity.children && Object.keys(this.props.entity.children).length > 0) {
-            iconContent = (
-                <IconButton
-                    onClick={() => { this.props.handlePlotClick(this.props.entity)}}
-                >
-                    <ArrowForwardIcon />
-                </IconButton>
-            )
-        }
+        let isArrowButtonDisabled = !(this.props.entity.children && Object.keys(this.props.entity.children).length > 0);
 
         let infoPanelContent = null;
         if(this.state.isInfoExpanded) {
@@ -118,7 +108,12 @@ class PlotContainer extends Component {
                                 </IconButton>
                             </div>
                             <div className={styles.childPlotTitleBarIcon}>
-                                {iconContent}
+                            <IconButton
+                                onClick={() => { this.props.handlePlotClick(this.props.entity)}}
+                                disabled={isArrowButtonDisabled}
+                            >
+                                <ArrowForwardIcon />
+                            </IconButton>
                             </div>
                         </div>
                     {plotContent}
