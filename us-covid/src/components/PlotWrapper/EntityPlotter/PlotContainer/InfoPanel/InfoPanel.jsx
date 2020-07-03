@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import CloseIcon from '@material-ui/icons/Close';
-import { IconButton } from "../../../../Controls";
+import { IconButton, KPI } from "../../../../Controls";
 import styles from './InfoPanel.module.scss';
 
 const propTypes = {
@@ -43,7 +43,24 @@ class InfoPanel extends Component {
                     </IconButton>
                 </div>
                 <div className={styles.kpiContainer}>
-                    <div className={styles.kpi}>
+                    <KPI 
+                        keyValueTitle={"Active Cases"}
+                        keyValue={activeCases}
+                        baselineValueTitle={"7 Day Change"}
+                        baselineValue={prevActiveCases}
+                        baselineValueFormat={"Percentage"}
+                        colorCodeBaselineValue={true}
+                    />
+                    <KPI 
+                        keyValueTitle={"Total Cases"}
+                        keyValue={totalCases}
+                        baselineValueTitle={"7 Day Change"}
+                        baselineValue={prevTotalCases}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                    />
+                    
+                    {/* <div className={styles.kpi}>
                         <div className={styles.kpiTitle}>
                             Active Cases
                         </div>
@@ -58,8 +75,8 @@ class InfoPanel extends Component {
                                 7-Day Change
                             </span>
                         </div>
-                    </div>
-                    <div className={styles.kpi}>
+                    </div> */}
+                    {/* <div className={styles.kpi}>
                         <div className={styles.kpiTitle}>
                             Total Cases
                         </div>
@@ -74,7 +91,7 @@ class InfoPanel extends Component {
                                 7-Day Change
                             </span>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         );

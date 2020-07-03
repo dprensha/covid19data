@@ -1,0 +1,34 @@
+.kpi {
+    margin: 24px;
+}
+
+.kpiTitle {
+    font-size: 18px;
+    color: rgba(0, 0, 0, .54);
+    text-align: right;
+}
+
+.kpiValue {
+    font-size: 34px;
+    text-align: right;
+}
+
+.baselineTitle {
+    color: rgba(0, 0, 0, .54);
+    text-align: right;
+    font-size: 14px;
+    padding-left: 8px;
+}
+
+.baselineValue {
+    font-size: 14px;
+    text-align: right;
+}
+
+.positiveValue {
+    color: #34d400;
+}
+
+.negativeValue {
+    color: #FF0000;
+}
