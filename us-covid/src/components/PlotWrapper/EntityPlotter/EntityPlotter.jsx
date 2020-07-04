@@ -6,7 +6,7 @@ import Popover from '@material-ui/core/Popover';
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI } from "../../Controls";
+import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
 
@@ -23,11 +23,13 @@ class EntityPlotter extends Component {
         super(props);
 
         this.state = {
-            isInfoExpanded: false
+            isInfoExpanded: false,
+            graphMode: "active"
         }
 
         this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
         this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
+        this.handleGraphModeChange = this.handleGraphModeChange.bind(this);
     }
 
     handleCloseInfoIcon() {
@@ -43,6 +45,12 @@ class EntityPlotter extends Component {
         })
     }
 
+    handleGraphModeChange(event) {
+        this.setState({
+            graphMode: event.target.value
+        });
+    }
+
     render() {
         console.log(this.props.entity);
         const childPlots = [];
@@ -55,6 +63,7 @@ class EntityPlotter extends Component {
                         entity={this.props.entity.children[childKey]}
                         handlePlotClick={this.props.handlePlotClick}
                         displayDetails={this.props.displayDetails}
+                        graphMode={this.state.graphMode}
                     />
                 )
             });
@@ -76,6 +85,13 @@ class EntityPlotter extends Component {
                 >
                     <ArrowBackIcon />
                 </IconButton>
+            )
+        }
+        else {
+            backButtonContent = (
+                <div style={{paddingLeft: "12px"}}>
+
+                </div>
             )
         }
 
@@ -129,20 +145,45 @@ class EntityPlotter extends Component {
                     </ListItem>
                     </List>
                 </Popover>
+                <div style={{marginTop: "100px", textAlign: "center"}}>
+                    <FormControl component="fieldset">
+                        <RadioGroup 
+                            row 
+                            aria-label="position" 
+                            name="position" 
+                            defaultValue="top" 
+                            onChange={this.handleGraphModeChange}
+                            value={this.state.graphMode}
+                        >
+                        <FormControlLabel
+                            value="active"
+                            control={<Radio color="primary" />}
+                            label="Active Cases"
+                            labelPlacement="start"
+                        />
+                        <FormControlLabel
+                            value="total"
+                            control={<Radio color="primary" />}
+                            label="Total Cases"
+                            labelPlacement="start"
+                        />
+                        </RadioGroup>
+                    </FormControl>
+                </div>
                 <div className={styles.parentGraphContainer}>
                     <Plot
                         data={[
                             {
                                 x: this.props.entity.x,
-                                y: this.props.entity.yActive
+                                y: (this.state.graphMode === "active") ? this.props.entity.yActive : this.props.entity.yConfirmed
                             },
                         ]}
                         layout={{
-                            autosize: true, title: "Active COVID-19 Cases", showLegend: false, plot_bgcolor: "transparent", margin: {
+                            autosize: true, showLegend: false, plot_bgcolor: "transparent", margin: {
                                 l: 60,
                                 r: 44,
                                 b: 72,
-                                t: 72,
+                                t: 32,
                                 pad: 4
                             }
                         }}
@@ -153,7 +194,7 @@ class EntityPlotter extends Component {
                         useResizeHandler={true}
                         style={{ width: "100%", height: "100%" }}
                     />
-                </div>
+                </div>                
                 <div className={styles.kpiContainer}>
                     <div className={kpiClasses}>
                         <KPI

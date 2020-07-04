@@ -19,10 +19,10 @@ const styles = createMuiTheme({
         useNextVariants: true,
         //color: "blue",
         body1: {
-            color: "white",
+            color: "#444",
         },
         body2: {
-            color: "white"
+            color: "#444"
         },
         h5: {
             fontSize: "1.3rem"

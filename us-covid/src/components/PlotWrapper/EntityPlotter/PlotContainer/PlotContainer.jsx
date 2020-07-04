@@ -10,7 +10,8 @@ import '../EntityPlotter.css';
 const propTypes = {
     entity: PropTypes.object,
     handlePlotClick: PropTypes.func,
-    displayDetails: PropTypes.object
+    displayDetails: PropTypes.object,
+    graphMode: PropTypes.string
 }
 
 class PlotContainer extends Component {
@@ -64,7 +65,7 @@ class PlotContainer extends Component {
                         data={[
                             {
                                 x: this.props.entity.x,
-                                y: this.props.entity.yActive
+                                y: (this.props.graphMode === "active") ? this.props.entity.yActive : this.props.entity.yConfirmed
                             },
                         ]}
                         layout={{ 
