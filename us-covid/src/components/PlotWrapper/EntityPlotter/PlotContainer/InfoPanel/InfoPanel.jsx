@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import CloseIcon from '@material-ui/icons/Close';
+import { constants } from "../../../../Utilities";
 import { IconButton, KPI } from "../../../../Controls";
 import styles from './InfoPanel.module.scss';
 
@@ -9,7 +10,8 @@ const propTypes = {
     prevActiveCases: PropTypes.number,
     totalCases: PropTypes.number,
     prevTotalCases: PropTypes.number,
-    toggleInfoPanel: PropTypes.func
+    toggleInfoPanel: PropTypes.func,
+    displayDetails: PropTypes.object
 }
 
 class InfoPanel extends Component {
@@ -17,23 +19,8 @@ class InfoPanel extends Component {
         super(props, context);
     }
 
-    addThousandSeparators(value) {
-        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    formatPercentage(value) {
-        const percentage = Math.round((isNaN(value) ? 0 : value + Number.EPSILON) * 100) / 100;
-        return `${(percentage > 0) ? '+' : ''}${percentage}%`;
-    }
-
     render() {
         const { totalCases, activeCases, prevTotalCases, prevActiveCases } = this.props;
-
-        const formattedTotalCases = this.addThousandSeparators(totalCases);
-        const totalDelta = `+${this.addThousandSeparators(totalCases - prevTotalCases)}`;
-
-        const formattedActiveCases = this.addThousandSeparators(activeCases);
-        const activeDelta = ((activeCases - prevActiveCases) / prevActiveCases * 100) || 0;
 
         return (
             <div>
@@ -44,54 +31,23 @@ class InfoPanel extends Component {
                 </div>
                 <div className={styles.kpiContainer}>
                     <KPI 
-                        keyValueTitle={"Active Cases"}
+                        keyValueTitle={constants.strings.ACTIVE_CASES}
                         keyValue={activeCases}
-                        baselineValueTitle={"7 Day Change"}
+                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
                         baselineValue={prevActiveCases}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={true}
+                        displayDetails={this.props.displayDetails}
                     />
                     <KPI 
-                        keyValueTitle={"Total Cases"}
+                        keyValueTitle={constants.strings.TOTAL_CASES}
                         keyValue={totalCases}
-                        baselineValueTitle={"7 Day Change"}
+                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
                         baselineValue={prevTotalCases}
                         baselineValueFormat={"Decimal"}
                         colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
                     />
-                    
-                    {/* <div className={styles.kpi}>
-                        <div className={styles.kpiTitle}>
-                            Active Cases
-                        </div>
-                        <div className={styles.kpiValue}>
-                            {formattedActiveCases}
-                        </div>
-                        <div>
-                            <span className={styles.baselineValue} style={(activeDelta <= 0 ? {color: "#34d400"} : {color: "#FF0000"})}>
-                                {this.formatPercentage(activeDelta)}
-                            </span>
-                            <span className={styles.baselineTitle}>
-                                7-Day Change
-                            </span>
-                        </div>
-                    </div> */}
-                    {/* <div className={styles.kpi}>
-                        <div className={styles.kpiTitle}>
-                            Total Cases
-                        </div>
-                        <div className={styles.kpiValue}>
-                            {formattedTotalCases}
-                        </div>
-                        <div>
-                            <span className={styles.baselineValue}>
-                                {totalDelta}
-                            </span>
-                            <span className={styles.baselineTitle}>
-                                7-Day Change
-                            </span>
-                        </div>
-                    </div> */}
                 </div>
             </div>
         );

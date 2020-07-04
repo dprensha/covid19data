@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from 'classnames';
+import { constants } from "../../Utilities"
 import styles from './KPI.module.scss';
 
 const propTypes = {
@@ -9,7 +10,8 @@ const propTypes = {
     baselineValueTitle: PropTypes.string,
     baselineValue: PropTypes.number,
     baselineValueFormat: PropTypes.string,
-    colorCodeBaselineValue: PropTypes.bool
+    colorCodeBaselineValue: PropTypes.bool,
+    displayDetails: PropTypes.object
 }
 
 class KPI extends Component {
@@ -17,20 +19,29 @@ class KPI extends Component {
         super(props, context);
     }
 
-    addThousandSeparators(value) {
-        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    addThousandSeparators(value, formatMagnitude) {
+        if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+6) {
+            return `${(Math.round(value / 1.0e+3)) / 1000} M`;
+        }
+        // else if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+3) {
+        //     return `${(Math.round(value / 1.0e+3))} K`;
+        // }
+        else {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
     }
 
     formatPercentage(value) {
         const percentage = Math.round((isNaN(value) ? 0 : value + Number.EPSILON) * 100) / 100;
-        return `${(percentage > 0) ? '+' : ''}${percentage}%`;
+        return `${(percentage > 0) ? '+' : ''}${this.addThousandSeparators(percentage)}%`;
     }
 
     render() {
         const { keyValueTitle, keyValue, baselineValueTitle, baselineValue, baselineValueFormat, colorCodeBaselineValue } = this.props;
 
-        const formattedKeyValue = this.addThousandSeparators(keyValue);
-        const totalDelta = `+${this.addThousandSeparators(keyValue - baselineValue)}`;
+        const formattedKeyValue = this.addThousandSeparators(keyValue, true);
+        const totalDelta = `+${this.addThousandSeparators(keyValue - baselineValue, true)}`;
         const totalDeltaPercentage = this.formatPercentage(((keyValue - baselineValue) / baselineValue * 100) || 0);
 
         let displayBaselineValue = null;
@@ -54,19 +65,40 @@ class KPI extends Component {
             }
         );
 
+        const kpiTitleStyles = classNames(
+            styles.kpiTitle,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        );
+
+        const kpiValueStyles = classNames(
+            styles.kpiValue,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        );
+
+        const baselineTitleStyles = classNames(
+            styles.baselineTitle,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        );
+
         return (
             <div className={styles.kpi}>
-                <div className={styles.kpiTitle}>
+                <div className={kpiTitleStyles}>
                     {keyValueTitle}
                 </div>
-                <div className={styles.kpiValue}>
+                <div className={kpiValueStyles}>
                     {formattedKeyValue}
                 </div>
                 <div>
                     <span className={baselineStyles}>
                         {displayBaselineValue}
                     </span>
-                    <span className={styles.baselineTitle}>
+                    <span className={baselineTitleStyles}>
                         {baselineValueTitle}
                     </span>
                 </div>

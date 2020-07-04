@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PlotContainer from './PlotContainer/PlotContainer'
 import Popover from '@material-ui/core/Popover';
-import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider } from "../../Controls";
+import classNames from 'classnames';
+import { constants } from "../../Utilities"
+import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
 
@@ -11,7 +13,8 @@ import './EntityPlotter.css';
 const propTypes = {
     //from Redux
     entity: PropTypes.object,
-    handlePlotClick: PropTypes.func
+    handlePlotClick: PropTypes.func,
+    displayDetails: PropTypes.object
 }
 
 class EntityPlotter extends Component {
@@ -50,10 +53,18 @@ class EntityPlotter extends Component {
                         key={childKey}
                         entity={this.props.entity.children[childKey]}
                         handlePlotClick={this.props.handlePlotClick}
+                        displayDetails={this.props.displayDetails}
                     />
                 )
             });
         }
+
+        const kpiClasses = classNames(
+            styles.kpi,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        );
 
         return (
             <div>
@@ -117,6 +128,30 @@ class EntityPlotter extends Component {
                         useResizeHandler={true}
                         style={{width: "100%", height: "100%"}}
                     />
+                </div>
+                <div className={styles.kpiContainer}>
+                    <div className={kpiClasses}>
+                <KPI 
+                        keyValueTitle={constants.strings.ACTIVE_CASES}
+                        keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1]}
+                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                        baselineValue={this.props.entity.yActive[this.props.entity.yActive.length - 1 - 7]}
+                        baselineValueFormat={"Percentage"}
+                        colorCodeBaselineValue={true}
+                        displayDetails={this.props.displayDetails}
+                    />
+                    </div>
+                    <div className={kpiClasses}>
+                    <KPI 
+                        keyValueTitle={constants.strings.TOTAL_CASES}
+                        keyValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1]}
+                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                        baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - 7]}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                    />
+                    </div>
                 </div>
                 <div className={styles.childPlotContainer}>
                     {childPlots}

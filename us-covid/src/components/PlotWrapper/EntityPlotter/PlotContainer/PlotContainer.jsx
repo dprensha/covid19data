@@ -9,7 +9,8 @@ import '../EntityPlotter.css';
 
 const propTypes = {
     entity: PropTypes.object,
-    handlePlotClick: PropTypes.func
+    handlePlotClick: PropTypes.func,
+    displayDetails: PropTypes.object
 }
 
 class PlotContainer extends Component {
@@ -49,6 +50,7 @@ class PlotContainer extends Component {
                         totalCases={currentTotal}
                         prevTotalCases={prevTotal}
                         toggleInfoPanel={this.toggleInfoPanel}
+                        displayDetails={this.props.displayDetails}
                     />
                 </div>
             )

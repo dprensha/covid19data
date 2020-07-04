@@ -1,28 +1,46 @@
 .kpi {
-    margin: 24px;
+    margin: 16px;
 }
 
 .kpiTitle {
     font-size: 18px;
     color: rgba(0, 0, 0, .54);
-    text-align: right;
+    text-align: center;
+
+    &.isMobile {
+        font-size: 14px;
+    }
 }
 
 .kpiValue {
     font-size: 34px;
-    text-align: right;
+    text-align: center;
+    color: black;
+
+    &.isMobile {
+        font-size: 24px;
+    }
 }
 
 .baselineTitle {
     color: rgba(0, 0, 0, .54);
-    text-align: right;
+    text-align: center;
     font-size: 14px;
-    padding-left: 8px;
+    padding-left: 4px;
+
+    &.isMobile {
+        font-size: 12px;
+    }
 }
 
 .baselineValue {
     font-size: 14px;
-    text-align: right;
+    text-align: center;
+    color: black;
+
+    &.isMobile {
+        font-size: 12px;
+    }
 }
 
 .positiveValue {
