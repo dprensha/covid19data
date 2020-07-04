@@ -54,12 +54,12 @@
 
 .kpi {
     margin: 0 12px 12px 12px;
-    //width: 250px;
+    padding: 16px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 
     &.isMobile{
         margin: 0 8px 8px 8px;
-        //width: 150px;
+        padding: 0;
     }
 }
 
