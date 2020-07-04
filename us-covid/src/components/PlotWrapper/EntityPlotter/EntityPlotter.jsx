@@ -81,8 +81,10 @@ class EntityPlotter extends Component {
 
         return (
             <div>
-                <AppBar style={{ position: "fixed" }}>
-                    <Toolbar style={{ justifyContent: "space-between" }}>
+                <AppBar style={{ position: "fixed", paddingTop: "4px", paddingBottom: "4px" }}>
+                    <Toolbar style={{ justifyContent: "space-between" }}
+                        disableGutters={true}
+                    >
                         <div style={{ display: "flex", alignItems: "center" }}>
                             {backButtonContent}
                             <div>

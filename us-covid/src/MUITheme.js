@@ -23,6 +23,12 @@ const styles = createMuiTheme({
         },
         body2: {
             color: "white"
+        },
+        h5: {
+            fontSize: "1.3rem"
+        },
+        h6: {
+            fontSize: "1.1rem"
         }
     },
     overrides: {
