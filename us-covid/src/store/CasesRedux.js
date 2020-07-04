@@ -1,21 +1,9 @@
-import api from "../utilities/API";
-import Plotly from 'plotly.js-basic-dist';
 import * as d3 from 'd3';
-import { dispatch } from "d3";
-
 
 const requestCases = 'REQUEST_CASES';
 const requestCasesFailure = 'REQUEST_CASES_FAILURE';
 const receiveCases = 'RECEIVE_CASES';
-// const requestTeams = 'REQUEST_TEAMS';
-// const requestTeamsFailure = 'REQUEST_TEAMS_FAILURE';
-// const receiveTeams = 'RECEIVE_TEAMS';
-// const requestFeatures = 'REQUEST_FEATURES';
-// const requestFeaturesFailure = 'REQUEST_FEATURES_FAILURE';
-// const receiveFeatures = 'RECEIVE_FEATURES';
-// const requestDefects = 'REQUEST_DEFECTS';
-// const requestDefectsFailure = 'REQUEST_DEFECTS_FAILURE';
-// const receiveDefects = 'RECEIVE_DEFECTS';
+
 
 const rallyAPIErrorMessage = 'Rally API Error';
 const RECOVERY_PERIOD_DAYS = 14;
@@ -60,6 +48,7 @@ export const actionCreators = {
                     yActive: [],
                     title: data.Province_State,
                     navigableTitle: data.Province_State.replace(/[\.\W]/g,''),
+                    parent: allData,
                     children: {}
                 };
                 allData.children[data.Province_State].children[data.Admin2] = {

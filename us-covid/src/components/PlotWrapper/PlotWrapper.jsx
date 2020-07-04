@@ -166,12 +166,12 @@ class PlotWrapper extends Component {
         const c = document.documentElement.scrollTop || document.body.scrollTop;
         if (c > 0) {
             window.requestAnimationFrame(this.scrollToTop);
-            window.scrollTo(0, c - c / 2);
+            window.scrollTo(0, c - c / 1);
         }
     }
 
     handlePlotClick(data) {
-        this.props.history.push(`/${data.navigableTitle}`);
+        this.props.history.push((data.navigableTitle) ? `/${data.navigableTitle}` : '/');
         this.scrollToTop();
     }
 
