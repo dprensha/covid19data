@@ -54,6 +54,7 @@ class EntityPlotter extends Component {
     render() {
         console.log(this.props.entity);
         const childPlots = [];
+        const activeCasesPerCapita = [];
         if (this.props.entity.children) {
             const childKeys = Object.keys(this.props.entity.children).sort();
             childKeys.forEach(childKey => {
@@ -65,8 +66,10 @@ class EntityPlotter extends Component {
                         displayDetails={this.props.displayDetails}
                         graphMode={this.state.graphMode}
                     />
-                )
+                );
+                activeCasesPerCapita[childKey] = parseInt(this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]) / parseInt(this.props.entity.children[childKey].population) * 1000;
             });
+            console.log(activeCasesPerCapita);
         }
 
         const kpiClasses = classNames(
@@ -94,6 +97,7 @@ class EntityPlotter extends Component {
                 </div>
             )
         }
+        
 
         return (
             <div>
@@ -196,6 +200,17 @@ class EntityPlotter extends Component {
                     />
                 </div>                
                 <div className={styles.kpiContainer}>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Active Cases Per 1,000"}
+                            keyValue={parseInt(this.props.entity.yActive[this.props.entity.yActive.length - 1]) / parseInt(this.props.entity.population) * 1000}
+                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                            baselineValue={null}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={true}
+                            displayDetails={this.props.displayDetails}
+                        />
+                    </div>
                     <div className={kpiClasses}>
                         <KPI
                             keyValueTitle={constants.strings.ACTIVE_CASES}

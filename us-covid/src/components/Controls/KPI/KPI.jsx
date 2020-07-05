@@ -26,6 +26,9 @@ class KPI extends Component {
         // else if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+3) {
         //     return `${(Math.round(value / 1.0e+3))} K`;
         // }
+        else if(Math.abs(Number(value)) < 1000) {
+            return Math.round((value + Number.EPSILON) * 100) / 100;
+        }
         else {
             return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
@@ -86,14 +89,9 @@ class KPI extends Component {
             }
         );
 
-        return (
-            <div className={styles.kpi}>
-                <div className={kpiTitleStyles}>
-                    {keyValueTitle}
-                </div>
-                <div className={kpiValueStyles}>
-                    {formattedKeyValue}
-                </div>
+        let baselineValueContent = null;
+        if(baselineValue) {
+            baselineValueContent = (
                 <div>
                     <span className={baselineStyles}>
                         {displayBaselineValue}
@@ -102,6 +100,18 @@ class KPI extends Component {
                         {baselineValueTitle}
                     </span>
                 </div>
+            );
+        }
+
+        return (
+            <div className={styles.kpi}>
+                <div className={kpiTitleStyles}>
+                    {keyValueTitle}
+                </div>
+                <div className={kpiValueStyles}>
+                    {formattedKeyValue}
+                </div>
+                {baselineValueContent}
             </div>
         );
     }
