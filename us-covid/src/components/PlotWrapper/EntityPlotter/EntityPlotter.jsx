@@ -6,6 +6,17 @@ import Popover from '@material-ui/core/Popover';
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
+
 import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
@@ -52,24 +63,27 @@ class EntityPlotter extends Component {
     }
 
     render() {
-        console.log(this.props.entity);
         const childPlots = [];
-        const activeCasesPerCapita = [];
+        const hotSpots = [];
+
         if (this.props.entity.children) {
             const childKeys = Object.keys(this.props.entity.children).sort();
+            
             childKeys.forEach(childKey => {
-                childPlots.push(
-                    <PlotContainer
-                        key={childKey}
-                        entity={this.props.entity.children[childKey]}
-                        handlePlotClick={this.props.handlePlotClick}
-                        displayDetails={this.props.displayDetails}
-                        graphMode={this.state.graphMode}
-                    />
-                );
-                activeCasesPerCapita[childKey] = parseInt(this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]) / parseInt(this.props.entity.children[childKey].population) * 1000;
+                if(childKey !== "Unassigned" && !childKey.startsWith("Out of")) {
+                    childPlots.push(
+                        <PlotContainer
+                            key={childKey}
+                            entity={this.props.entity.children[childKey]}
+                            handlePlotClick={this.props.handlePlotClick}
+                            displayDetails={this.props.displayDetails}
+                            graphMode={this.state.graphMode}
+                        />
+                    );
+                    hotSpots.push({key: childKey, value: this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000})
+                }
             });
-            console.log(activeCasesPerCapita);
+            hotSpots.sort((a, b) => { return b.value - a.value });
         }
 
         const kpiClasses = classNames(
@@ -96,6 +110,47 @@ class EntityPlotter extends Component {
 
                 </div>
             )
+        }
+
+        const listKPITitleClasses = classNames(
+            styles.listKPITitle,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        )
+
+        let hotSpotsKPIContent = null;
+        if(hotSpots.filter((hotSpot) => hotSpot.value > 0).length > 0) {
+            console.log(hotSpots.length);
+            hotSpotsKPIContent = (
+                <div className={styles.listKPIContainer}>
+                    <div className={listKPITitleClasses}>
+                        Hot Spots
+                    </div>
+                <TableContainer >
+                    <Table>
+                    <TableHead>
+                        <TableRow>
+                        <TableCell>{"State/County"}</TableCell>
+                        <TableCell align="right">Active Cases Per 1,000</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {hotSpots.filter((hotSpot) => hotSpot.value > 0).filter((hotSpot, index) => index < 10).map((hotSpot) => (
+                        <TableRow key={hotSpot.key}>
+                            <TableCell component="th" scope="row">
+                                {hotSpot.key}
+                            </TableCell>
+                            <TableCell align="right">
+                                {Math.round((hotSpot.value + Number.EPSILON) * 100) / 100}
+                            </TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                    </Table>
+                </TableContainer>
+                </div>
+            );
         }
         
 
@@ -149,11 +204,10 @@ class EntityPlotter extends Component {
                     </ListItem>
                     </List>
                 </Popover>
-                <div style={{marginTop: "100px", textAlign: "center"}}>
+                <div style={{marginTop: "75px", textAlign: "center"}}>
                     <FormControl component="fieldset">
                         <RadioGroup 
-                            row 
-                            aria-label="position" 
+                            row={false} 
                             name="position" 
                             defaultValue="top" 
                             onChange={this.handleGraphModeChange}
@@ -163,13 +217,19 @@ class EntityPlotter extends Component {
                             value="active"
                             control={<Radio color="primary" />}
                             label="Active Cases"
-                            labelPlacement="start"
+                            labelPlacement="end"
+                        />
+                        <FormControlLabel
+                            value="activePerCapita"
+                            control={<Radio color="primary" />}
+                            label="Active Cases Per 1,000"
+                            labelPlacement="end"
                         />
                         <FormControlLabel
                             value="total"
                             control={<Radio color="primary" />}
                             label="Total Cases"
-                            labelPlacement="start"
+                            labelPlacement="end"
                         />
                         </RadioGroup>
                     </FormControl>
@@ -179,7 +239,7 @@ class EntityPlotter extends Component {
                         data={[
                             {
                                 x: this.props.entity.x,
-                                y: (this.state.graphMode === "active") ? this.props.entity.yActive : this.props.entity.yConfirmed
+                                y: (this.state.graphMode === "active") ? this.props.entity.yActive : (this.state.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)
                             },
                         ]}
                         layout={{
@@ -202,8 +262,8 @@ class EntityPlotter extends Component {
                 <div className={styles.kpiContainer}>
                     <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={"Active Cases Per 1,000"}
-                            keyValue={parseInt(this.props.entity.yActive[this.props.entity.yActive.length - 1]) / parseInt(this.props.entity.population) * 1000}
+                            keyValueTitle={constants.strings.ACTIVE_CASES_PER_THOUSAND}
+                            keyValue={this.props.entity.yActivePerCapita[this.props.entity.yActive.length - 1] * 1000}
                             baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
                             baselineValue={null}
                             baselineValueFormat={"Percentage"}
@@ -233,6 +293,65 @@ class EntityPlotter extends Component {
                             displayDetails={this.props.displayDetails}
                         />
                     </div>
+                    {/* <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={maxCounty1}
+                            keyValue={max1}
+                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                            baselineValue={null}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                        />
+                    </div>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={maxCounty2}
+                            keyValue={max2}
+                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                            baselineValue={null}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                        />
+                    </div>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={maxCounty3}
+                            keyValue={max3}
+                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                            baselineValue={null}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                        />
+                    </div>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={maxCounty4}
+                            keyValue={max4}
+                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                            baselineValue={null}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                        />
+                    </div>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={maxCounty5}
+                            keyValue={max5}
+                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                            baselineValue={null}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                        />
+                    </div> */}
+                    
+                </div>
+                <div className={styles.hotSpotContainer}>
+                    {hotSpotsKPIContent}
                 </div>
                 <div className={styles.childPlotContainer}>
                     {childPlots}

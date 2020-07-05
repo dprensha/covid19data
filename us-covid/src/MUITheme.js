@@ -82,7 +82,27 @@ const styles = createMuiTheme({
             root: {
                 color: "#444"
             }
-        }
+        },
+        MuiTableCell: {
+            root: {
+                padding: "8px"
+            }
+        },
+        MuiFormControlLabel: {
+            root: {
+                marginLeft: "0",
+                marginRight: "0"
+            }
+        },
+        MuiTableRow: { root: {
+            '&:last-child td': {
+              borderBottom: 0,
+            },
+            '&:last-child th': {
+                borderBottom: 0,
+              },
+          },
+        },
     }
 });
 

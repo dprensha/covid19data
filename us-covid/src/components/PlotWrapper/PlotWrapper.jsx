@@ -196,7 +196,7 @@ class PlotWrapper extends Component {
             )
         }
         else {
-            return (<div>Loading...</div>)
+            return (<div style={{margin: "12px"}}>Loading...</div>)
         }
     }
 }

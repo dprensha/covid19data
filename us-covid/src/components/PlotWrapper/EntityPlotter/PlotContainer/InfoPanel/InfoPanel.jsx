@@ -10,6 +10,7 @@ const propTypes = {
     prevActiveCases: PropTypes.number,
     totalCases: PropTypes.number,
     prevTotalCases: PropTypes.number,
+    currentActiveCasesPerCapita: PropTypes.number,
     toggleInfoPanel: PropTypes.func,
     displayDetails: PropTypes.object
 }
@@ -20,7 +21,7 @@ class InfoPanel extends Component {
     }
 
     render() {
-        const { totalCases, activeCases, prevTotalCases, prevActiveCases } = this.props;
+        const { totalCases, activeCases, prevTotalCases, prevActiveCases, currentActiveCasesPerCapita } = this.props;
 
         return (
             <div>
@@ -35,6 +36,15 @@ class InfoPanel extends Component {
                         keyValue={activeCases}
                         baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
                         baselineValue={prevActiveCases}
+                        baselineValueFormat={"Percentage"}
+                        colorCodeBaselineValue={true}
+                        displayDetails={this.props.displayDetails}
+                    />
+                    <KPI
+                        keyValueTitle={constants.strings.ACTIVE_CASES_PER_THOUSAND}
+                        keyValue={currentActiveCasesPerCapita * 1000}
+                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                        baselineValue={null}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={true}
                         displayDetails={this.props.displayDetails}

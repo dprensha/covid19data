@@ -92,7 +92,7 @@ class KPI extends Component {
         let baselineValueContent = null;
         if(baselineValue) {
             baselineValueContent = (
-                <div>
+                <div className={styles.baselineContainer}>
                     <span className={baselineStyles}>
                         {displayBaselineValue}
                     </span>

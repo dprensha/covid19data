@@ -39,6 +39,8 @@ class PlotContainer extends Component {
         if(this.state.isInfoExpanded) {
             const currentActive = this.props.entity.yActive[this.props.entity.yActive.length - 1];
             const prevActive = this.props.entity.yActive[this.props.entity.yActive.length - 1 - COMPARISON_DAYS];
+            
+            const currentActivePerCapita = this.props.entity.yActivePerCapita[this.props.entity.yActivePerCapita.length - 1];
 
             const currentTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1];
             const prevTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - COMPARISON_DAYS];
@@ -50,6 +52,7 @@ class PlotContainer extends Component {
                         prevActiveCases={prevActive}
                         totalCases={currentTotal}
                         prevTotalCases={prevTotal}
+                        currentActiveCasesPerCapita={currentActivePerCapita}
                         toggleInfoPanel={this.toggleInfoPanel}
                         displayDetails={this.props.displayDetails}
                     />
@@ -65,7 +68,7 @@ class PlotContainer extends Component {
                         data={[
                             {
                                 x: this.props.entity.x,
-                                y: (this.props.graphMode === "active") ? this.props.entity.yActive : this.props.entity.yConfirmed
+                                y: (this.props.graphMode === "active") ? this.props.entity.yActive : (this.props.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)
                             },
                         ]}
                         layout={{ 

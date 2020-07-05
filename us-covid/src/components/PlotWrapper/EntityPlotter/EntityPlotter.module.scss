@@ -21,15 +21,40 @@
     margin: 0 12px 12px 12px;
     padding: 16px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    width: 270px;
 
     &.isMobile{
         margin: 0 8px 8px 8px;
+        width: 160px;
         padding: 0;
     }
 }
 
 .kpiContainer {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 24px;
+}
+
+.hotSpotContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.listKPIContainer {
+    padding: 16px;
+    margin: 0 12px 24px 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.listKPITitle {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.54);
+    text-align: center;
+
+    &.isMobile {
+        padding: 8px;
+        font-size: 16px;
+    }
 }
