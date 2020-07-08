@@ -25,6 +25,7 @@ import { useTheme } from '@material-ui/core/styles';
 import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
+import D3Plot from "../../Controls/D3Plot/D3Plot";
 
 
 const propTypes = {
@@ -221,6 +222,33 @@ class EntityPlotter extends Component {
                         >
                             <SearchIcon />
                         </IconButton> */}
+                        {/*
+                        <Popover
+                    className={styles.infoPopover}
+                    open={this.state.isInfoExpanded}
+                    anchorEl={this.state.popoverAnchorElement}
+                    onClose={this.handleCloseInfoIcon}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+
+                >
+                    <List>
+                        <ListItem>
+                            Source: <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">COVID-19 Data Repository at Johns Hopkins University</a>
+                        </ListItem>
+                        <Divider />
+                        <ListItem>
+                            Active cases are assumed to be over 14 days after originally reported.
+                    </ListItem>
+                    </List>
+                </Popover>
+                        */}
                         <IconButton
                             style={{ color: "white" }}
                             onClick={this.handleInfoIconClick}
@@ -261,6 +289,8 @@ class EntityPlotter extends Component {
                         </RadioGroup>
                     </FormControl>
                 </div>
+                <D3Plot id={"topChart"} data={this.props.entity} width={325} height={135}  x={this.props.entity.x}
+                    y={(this.state.graphMode === "active") ? this.props.entity.yActive : (this.state.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}/>
                 <div className={styles.parentGraphContainer}>
                     <Plot
                         data={[

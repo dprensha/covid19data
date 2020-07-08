@@ -33,6 +33,8 @@ import MUITable from './MUITable';
 
 import Plot from './Plot';
 
+import D3Plot from './D3Plot';
+
 import KPI from './KPI';
 
 //import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -78,6 +80,7 @@ export {
     ListItem,
     Divider,
     Plot,
+    D3Plot,
     KPI,
     MUITable
 };

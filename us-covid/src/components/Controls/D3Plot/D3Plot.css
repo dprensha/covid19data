@@ -1,0 +1,39 @@
+
+/* Style the lines by removing the fill and applying a stroke */
+.line {
+    fill: none;
+    stroke: #1F77B4;
+    stroke-width: 2;
+}
+  
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+  
+  .focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+
+
+.axis {
+    color: #EEE;
+    shape-rendering: crispedges;
+}
+
+.axis text{
+    color: #444;
+    font-size: 12px;
+    font-family: "Open Sans", verdana, arial, sans-serif;
+}
+
+.domain {
+    display: none;
+}
