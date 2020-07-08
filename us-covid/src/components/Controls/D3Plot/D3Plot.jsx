@@ -91,10 +91,6 @@ class D3Plot extends Component {
 
     }
 
-    doThings(svg){
-        
-    }
-
     shouldComponentUpdate(nextProps, nextState) {
         console.log(JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y));
         return JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y);

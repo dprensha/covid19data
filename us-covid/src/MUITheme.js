@@ -106,6 +106,12 @@ const styles = createMuiTheme({
                 marginRight: "0"
             }
         },
+        MuiTablePagination:{
+            selectRoot: {
+                marginLeft: "4px",
+                marginRight: "8px"
+            }
+        },
         MuiTableRow: { root: {
             '&:last-child td': {
               borderBottom: 0,
