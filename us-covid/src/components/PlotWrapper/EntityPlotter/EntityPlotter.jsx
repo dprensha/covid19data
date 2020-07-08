@@ -198,6 +198,13 @@ class EntityPlotter extends Component {
           </div>
         );
 
+        const parentGraphContainerStyles = classNames(
+            styles.parentGraphContainer,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        )
+
         return (
             <div>
                 <AppBar style={{ position: "fixed", paddingTop: "4px", paddingBottom: "4px" }}>
@@ -289,10 +296,8 @@ class EntityPlotter extends Component {
                         </RadioGroup>
                     </FormControl>
                 </div>
-                <D3Plot id={"topChart"} data={this.props.entity} width={325} height={135}  x={this.props.entity.x}
-                    y={(this.state.graphMode === "active") ? this.props.entity.yActive : (this.state.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}/>
-                <div className={styles.parentGraphContainer}>
-                    <Plot
+                <div className={parentGraphContainerStyles}>
+                    {/* <Plot
                         data={[
                             {
                                 x: this.props.entity.x,
@@ -314,6 +319,16 @@ class EntityPlotter extends Component {
                         }}
                         useResizeHandler={true}
                         style={{ width: "100%", height: "100%" }}
+                    /> */}
+                    <D3Plot 
+                        id={"topChart"}
+                        data={this.props.entity} 
+                        width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 1024} 
+                        height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 185 : 250}
+                        x={this.props.entity.x}
+                        y={(this.state.graphMode === "active") ? this.props.entity.yActive : (this.state.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}
+                        format={(this.state.graphMode === "active") ? ".0s" : (this.state.graphMode === "activePerCapita" ? "0" : ".0s")}
+                        tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 2 : 1}
                     />
                 </div>                
                 <div className={styles.kpiContainer}>

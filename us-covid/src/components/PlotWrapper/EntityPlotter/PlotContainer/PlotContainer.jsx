@@ -65,34 +65,6 @@ class PlotContainer extends Component {
         let plotContent = null;
         if(!this.state.isInfoExpanded) {
             plotContent = (
-                // <Plot
-                //         onClick={this.handlePlotClick}
-                //         data={[
-                //             {
-                //                 x: this.props.entity.x,
-                //                 y: (this.props.graphMode === "active") ? this.props.entity.yActive : (this.props.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)
-                //             },
-                //         ]}
-                //         layout={{ 
-                //             xaxis: {nticks: 20 }, 
-                //             autosize: true, 
-                //             showLegend: false, 
-                //             plot_bgcolor: "transparent", 
-                //             margin: {
-                //                 l: 48,
-                //                 r: 32,
-                //                 b: 68,
-                //                 t: 24,
-                //                 pad: 4
-                //             }
-                //         }}
-                //         config={{
-                //             displayModeBar: false, 
-                //             staticPlot: true
-                //         }}
-                //         useResizeHandler={true}
-                //         style={{width: "100%", height: "80%"}}
-                //     />
                 <D3Plot 
                     id={this.props.entity.navigableTitle} 
                     data={this.props.entity}
@@ -100,8 +72,10 @@ class PlotContainer extends Component {
                     y={(this.props.graphMode === "active") ? this.props.entity.yActive : (this.props.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}
                     width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 350} 
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 135 : 135}
+                    format={(this.props.graphMode === "active") ? ".0s" : (this.props.graphMode === "activePerCapita" ? ".0" : ".0s")}
+                    tickInterval={2}
+
                 />
-                //<div></div>
             )
         }
 

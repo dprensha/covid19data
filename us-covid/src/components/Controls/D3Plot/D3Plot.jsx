@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-//imort Plotly from 'plotly.js-basic-dist';
-//import createPlotlyComponent from "react-plotly.js/factory";
 import * as d3 from 'd3';
 import styles from './D3Plot.css';
 
@@ -9,7 +7,9 @@ const propTypes = {
     x: PropTypes.array,
     y: PropTypes.array,
     width: PropTypes.number,
-    height: PropTypes.number
+    height: PropTypes.number,
+    format: PropTypes.string,
+    tickInterval: PropTypes.number
 }
 
 class D3Plot extends Component {
@@ -51,6 +51,7 @@ class D3Plot extends Component {
             .y(function (d) { return yScale(d.y); }) // set the y values for the line generator 
 
 
+            d3.select(`#${this.props.id} > svg`).remove();
         // 1. Add the SVG to the page and employ #2
         var svg = d3.select(`#${this.props.id}`).append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -63,7 +64,7 @@ class D3Plot extends Component {
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(xScale)
-                .ticks(d3.timeWeek.every(2))
+                .ticks(d3.timeWeek.every(this.props.tickInterval))
                 .tickSizeInner(-height)
                 .tickFormat(d3.timeFormat("%-m/%-d/%y")))
             .selectAll("text")
@@ -79,7 +80,7 @@ class D3Plot extends Component {
             .call(d3.axisLeft(yScale)
                 .ticks(4)
                 .tickSizeInner(-width - margin.left - margin.right)
-                .tickFormat(d3.format(".0s"))); // Create an axis component with d3.axisLeft
+                .tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
 
         svg.selectAll(".line").remove();
         // 9. Append the path, bind the data, and call the line generator 
