@@ -34,16 +34,18 @@
     color: rgb(68, 68, 68);
 }
 
-.childPlotTitleBarIcon {
+.iconButtonContainer {
     position: absolute;
+    display: flex;
     right: 6px;
+}
+
+.childPlotTitleBarIcon {
     cursor: pointer;
     fill: rgb(68, 68, 68);
 }
 
 .childPlotTitleBarInfoIcon {
-    position: absolute;
-    right: 54px;
     cursor: pointer;
     fill: rgb(68, 68, 68);
 }
