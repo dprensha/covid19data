@@ -289,17 +289,6 @@ class EntityPlotter extends Component {
                 <div className={styles.kpiContainer}>
                     <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={constants.strings.ACTIVE_CASES_PER_THOUSAND}
-                            keyValue={this.props.entity.yActivePerCapita[this.props.entity.yActive.length - 1] * 1000}
-                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
-                            baselineValue={null}
-                            baselineValueFormat={"Percentage"}
-                            colorCodeBaselineValue={true}
-                            displayDetails={this.props.displayDetails}
-                        />
-                    </div>
-                    <div className={kpiClasses}>
-                        <KPI
                             keyValueTitle={constants.strings.ACTIVE_CASES}
                             keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1]}
                             baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
@@ -307,6 +296,19 @@ class EntityPlotter extends Component {
                             baselineValueFormat={"Percentage"}
                             colorCodeBaselineValue={true}
                             displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={constants.strings.ACTIVE_CASES_PER_THOUSAND}
+                            keyValue={this.props.entity.yActivePerCapita[this.props.entity.yActive.length - 1] * 1000}
+                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                            baselineValue={null}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={true}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
                         />
                     </div>
                     <div className={kpiClasses}>
@@ -318,6 +320,7 @@ class EntityPlotter extends Component {
                             baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
+                            size={"large"}
                         />
                     </div>                    
                 </div>
@@ -338,7 +341,7 @@ class EntityPlotter extends Component {
                 />
                 </div> */}
                 <div className={styles.childPlotContainer}>
-                    {childPlots}
+                     {childPlots}
                 </div>
             </div>
         )

@@ -11,6 +11,7 @@ const propTypes = {
     baselineValue: PropTypes.number,
     baselineValueFormat: PropTypes.string,
     colorCodeBaselineValue: PropTypes.bool,
+    size: PropTypes.string,
     displayDetails: PropTypes.object
 }
 
@@ -71,21 +72,24 @@ class KPI extends Component {
         const kpiTitleStyles = classNames(
             styles.kpiTitle,
             {
-                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE),
+                [styles.isSmall]: (this.props.size === "small")
             }
         );
 
         const kpiValueStyles = classNames(
             styles.kpiValue,
             {
-                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE),
+                [styles.isSmall]: (this.props.size === "small")
             }
         );
 
         const baselineTitleStyles = classNames(
             styles.baselineTitle,
             {
-                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE),
+                [styles.isSmall]: (this.props.size === "small")
             }
         );
 

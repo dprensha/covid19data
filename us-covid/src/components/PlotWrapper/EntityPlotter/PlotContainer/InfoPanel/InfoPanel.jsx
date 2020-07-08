@@ -39,6 +39,7 @@ class InfoPanel extends Component {
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={true}
                         displayDetails={this.props.displayDetails}
+                        size={"small"}
                     />
                     <KPI
                         keyValueTitle={constants.strings.ACTIVE_CASES_PER_THOUSAND}
@@ -48,6 +49,7 @@ class InfoPanel extends Component {
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={true}
                         displayDetails={this.props.displayDetails}
+                        size={"small"}
                     />
                     <KPI 
                         keyValueTitle={constants.strings.TOTAL_CASES}
@@ -57,6 +59,7 @@ class InfoPanel extends Component {
                         baselineValueFormat={"Decimal"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
+                        size={"small"}
                     />
                 </div>
             </div>

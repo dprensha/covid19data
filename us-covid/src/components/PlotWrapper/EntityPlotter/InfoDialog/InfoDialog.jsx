@@ -28,7 +28,7 @@ class InfoDialog extends Component {
                 <Typography variant="h4" style={{padding: "24px"}}>Thanks for stopping by!</Typography>
               <DialogContent>
                   <Typography variant="h6">Please report any bugs, suggestions, or ideas to <a href="mailto:covid@prenshaw.com">covid@prenshaw.com</a></Typography>
-                  I sincerely hope that you find this site useful for your own informational purposes. Any feedback is appreciated!
+                  <p>I sincerely hope that you find this site useful for your own informational purposes. Any feedback is appreciated!</p>
                   <Divider style={{marginTop: "24px", marginBottom: "24px"}} />
                   <span>Data Sources:</span>
                     <ul>
