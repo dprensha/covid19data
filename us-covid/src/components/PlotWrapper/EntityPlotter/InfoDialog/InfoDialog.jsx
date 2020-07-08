@@ -39,7 +39,7 @@ class InfoDialog extends Component {
             </li>
           </ul>
           <Divider style={{ marginTop: "24px", marginBottom: "24px" }} />
-          <b>Note:</b> Active cases are considered to be recovered (or, but hopefully not, a death) after 14 days of the originally reported date.
+          <b>Note:</b> An "active" case is considered to be recovered (or, but hopefully not, a death) after 14 days of the originally reported date.
               </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={this.props.handleClose} color="primary">
