@@ -5,6 +5,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Checkbox from '@material-ui/core/Checkbox';
 import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 import Divider from '@material-ui/core/Divider';
 import EditIcon from '@material-ui/icons/Edit';
 import FormControl from '@material-ui/core/FormControl';
@@ -12,6 +14,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Radio from '@material-ui/core/Radio';
@@ -26,6 +29,7 @@ import Typography from '@material-ui/core/Typography';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import MUITable from './MUITable';
 
 import Plot from './Plot';
 
@@ -50,6 +54,8 @@ export {
     CardContent,
     Checkbox,
     Dialog,
+    DialogActions,
+    DialogContent,
     EditIcon,
     FormControl,
     FormControlLabel,
@@ -57,6 +63,7 @@ export {
     Icon,
     IconButton,
     InputLabel,
+    InputAdornment,
     MenuItem,
     Radio,
     RadioGroup,
@@ -71,5 +78,6 @@ export {
     ListItem,
     Divider,
     Plot,
-    KPI
+    KPI,
+    MUITable
 };

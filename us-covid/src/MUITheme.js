@@ -24,6 +24,9 @@ const styles = createMuiTheme({
         body2: {
             color: "#444"
         },
+        h4: {
+            fontSize: "1.5rem"
+        },
         h5: {
             fontSize: "1.3rem"
         },
@@ -48,24 +51,29 @@ const styles = createMuiTheme({
                 backgroundColor: "#1E1E1E"
             }
         },
-        MuiDialog: {
+        // MuiDialog: {
+        //     root: {
+        //         backgroundColor: "#121212"
+        //     }
+        // },
+        MuiDialogTitle: {
             root: {
-                backgroundColor: "#121212"
+                fontSize: "1.6rem"
             }
         },
         MuiInputBase: {
             root: {
-                color: "white"
+                color: "444"
             }
         },
-        MuiFormLabel: {
-            root: {
-                color: "white"
-            }
-        },
+        // MuiFormLabel: {
+        //     root: {
+        //         color: "444"
+        //     }
+        // },
         MuiInputLabel: {
             root: {
-                color: "white"
+                color: "444"
             }
         },
         MuiPaper: {
@@ -86,6 +94,10 @@ const styles = createMuiTheme({
         MuiTableCell: {
             root: {
                 padding: "8px"
+            },
+            head: {
+                color: "rgba(0, 0, 0, 0.54)",
+                fontSize: "0.75rem"
             }
         },
         MuiFormControlLabel: {

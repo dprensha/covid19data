@@ -3,21 +3,26 @@ import PropTypes from "prop-types";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PlotContainer from './PlotContainer/PlotContainer'
 import Popover from '@material-ui/core/Popover';
+import HotSpotGrid from './HotSpotGrid/HotSpotGrid';
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import TuneIcon from '@material-ui/icons/Tune';
+import SearchIcon from '@material-ui/icons/Search';
+import InfoDialog from './InfoDialog/InfoDialog';
 
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 
 
-import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "../../Controls";
+import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
 
@@ -35,12 +40,22 @@ class EntityPlotter extends Component {
 
         this.state = {
             isInfoExpanded: false,
-            graphMode: "active"
+            graphMode: "active",
+            popoverAnchorElement: null,
+            filterText: ""
         }
 
         this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
         this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
         this.handleGraphModeChange = this.handleGraphModeChange.bind(this);
+        this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    }
+
+    handleFilterTextChange(e) {
+        //console.log(e.target.value);
+        this.setState({
+            filterText: e.target.value
+        })
     }
 
     handleCloseInfoIcon() {
@@ -84,6 +99,9 @@ class EntityPlotter extends Component {
                 }
             });
             hotSpots.sort((a, b) => { return b.value - a.value });
+            for(var i = 0; i < hotSpots.length; i++) {
+                hotSpots[i].rank = i + 1;
+            }
         }
 
         const kpiClasses = classNames(
@@ -117,42 +135,67 @@ class EntityPlotter extends Component {
             {
                 [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
             }
+        );
+
+        const listKPIContainerClasses = classNames(
+            styles.listKPIContainer,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
         )
 
         let hotSpotsKPIContent = null;
         if(hotSpots.filter((hotSpot) => hotSpot.value > 0).length > 0) {
-            console.log(hotSpots.length);
             hotSpotsKPIContent = (
                 <div className={styles.listKPIContainer}>
                     <div className={listKPITitleClasses}>
-                        Hot Spots
+                        Hot Spot Ranking
                     </div>
-                <TableContainer >
-                    <Table>
-                    <TableHead>
-                        <TableRow>
-                        <TableCell>{"State/County"}</TableCell>
-                        <TableCell align="right">Active Cases Per 1,000</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {hotSpots.filter((hotSpot) => hotSpot.value > 0).filter((hotSpot, index) => index < 10).map((hotSpot) => (
-                        <TableRow key={hotSpot.key}>
-                            <TableCell component="th" scope="row">
-                                {hotSpot.key}
-                            </TableCell>
-                            <TableCell align="right">
-                                {Math.round((hotSpot.value + Number.EPSILON) * 100) / 100}
-                            </TableCell>
-                        </TableRow>
-                        ))}
-                    </TableBody>
-                    </Table>
-                </TableContainer>
+                    <HotSpotGrid data={hotSpots} />
                 </div>
             );
         }
         
+        // const theme = useTheme();
+        // const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+        const dialogContent = ( 
+            <div>
+            <Button variant="outlined" color="primary" onClick={this.handleInfoIconClick}>
+              Open responsive dialog
+            </Button>
+            <Dialog
+              fullScreen={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE}
+              open={this.state.isInfoExpanded}
+              onClose={this.handleCloseInfoIcon}
+              aria-labelledby="responsive-dialog-title"
+              maxWidth={"lg"}
+            >
+                <Typography variant="h4" style={{padding: "24px"}}>Thanks for stopping by!</Typography>
+              <DialogContent>
+                  <Typography variant="h6">Please report any bugs, suggestions, or ideas to <a href="mailto:covid@prenshaw.com">covid@prenshaw.com</a></Typography>
+                  I sincerely hope that you find this site useful for your own informational purposes. Any feedback is appreciated!
+                  <Divider style={{marginTop: "24px", marginBottom: "24px"}} />
+                  <span>Data Sources:</span>
+                    <ul>
+                        <li>
+                            COVID-19 Data <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">Repository</a> at Johns Hopkins University
+                        </li>
+                        <li>
+                            US Census Bureau 2019 Population <a href="http://www2.census.gov/programs-surveys/popest/datasets/2010-2019/national/totals/nst-est2019-alldata.csv?#">Projections</a>
+                        </li>
+                    </ul>
+                    <Divider style={{marginTop: "24px", marginBottom: "24px"}} />
+                    Note: Active cases are considered to be recovered (or, but hopefully not, a death) after 14 days of the originally reported date.
+              </DialogContent>
+              <DialogActions>
+                <Button autoFocus onClick={this.handleCloseInfoIcon} color="primary">
+                  Close
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        );
 
         return (
             <div>
@@ -171,39 +214,23 @@ class EntityPlotter extends Component {
                                 </Typography>
                             </div>
                         </div>
+                        <div>
+                        {/* <IconButton
+                            style={{ color: "white" }}
+                            onClick={this.handleInfoIconClick}
+                        >
+                            <SearchIcon />
+                        </IconButton> */}
                         <IconButton
                             style={{ color: "white" }}
                             onClick={this.handleInfoIconClick}
                         >
                             <InfoOutlinedIcon />
                         </IconButton>
+                        </div>
                     </Toolbar>
                 </AppBar>
-                <Popover
-                    className={styles.infoPopover}
-                    open={this.state.isInfoExpanded}
-                    anchorEl={this.state.popoverAnchorElement}
-                    onClose={this.handleCloseInfoIcon}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-
-                >
-                    <List>
-                        <ListItem>
-                            Source: <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">COVID-19 Data Repository at Johns Hopkins University</a>
-                        </ListItem>
-                        <Divider />
-                        <ListItem>
-                            Active cases are assumed to be over 14 days after originally reported.
-                    </ListItem>
-                    </List>
-                </Popover>
+                <InfoDialog isOpen={this.state.isInfoExpanded} displayDetails={this.props.displayDetails} handleClose={this.handleCloseInfoIcon} />
                 <div style={{marginTop: "75px", textAlign: "center"}}>
                     <FormControl component="fieldset">
                         <RadioGroup 
@@ -292,67 +319,24 @@ class EntityPlotter extends Component {
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                         />
-                    </div>
-                    {/* <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={maxCounty1}
-                            keyValue={max1}
-                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
-                            baselineValue={null}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                        />
-                    </div>
-                    <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={maxCounty2}
-                            keyValue={max2}
-                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
-                            baselineValue={null}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                        />
-                    </div>
-                    <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={maxCounty3}
-                            keyValue={max3}
-                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
-                            baselineValue={null}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                        />
-                    </div>
-                    <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={maxCounty4}
-                            keyValue={max4}
-                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
-                            baselineValue={null}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                        />
-                    </div>
-                    <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={maxCounty5}
-                            keyValue={max5}
-                            baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
-                            baselineValue={null}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                        />
-                    </div> */}
-                    
+                    </div>                    
                 </div>
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
                 </div>
+                {/* <div style={{margin: "auto", width: "500px", margin: "auto"}}>
+                <TextField
+                    InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    ),
+                    }}
+                    value={this.state.filterText}
+                    onChange={this.handleFilterTextChange}
+                />
+                </div> */}
                 <div className={styles.childPlotContainer}>
                     {childPlots}
                 </div>

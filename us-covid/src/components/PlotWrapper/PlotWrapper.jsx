@@ -4,22 +4,12 @@ import { actionCreators } from '../../store/CasesRedux'
 import { bindActionCreators } from 'redux';
 import PropTypes from "prop-types";
 
-// import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-// import ErrorIcon from '@material-ui/icons/Error';
-// import InfoIcon from '@material-ui/icons/Info';
-// import CloseIcon from '@material-ui/icons/Close';
-// import WarningIcon from '@material-ui/icons/Warning';
-// import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-// import green from '@material-ui/core/colors/green';
-// import amber from '@material-ui/core/colors/amber';
-// import ButtonBase from '@material-ui/core/ButtonBase';
 import Zoom from '@material-ui/core/Zoom';
 import { makeStyles } from '@material-ui/core/styles';
 import  useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { constants } from "../Utilities";
-import { Typography, Toolbar, AppBar, IconButton, Snackbar, SnackbarContent, Plot } from "../Controls";
 
 import EntityPlotter from './EntityPlotter/EntityPlotter';
 
