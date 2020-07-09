@@ -110,7 +110,7 @@ class EntityPlotter extends Component {
                             graphMode={this.state.graphMode}
                         />
                     );
-                    hotSpots.push({ key: childKey, value: this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000 })
+                    hotSpots.push({ navigableTitle: this.props.entity.children[childKey].navigableTitle, key: childKey, value: this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000 })
                 }
             });
             hotSpots.sort((a, b) => { return b.value - a.value });
@@ -152,6 +152,13 @@ class EntityPlotter extends Component {
             }
         );
 
+        const listKPISubtitleClasses = classNames(
+            styles.listKPISubtitle,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        );
+
         const listKPIContainerClasses = classNames(
             styles.listKPIContainer,
             {
@@ -165,6 +172,9 @@ class EntityPlotter extends Component {
                 <div className={styles.listKPIContainer}>
                     <div className={listKPITitleClasses}>
                         Hot Spot Ranking
+                    </div>
+                    <div className={listKPISubtitleClasses}>
+                        Tap a row to scroll to graph
                     </div>
                     <HotSpotGrid data={hotSpots} />
                 </div>
@@ -257,7 +267,7 @@ class EntityPlotter extends Component {
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 185 : 250}
                         x={this.props.entity.x}
                         y={(this.state.graphMode === "active") ? this.props.entity.yActive : (this.state.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}
-                        format={(this.state.graphMode === "active") ? ".0s" : (this.state.graphMode === "activePerCapita" ? "0" : ".0s")}
+                        format={(this.state.graphMode === "active") ? "~s" : (this.state.graphMode === "activePerCapita" ? "~f" : "~s")}
                         tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 2 : 1}
                     />
                 </div>

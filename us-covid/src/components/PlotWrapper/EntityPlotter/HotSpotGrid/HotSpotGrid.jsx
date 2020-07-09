@@ -126,6 +126,11 @@ function EnhancedTable(props) {
         setPage(0);
     };
 
+    const handleRowClick = (event, row) => {
+        const element = document.getElementById(`${row.navigableTitle}`);
+        window.scrollTo(0, element.offsetTop - 120);
+    }
+
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -155,6 +160,8 @@ function EnhancedTable(props) {
                                     hover
                                     key={row.key}
                                     selected={isItemSelected}
+                                    onClick={(event) => handleRowClick(event, row)}
+                                    style={{cursor: "pointer"}}
                                 >
                                     <TableCell component="th" id={labelId} scope="row" padding="none">{row.rank}</TableCell>
                                     <TableCell scope="row" padding="none">{row.key}</TableCell>

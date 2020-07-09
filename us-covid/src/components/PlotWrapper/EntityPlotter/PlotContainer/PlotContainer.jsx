@@ -72,7 +72,7 @@ class PlotContainer extends Component {
                     y={(this.props.graphMode === "active") ? this.props.entity.yActive : (this.props.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}
                     width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 350}
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 135 : 135}
-                    format={(this.props.graphMode === "active") ? ".0s" : (this.props.graphMode === "activePerCapita" ? ".0" : ".0s")}
+                    format={(this.props.graphMode === "active") ? "~s" : (this.props.graphMode === "activePerCapita" ? "~f" : "~s")}
                     tickInterval={2}
 
                 />

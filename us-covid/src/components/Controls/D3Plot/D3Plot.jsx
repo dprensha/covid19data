@@ -23,10 +23,6 @@ class D3Plot extends Component {
         this.drawChart = this.drawChart.bind(this);
     }
 
-    updateChart() {
-        console.log(this.props);
-    }
-
     drawChart() {
         var margin = { top: 24, right: 12, bottom: 56, left: 48 };
         const { width, height } = this.props;
@@ -92,7 +88,6 @@ class D3Plot extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log(JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y));
         return JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y);
     }
 

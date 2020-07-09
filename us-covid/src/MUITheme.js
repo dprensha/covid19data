@@ -98,6 +98,9 @@ const styles = createMuiTheme({
             head: {
                 color: "rgba(0, 0, 0, 0.54)",
                 fontSize: "0.75rem"
+            },
+            body: {
+                userSelect: "none"
             }
         },
         MuiFormControlLabel: {

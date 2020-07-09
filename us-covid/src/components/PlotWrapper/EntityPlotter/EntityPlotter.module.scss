@@ -60,10 +60,22 @@
     text-align: center;
 
     &.isMobile {
-        padding: 8px;
+        //padding: 8px;
         font-size: 16px;
     }
 }
+
+.listKPISubtitle {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.54);
+    text-align: center;
+    padding-top: 2px;
+
+    &.isMobile {
+        font-size: 10px;
+    }
+}
+
 
 .graphModeContainer {
     width: 300px;
