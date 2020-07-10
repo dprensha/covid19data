@@ -95,12 +95,12 @@ class EntityPlotter extends Component {
     render() {
         const childPlots = [];
         const hotSpots = [];
-
+console.log(this.props.entity)
         if (this.props.entity.children) {
             const childKeys = Object.keys(this.props.entity.children).sort();
 
             childKeys.forEach(childKey => {
-                if (childKey !== "Unassigned" && !childKey.startsWith("Out of")) {
+                
                     childPlots.push(
                         <PlotContainer
                             key={childKey}
@@ -111,7 +111,6 @@ class EntityPlotter extends Component {
                         />
                     );
                     hotSpots.push({ navigableTitle: this.props.entity.children[childKey].navigableTitle, key: childKey, value: this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000 })
-                }
             });
             hotSpots.sort((a, b) => { return b.value - a.value });
             for (var i = 0; i < hotSpots.length; i++) {

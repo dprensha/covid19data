@@ -124,10 +124,12 @@ class PlotWrapper extends Component {
     }
 
     componentDidMount() {
-        this.props.requestCases();
-        if(this.props.match.params.title) {
-            //this.props.history.push(`/`);
-        }
+        //if(this.props.match.params.title == "US") {
+            this.props.requestUSCases();
+        //}
+        //else {
+            //this.props.requestGlobalCases();
+        //}
 
         //window.addEventListener("resize", this.onWindowResize, false);
         this.onWindowResize();
@@ -160,7 +162,7 @@ class PlotWrapper extends Component {
     }
 
     render() {
-        if (this.props.cases.children) {
+        if (this.props.cases && this.props.cases.children) {
             return (
                 <div>
                     <EntityPlotter
