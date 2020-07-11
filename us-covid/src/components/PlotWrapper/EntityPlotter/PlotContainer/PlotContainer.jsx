@@ -92,33 +92,38 @@ class PlotContainer extends Component {
             )
         }
 
-        return (
-            <div
-                key={this.props.entity.title}
-                className={styles.childPlot}
-            >
+        let content = null;
+        if(this.props.entity.navigableTitle) {
+            content = (
                 <div
-                    className={styles.childPlotTitleBar}
-                    style={(this.state.isInfoExpanded) ? { zIndex: -1 } : { zIndex: 0 }}
+                    key={this.props.entity.title}
+                    className={styles.childPlot}
                 >
-                    <div className={styles.childPlotTitleBarTitle}>
-                        {this.props.entity.title}
-                    </div>
-                    <div className={styles.iconButtonContainer}>
-                        <div className={styles.childPlotTitleBarInfoIcon}>
-                            <IconButton
-                                onClick={this.toggleInfoPanel}
-                            >
-                                <InfoOutlinedIcon />
-                            </IconButton>
+                    <div
+                        className={styles.childPlotTitleBar}
+                        style={(this.state.isInfoExpanded) ? { zIndex: -1 } : { zIndex: 0 }}
+                    >
+                        <div className={styles.childPlotTitleBarTitle}>
+                            {this.props.entity.title}
                         </div>
-                        {arrowButtonContent}
+                        <div className={styles.iconButtonContainer}>
+                            <div className={styles.childPlotTitleBarInfoIcon}>
+                                <IconButton
+                                    onClick={this.toggleInfoPanel}
+                                >
+                                    <InfoOutlinedIcon />
+                                </IconButton>
+                            </div>
+                            {arrowButtonContent}
+                        </div>
                     </div>
+                    {plotContent}
+                    {infoPanelContent}
                 </div>
-                {plotContent}
-                {infoPanelContent}
-            </div>
-        )
+            )
+        }
+
+        return content;
     }
 }
 
