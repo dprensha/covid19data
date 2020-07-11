@@ -276,6 +276,9 @@ class EntityPlotter extends Component {
                 <div className={styles.titleContainer}>
                     {graphModeDisplayText}
                 </div>
+                <div className={styles.subTitleContainer}>
+                    {`through ${this.props.entity.x[this.props.entity.x.length - 1]}`}
+                </div>
                 <div className={parentGraphContainerStyles}>
                     <D3Plot
                         id={"topChart"}
