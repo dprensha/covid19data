@@ -50,6 +50,8 @@ export const actionCreators = {
                         yActive: [],
                         title: data["Country/Region"],
                         navigableTitle: data["Country/Region"].replace(/[\.\W]/g, ''),
+                        lat: data["Lat"],
+                        long: data["Long"],
                         parent: allData,
                         children: {},
                         population: 0
@@ -64,6 +66,8 @@ export const actionCreators = {
                             yActive: [],
                             title: data["Province/State"],
                             navigableTitle: data["Province/State"].replace(/[\.\W]/g, ''),
+                            lat: data["Lat"],
+                            long: data["Long"],
                             population: 0
                         };
                     }
@@ -92,6 +96,8 @@ export const actionCreators = {
                         yActive: [],
                         title: data["Province/State"],
                         navigableTitle: data["Province/State"].replace(/[\.\W]/g, ''),
+                        lat: data["Lat"],
+                        long: data["Long"],
                         population: 0
                     };
 
@@ -131,10 +137,10 @@ export const actionCreators = {
                             }
                         });
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function (yConfirmed, index) { return yConfirmed - allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yRecovered[index] });
-                        //allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population = populationData[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID];
+                        allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population = populationData[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].lat}_${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].long}`];
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActivePerCapita = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive.map(function (yActive) { return yActive /*/ allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population*/ });
 
-                        //allData.children[sortedKeys[i]].population += parseInt(populationData[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID]);
+                        allData.children[sortedKeys[i]].population += parseInt(populationData[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].lat}_${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].long}`]);
                         //allData.population += parseInt(populationData[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID]);
                     }
 
