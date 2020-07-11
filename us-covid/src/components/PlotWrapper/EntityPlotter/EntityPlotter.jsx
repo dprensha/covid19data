@@ -188,6 +188,23 @@ class EntityPlotter extends Component {
             }
         )
 
+        let graphModeDisplayText = null;
+        switch (this.state.graphMode) {
+            case "active":
+                graphModeDisplayText = "Active Cases"
+                break;
+
+            case "total": 
+                graphModeDisplayText = "Total Cases"
+                break;
+
+            case "activePerCapita":
+                graphModeDisplayText = "Active Cases Per 1,000 People";
+                break;
+
+            default: break;
+        }
+
         return (
             <div>
                 <Drawer anchor={'right'} open={this.state.isDrawerOpen} onClose={this.handleCloseDrawer}>
@@ -256,8 +273,8 @@ class EntityPlotter extends Component {
                     </Toolbar>
                 </AppBar>
                 <InfoDialog isOpen={this.state.isInfoExpanded} displayDetails={this.props.displayDetails} handleClose={this.handleCloseInfoIcon} />
-                <div style={{ marginTop: "75px", textAlign: "center" }}>
-
+                <div className={styles.titleContainer}>
+                    {graphModeDisplayText}
                 </div>
                 <div className={parentGraphContainerStyles}>
                     <D3Plot

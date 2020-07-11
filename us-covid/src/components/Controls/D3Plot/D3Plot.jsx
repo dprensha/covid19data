@@ -84,8 +84,8 @@ class D3Plot extends Component {
             .datum(dataset) // 10. Binds data to the line 
             .attr("class", "line") // Assign a class for styling 
             .attr("d", line); // 11. Calls the line generator 
-
-    }
+            
+        }
 
     shouldComponentUpdate(nextProps, nextState) {
         return JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y);
