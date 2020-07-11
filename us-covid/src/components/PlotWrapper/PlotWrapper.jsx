@@ -125,10 +125,10 @@ class PlotWrapper extends Component {
 
     componentDidMount() {
         //if(this.props.match.params.title == "US") {
-            this.props.requestUSCases();
+        //    this.props.requestUSCases();
         //}
         //else {
-            //this.props.requestGlobalCases();
+            this.props.requestGlobalCases();
         //}
 
         //window.addEventListener("resize", this.onWindowResize, false);

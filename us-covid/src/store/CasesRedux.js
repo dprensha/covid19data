@@ -30,11 +30,10 @@ export const actionCreators = {
             type: requestGlobalCases
         });
         Promise.all([
-            d3.csv('https://raw.githubusercontent.com/dprensha/covid19data/master/us-census-2019-est.csv', (data) => {
-                populationData[data.UID] = data.Population;
+            d3.csv('https://raw.githubusercontent.com/dprensha/covid19data/master/world-population-data.csv', (data) => {
+                populationData[`${data["Lat"]}_${data["Long"]}`] = data.Population;
             }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv', (data) => {
-                console.log()
                 const dates = Object.keys(data).filter(function (key) { return !isNaN(Date.parse(key)) });
                 if (Object.keys(allData.children).indexOf(data["Country/Region"]) === -1) {
                     allData.children[data["Country/Region"]] = {
@@ -102,6 +101,7 @@ export const actionCreators = {
             })
         ])
             .then(() => {
+                console.log(populationData);
                 var sortedKeys = Object.keys(allData.children).sort();
                 for (var i = 0; i < sortedKeys.length; i++) {
                     allData.children[sortedKeys[i]].yRecovered = allData.children[sortedKeys[i]].yConfirmed.map(function (data, index) {
