@@ -224,6 +224,138 @@ class EntityPlotter extends Component {
             );
         }
 
+        let deathsKPIContent = null;
+        if(this.props.entity.stats) {
+            deathsKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Deaths"}
+                            keyValue={parseInt(this.props.entity.stats.current.deaths)}
+                            keyValueFormat={"Decimal"}
+                            baselineValueTitle={"Past 7 Days"}
+                            baselineValue={parseInt(this.props.entity.stats.sevenDay.deaths)}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+
+        let peopleTestedKPIContent = null;
+        if(this.props.entity.stats) {
+            peopleTestedKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"People Tested"}
+                            keyValue={parseInt(this.props.entity.stats.current.peopleTested)}
+                            keyValueFormat={"Decimal"}
+                            baselineValueTitle={"Past 7 Days"}
+                            baselineValue={parseInt(this.props.entity.stats.sevenDay.peopleTested)}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+        let peopleHospitalizedKPIContent = null;
+        if(this.props.entity.stats) {
+            peopleHospitalizedKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"People Hospitalized"}
+                            keyValue={parseInt(this.props.entity.stats.current.peopleHospitalized)}
+                            keyValueFormat={"Decimal"}
+                            baselineValueTitle={"Past 7 Days"}
+                            baselineValue={parseInt(this.props.entity.stats.sevenDay.peopleHospitalized)}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+
+        let mortalityRateKPIContent = null;
+        if(this.props.entity.stats) {
+            mortalityRateKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Mortality Rate"}
+                            keyValue={parseFloat(this.props.entity.stats.current.mortalityRate)}
+                            keyValueFormat={"Percentage"}
+                            baselineValueTitle={"Past 7 Days"}
+                            baselineValue={parseFloat(this.props.entity.stats.sevenDay.mortalityRate)}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+
+        let testingRateKPIContent = null;
+        if(this.props.entity.stats) {
+            testingRateKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Number Tested Per 1,000"}
+                            keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0)/100}
+                            keyValueFormat={"Decimal"}
+                            baselineValueTitle={"Past 7 Days"}
+                            baselineValue={parseFloat(this.props.entity.stats.sevenDay.testingRate).toFixed(0)/100}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+
+        let hospitalizationRateKPIContent = null;
+        if(this.props.entity.stats) {
+            hospitalizationRateKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Hospitilization Rate"}
+                            keyValue={parseInt(this.props.entity.stats.current.hospitalizationRate)}
+                            keyValueFormat={"Percentage"}
+                            baselineValueTitle={"Past 7 Days"}
+                            baselineValue={parseInt(this.props.entity.stats.sevenDay.hospitalizationRate)}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+
+        let percentPositiveTestKPIContent = null;
+        if(this.props.entity.stats) {
+            percentPositiveTestKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Percent Positive Tests"}
+                            keyValue={parseInt(this.props.entity.stats.current.peopleTested)/parseInt(this.props.entity.stats.current.confirmed)}
+                            keyValueFormat={"Percentage"}
+                            baselineValueTitle={"Past 7 Days"}
+                            baselineValue={parseInt(this.props.entity.stats.sevenDay.peopleTested)/parseInt(this.props.entity.stats.sevenDay.confirmed)}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+
         return (
             <div>
                 <Drawer anchor={'right'} open={this.state.isDrawerOpen} onClose={this.handleCloseDrawer}>
@@ -348,6 +480,13 @@ class EntityPlotter extends Component {
                         />
                     </div>
                     {percentageParentCasesKPIContent}
+                    {deathsKPIContent}
+                    {peopleTestedKPIContent}
+                    {peopleHospitalizedKPIContent}
+                    {mortalityRateKPIContent}
+                    {testingRateKPIContent}
+                    {hospitalizationRateKPIContent}
+                    {percentPositiveTestKPIContent}
                 </div>
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}

@@ -19,27 +19,58 @@ export const actionCreators = {
             population: 0
         };
 
-        const populationData = [];
+        const populationData = []
+        const stats = {
+            current: [],
+            sevenDay: [],
+            fourteenDay: []
+        };
 
         dispatch({ 
             type: requestCases
         });
-        // return fetch('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv')
-        // .then((response) => {
-        //     let reader = response.body.getReader();
-        //     let decoder = new TextDecoder('utf-8');
-
-        //     return reader.read().then(function (result) {
-        //         //console.log(d3.csv(decoder.decode(result.value)));
-        //         dispatch({
-        //             type: receiveCases, payload: d3.csv(decoder.decode(result.value))
-        //         });
-
-        //     });
-        // });
         Promise.all([
         d3.csv('https://raw.githubusercontent.com/dprensha/covid19data/master/us-census-2019-est.csv', (data) => {
             populationData[data.UID] = data.Population;
+        }),
+        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-10-2020.csv', (data) => {
+            stats.current[data.Province_State] = {
+                confirmed: data.Confirmed,
+                deaths: data.Deaths,
+                recovered: data.Recovered,
+                active: data.Active,
+                peopleTested: data["People_Tested"],
+                peopleHospitalized: data["People_Hospitalized"],
+                mortalityRate: data["Mortality_Rate"],
+                testingRate: data["Testing_Rate"],
+                hospitalizationRate: data["Hospitalization_Rate"]
+            }
+        }),
+        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-03-2020.csv', (data) => {
+            stats.sevenDay[data.Province_State] = {
+                confirmed: data.Confirmed,
+                deaths: data.Deaths,
+                recovered: data.Recovered,
+                active: data.Active,
+                peopleTested: data["People_Tested"],
+                peopleHospitalized: data["People_Hospitalized"],
+                mortalityRate: data["Mortality_Rate"],
+                testingRate: data["Testing_Rate"],
+                hospitalizationRate: data["Hospitalization_Rate"]
+            }
+        }),
+        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/06-26-2020.csv', (data) => {
+            stats.fourteenDay[data.Province_State] = {
+                confirmed: data.Confirmed,
+                deaths: data.Deaths,
+                recovered: data.Recovered,
+                active: data.Active,
+                peopleTested: data["People_Tested"],
+                peopleHospitalized: data["People_Hospitalized"],
+                mortalityRate: data["Mortality_Rate"],
+                testingRate: data["Testing_Rate"],
+                hospitalizationRate: data["Hospitalization_Rate"]
+            }
         }),
         d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv', (data) => {
             const dates = Object.keys(data).filter(function(key) { return !isNaN(Date.parse(key)) });
@@ -107,6 +138,7 @@ export const actionCreators = {
         })
     ])
         .then(() => {
+            console.log(stats);
             var sortedKeys = Object.keys(allData.children).sort();
 			for (var i = 0; i < sortedKeys.length; i++) {
 				allData.children[sortedKeys[i]].yRecovered = allData.children[sortedKeys[i]].yConfirmed.map(function(data, index) {
@@ -138,8 +170,9 @@ export const actionCreators = {
                     allData.population += parseInt(populationData[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID]);
                 }
 
-                allData.children[sortedKeys[i]].yActivePerCapita = allData.children[sortedKeys[i]].yActive.map(function(yActive) { return yActive / allData.children[sortedKeys[i]].population })
-
+                allData.children[sortedKeys[i]].yActivePerCapita = allData.children[sortedKeys[i]].yActive.map(function(yActive) { return yActive / allData.children[sortedKeys[i]].population });
+                allData.children[sortedKeys[i]].stats = { current: stats.current[allData.children[sortedKeys[i]].title], sevenDay: stats.sevenDay[allData.children[sortedKeys[i]].title], fourteenDay: stats.fourteenDay[allData.children[sortedKeys[i]].title] };
+                
                 allData.yRecovered = allData.yConfirmed.map(function(data, index) {
 					if (index < RECOVERY_PERIOD_DAYS) {
 						return 0;
