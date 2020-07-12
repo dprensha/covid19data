@@ -3,16 +3,16 @@
 }
 
 .kpiTitle {
-    font-size: 18px;
+    font-size: 14px;
     color: rgba(0, 0, 0, .54);
     text-align: center;
 
     &.isMobile {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     &.isSmall {
-        font-size: 14px;
+        font-size: 12px;
     }
 }
 
@@ -27,6 +27,16 @@
 
     &.isSmall {
         font-size: 24px;
+    }
+
+    &.notAvailable {
+        font-size: 24px;
+        margin-top: 16px;
+        margin-bottom: 48px;
+
+        &.isMobile{
+            font-size: 20px;
+        }
     }
 }
 
@@ -69,4 +79,5 @@
 
 .baselineContainer {
     text-align: center;
+    margin-top: 8px;
 }

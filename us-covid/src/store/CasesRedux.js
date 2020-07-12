@@ -14,7 +14,7 @@ export const actionCreators = {
             yConfirmed: [],
             yDeaths: [],
             yRecovered: [],
-            title: "US",
+            title: "All States",
             children: {},
             population: 0
         };
@@ -33,7 +33,7 @@ export const actionCreators = {
         d3.csv('https://raw.githubusercontent.com/dprensha/covid19data/master/us-census-2019-est.csv', (data) => {
             populationData[data.UID] = data.Population;
         }),
-        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-10-2020.csv', (data) => {
+        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-11-2020.csv', (data) => {
             stats.current[data.Province_State] = {
                 confirmed: data.Confirmed,
                 deaths: data.Deaths,
@@ -46,7 +46,7 @@ export const actionCreators = {
                 hospitalizationRate: data["Hospitalization_Rate"]
             }
         }),
-        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-03-2020.csv', (data) => {
+        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-04-2020.csv', (data) => {
             stats.sevenDay[data.Province_State] = {
                 confirmed: data.Confirmed,
                 deaths: data.Deaths,

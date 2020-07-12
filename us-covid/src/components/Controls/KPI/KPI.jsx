@@ -46,20 +46,25 @@ class KPI extends Component {
         const { keyValueTitle, keyValue, keyValueFormat, baselineValueTitle, baselineValue, baselineValueFormat, colorCodeBaselineValue } = this.props;
 
         const formattedKeyValue = this.addThousandSeparators(keyValue, true);
-        const totalDelta = `+${this.addThousandSeparators(keyValue - baselineValue, true)}`;
+        const totalDelta = this.addThousandSeparators(keyValue - baselineValue, true);
         const totalDeltaPercentage = this.formatPercentage(((keyValue - baselineValue) / baselineValue * 100) || 0, true);
 
         let displayKeyValue = null;
-        switch(keyValueFormat){
-            case "Percentage":
-                displayKeyValue = this.formatPercentage(keyValue, false);
-                break;
-            case "Decimal":
-                displayKeyValue = this.addThousandSeparators(keyValue, true);
-                break;
-            default:
-                displayKeyValue = this.addThousandSeparators(keyValue, true);
-                break;
+        if(isNaN(keyValue)) {
+            displayKeyValue = "Not Available";
+        }
+        else {
+            switch(keyValueFormat){
+                case "Percentage":
+                    displayKeyValue = this.formatPercentage(keyValue, false);
+                    break;
+                case "Decimal":
+                    displayKeyValue = this.addThousandSeparators(keyValue, true);
+                    break;
+                default:
+                    displayKeyValue = this.addThousandSeparators(keyValue, true);
+                    break;
+            }
         }
 
         let displayBaselineValue = null;
@@ -68,10 +73,10 @@ class KPI extends Component {
                 displayBaselineValue = totalDeltaPercentage;
                 break;
             case "Decimal":
-                displayBaselineValue = totalDelta;
+                displayBaselineValue = `${totalDelta > 0 ? "+" : ""}${totalDelta}`;
                 break;
             default:
-                displayBaselineValue = totalDelta;
+                displayBaselineValue = `${totalDelta > 0 ? "+" : ""}${totalDelta}`;
                 break;
         }
 
@@ -95,7 +100,8 @@ class KPI extends Component {
             styles.kpiValue,
             {
                 [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE),
-                [styles.isSmall]: (this.props.size === "small")
+                [styles.isSmall]: (this.props.size === "small"),
+                [styles.notAvailable]: (displayKeyValue === "Not Available")
             }
         );
 

@@ -210,7 +210,7 @@ class EntityPlotter extends Component {
             percentageParentCasesKPIContent = (
                 <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={`% ${this.props.entity.parent.title} Active Cases`}
+                            keyValueTitle={`% of ${this.props.entity.parent.title} Active Cases`}
                             keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
                             keyValueFormat={"Percentage"}
                             baselineValueTitle={null}
@@ -234,7 +234,7 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseInt(this.props.entity.stats.sevenDay.deaths)}
-                            baselineValueFormat={"Decimal"}
+                            baselineValueFormat={"Percentage"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -248,7 +248,7 @@ class EntityPlotter extends Component {
             peopleTestedKPIContent = (
                 <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={"People Tested"}
+                            keyValueTitle={"Tests"}
                             keyValue={parseInt(this.props.entity.stats.current.peopleTested)}
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
@@ -266,12 +266,12 @@ class EntityPlotter extends Component {
             peopleHospitalizedKPIContent = (
                 <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={"People Hospitalized"}
+                            keyValueTitle={"Hospitalized"}
                             keyValue={parseInt(this.props.entity.stats.current.peopleHospitalized)}
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseInt(this.props.entity.stats.sevenDay.peopleHospitalized)}
-                            baselineValueFormat={"Decimal"}
+                            baselineValueFormat={"Percentage"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -290,8 +290,8 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Percentage"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseFloat(this.props.entity.stats.sevenDay.mortalityRate)}
-                            baselineValueFormat={"Percentage"}
-                            colorCodeBaselineValue={false}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={true}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
                         />
@@ -309,7 +309,7 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseFloat(this.props.entity.stats.sevenDay.testingRate).toFixed(0)/100}
-                            baselineValueFormat={"Decimal"}
+                            baselineValueFormat={"Percentage"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -324,12 +324,12 @@ class EntityPlotter extends Component {
                 <div className={kpiClasses}>
                         <KPI
                             keyValueTitle={"Hospitilization Rate"}
-                            keyValue={parseInt(this.props.entity.stats.current.hospitalizationRate)}
+                            keyValue={parseFloat(this.props.entity.stats.current.hospitalizationRate)}
                             keyValueFormat={"Percentage"}
                             baselineValueTitle={"Past 7 Days"}
-                            baselineValue={parseInt(this.props.entity.stats.sevenDay.hospitalizationRate)}
-                            baselineValueFormat={"Percentage"}
-                            colorCodeBaselineValue={false}
+                            baselineValue={parseFloat(this.props.entity.stats.sevenDay.hospitalizationRate)}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={true}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
                         />
@@ -337,16 +337,16 @@ class EntityPlotter extends Component {
             );
         }
 
-        let percentPositiveTestKPIContent = null;
+        let newCasesPerThousandTestedKPIContent = null;
         if(this.props.entity.stats) {
-            percentPositiveTestKPIContent = (
+            newCasesPerThousandTestedKPIContent = (
                 <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={"Percent Positive Tests"}
-                            keyValue={parseInt(this.props.entity.stats.current.peopleTested)/parseInt(this.props.entity.stats.current.confirmed)}
-                            keyValueFormat={"Percentage"}
+                            keyValueTitle={"New Cases per 1,000 Tests"}
+                            keyValue={parseInt(this.props.entity.stats.current.confirmed)/parseInt(this.props.entity.stats.current.peopleTested)*1000}
+                            keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
-                            baselineValue={parseInt(this.props.entity.stats.sevenDay.peopleTested)/parseInt(this.props.entity.stats.sevenDay.confirmed)}
+                            baselineValue={parseInt(this.props.entity.stats.sevenDay.confirmed)/parseInt(this.props.entity.stats.sevenDay.peopleTested)*1000}
                             baselineValueFormat={"Percentage"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
@@ -473,20 +473,20 @@ class EntityPlotter extends Component {
                             keyValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1]}
                             baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
                             baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - 7]}
-                            baselineValueFormat={"Decimal"}
+                            baselineValueFormat={"Percentage"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
                         />
                     </div>
                     {percentageParentCasesKPIContent}
-                    {deathsKPIContent}
-                    {peopleTestedKPIContent}
-                    {peopleHospitalizedKPIContent}
                     {mortalityRateKPIContent}
-                    {testingRateKPIContent}
+                    {deathsKPIContent}
                     {hospitalizationRateKPIContent}
-                    {percentPositiveTestKPIContent}
+                    {peopleHospitalizedKPIContent}
+                    {peopleTestedKPIContent}
+                    {newCasesPerThousandTestedKPIContent}
+                    {testingRateKPIContent}
                 </div>
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
