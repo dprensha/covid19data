@@ -12,6 +12,8 @@ const propTypes = {
     prevTotalCases: PropTypes.number,
     currentActiveCasesPerCapita: PropTypes.number,
     toggleInfoPanel: PropTypes.func,
+    percentageParentCases: PropTypes.number,
+    parentTitle: PropTypes.string,
     displayDetails: PropTypes.object
 }
 
@@ -21,7 +23,7 @@ class InfoPanel extends Component {
     }
 
     render() {
-        const { totalCases, activeCases, prevTotalCases, prevActiveCases, currentActiveCasesPerCapita } = this.props;
+        const { totalCases, activeCases, prevTotalCases, prevActiveCases, currentActiveCasesPerCapita, percentageParentCases, parentTitle } = this.props;
 
         return (
             <div>
@@ -61,6 +63,17 @@ class InfoPanel extends Component {
                         displayDetails={this.props.displayDetails}
                         size={"small"}
                     />
+                    <KPI
+                            keyValueTitle={`% ${parentTitle} Active Cases`}
+                            keyValue={percentageParentCases}
+                            keyValueFormat={"Percentage"}
+                            baselineValueTitle={null}
+                            baselineValue={null}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"small"}
+                        />
                 </div>
             </div>
         );

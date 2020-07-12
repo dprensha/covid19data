@@ -205,6 +205,25 @@ class EntityPlotter extends Component {
             default: break;
         }
 
+        let percentageParentCasesKPIContent = null;
+        if(this.props.entity.parent) {
+            percentageParentCasesKPIContent = (
+                <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={`% ${this.props.entity.parent.title} Active Cases`}
+                            keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
+                            keyValueFormat={"Percentage"}
+                            baselineValueTitle={null}
+                            baselineValue={null}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+            );
+        }
+
         return (
             <div>
                 <Drawer anchor={'right'} open={this.state.isDrawerOpen} onClose={this.handleCloseDrawer}>
@@ -328,6 +347,7 @@ class EntityPlotter extends Component {
                             size={"large"}
                         />
                     </div>
+                    {percentageParentCasesKPIContent}
                 </div>
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}

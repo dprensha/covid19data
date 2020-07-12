@@ -57,6 +57,8 @@ class PlotContainer extends Component {
                         currentActiveCasesPerCapita={currentActivePerCapita}
                         toggleInfoPanel={this.toggleInfoPanel}
                         displayDetails={this.props.displayDetails}
+                        percentageParentCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
+                        parentTitle={this.props.entity.parent.title}
                     />
                 </div>
             )

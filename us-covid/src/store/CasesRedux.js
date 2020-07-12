@@ -14,7 +14,7 @@ export const actionCreators = {
             yConfirmed: [],
             yDeaths: [],
             yRecovered: [],
-            title: "All States",
+            title: "US",
             children: {},
             population: 0
         };
@@ -66,6 +66,7 @@ export const actionCreators = {
                     yActive: [],
                     title: data.Admin2,
                     navigableTitle: data.Admin2.replace(/[\.\W]/g,''),
+                    parent: allData.children[data.Province_State],
                     population: 0
                 };
                 
@@ -91,6 +92,7 @@ export const actionCreators = {
                     yActive: [],
                     title: data.Admin2,
                     navigableTitle: data.Admin2.replace(/[\.\W]/g,''),
+                    parent: allData.children[data.Province_State],
                     population: 0
                 };
 
