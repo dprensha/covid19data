@@ -6,6 +6,23 @@ const receiveCases = 'RECEIVE_CASES';
 const RECOVERY_PERIOD_DAYS = 14;
 const initialState = { cases: [] };
 
+const getDateString = function(daysPrior) {
+    const currentTime = new Date();
+    const tempDate = new Date();
+    if(currentTime.getUTCHours() > 9) {
+        tempDate.setDate(currentTime.getDate() - 1 - daysPrior);
+    }
+    else {
+        tempDate.setDate(currentTime.getDate() - 2 - daysPrior);
+    }
+
+    const dd = String(tempDate.getDate()).padStart(2, '0');
+    const mm = String(tempDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = tempDate.getFullYear();
+
+    return `${mm}-${dd}-${yyyy}`;
+}
+
 export const actionCreators = {
     requestCases: () => async (dispatch) => {
         const allData = {
@@ -29,11 +46,14 @@ export const actionCreators = {
         dispatch({ 
             type: requestCases
         });
+        console.log(getDateString(0));
+        console.log(getDateString(7));
+
         Promise.all([
         d3.csv('https://raw.githubusercontent.com/dprensha/covid19data/master/us-census-2019-est.csv', (data) => {
             populationData[data.UID] = data.Population;
         }),
-        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-11-2020.csv', (data) => {
+        d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/${getDateString(0)}.csv`, (data) => {
             stats.current[data.Province_State] = {
                 confirmed: data.Confirmed,
                 deaths: data.Deaths,
@@ -46,7 +66,7 @@ export const actionCreators = {
                 hospitalizationRate: data["Hospitalization_Rate"]
             }
         }),
-        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/07-04-2020.csv', (data) => {
+        d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/${getDateString(7)}.csv`, (data) => {
             stats.sevenDay[data.Province_State] = {
                 confirmed: data.Confirmed,
                 deaths: data.Deaths,
@@ -59,7 +79,7 @@ export const actionCreators = {
                 hospitalizationRate: data["Hospitalization_Rate"]
             }
         }),
-        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/06-26-2020.csv', (data) => {
+        d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/${getDateString(14)}.csv`, (data) => {
             stats.fourteenDay[data.Province_State] = {
                 confirmed: data.Confirmed,
                 deaths: data.Deaths,
