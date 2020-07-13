@@ -10,12 +10,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
+import { FormControl, MenuItem, Select } from "../../../Controls";
 import styles from './HotSpotGrid.module.scss';
 
 
-const HotSpotGrid = ({ data }) => {
+const HotSpotGrid = ({ data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats }) => {
     return (
-        <EnhancedTable data={data} />
+        <EnhancedTable data={data} handleCompareDropDownListChange={handleCompareDropDownListChange} comparisonKPI={comparisonKPI} childrenHaveStats={childrenHaveStats} />
     )
 };
 
@@ -49,13 +50,13 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-    { id: 'rank', numeric: true, disablePadding: false, label: 'Rank', style:{width: "50px", textAlign: "left", padding: "0"} },
+    { id: 'rank', numeric: true, disablePadding: false, label: 'Rank',  },
     { id: 'name', numeric: false, disablePadding: true, label: 'State/County' },
     { id: 'cases', numeric: true, disablePadding: true, label: 'Active Cases Per 1,000' }
 ];
 
 function EnhancedTableHead(props) {
-    const { classes, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { classes, order, orderBy, numSelected, rowCount, onRequestSort, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -63,17 +64,49 @@ function EnhancedTableHead(props) {
     return (
         <TableHead>
             <TableRow>
-                {headCells.map((headCell) => (
+                
                     <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'default'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                        style={headCell.style}
+                        align={'right'}
+                        padding={'default'}
+                        //sortDirection={orderBy === headCell.id ? order : false}
+                        style={{width: "50px", textAlign: "left", padding: "0"}}
                     >
-                        {headCell.label}
+                        Rank
                     </TableCell>
-                ))}
+                    <TableCell
+                        align={'left'}
+                        padding={'none'}
+                        //sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        State/County
+                    </TableCell>
+                    <TableCell
+                        style={{width: "200px"}}
+                        align={'right'}
+                        padding={'none'}
+                        onClick={(e) => {e.preventDefault();}}
+                    >
+                    <FormControl>
+                    <Select
+                        style={{fontSize: "12px"}}
+                        value={comparisonKPI}
+                        onChange={(e) => {e.preventDefault(); handleCompareDropDownListChange(e)}}
+                    >
+                        <MenuItem value={"activePerCapita"}>Active Cases Per 1,000</MenuItem>
+                        <MenuItem value={"active"}>Active Cases</MenuItem>
+                        <MenuItem value={"total"}>Total Cases</MenuItem>
+                        <MenuItem value={"percentOfParent"}>% of Parent Active Cases</MenuItem>
+                        <MenuItem value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</MenuItem>
+                        <MenuItem value={"deaths"} style={childrenHaveStats ? {} : {display: "none"}}>Deaths</MenuItem>
+                        <MenuItem value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</MenuItem>
+                        <MenuItem value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</MenuItem>
+                        <MenuItem value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</MenuItem>
+                        <MenuItem value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</MenuItem>
+                        <MenuItem value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</MenuItem>
+                    </Select>
+                </FormControl>
+                </TableCell>
+            
             </TableRow>
         </TableHead>
     );
@@ -103,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function EnhancedTable(props) {
-    const { data } = props;
+    const { data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats } = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('cases');
@@ -150,6 +183,9 @@ function EnhancedTable(props) {
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
                         rowCount={data.length}
+                        handleCompareDropDownListChange={handleCompareDropDownListChange}
+                        comparisonKPI={comparisonKPI}
+                        childrenHaveStats={childrenHaveStats}
                     />
                     <TableBody>
                         {stableSort(data, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {

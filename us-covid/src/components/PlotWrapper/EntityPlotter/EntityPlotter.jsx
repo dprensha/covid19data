@@ -22,7 +22,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 
 
-import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer } from "../../Controls";
+import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, Select, InputLabel, MenuItem } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
 import D3Plot from "../../Controls/D3Plot/D3Plot";
@@ -44,7 +44,8 @@ class EntityPlotter extends Component {
             isDrawerOpen: false,
             graphMode: "active",
             popoverAnchorElement: null,
-            filterText: ""
+            filterText: "",
+            comparisonKPI: "activePerCapita"
         }
 
         this.handleSettingsIconClick = this.handleSettingsIconClick.bind(this);
@@ -53,6 +54,7 @@ class EntityPlotter extends Component {
         this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
         this.handleGraphModeChange = this.handleGraphModeChange.bind(this);
         this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+        this.handleCompareDropDownListChange = this.handleCompareDropDownListChange.bind(this);
     }
 
     handleFilterTextChange(e) {
@@ -92,6 +94,12 @@ class EntityPlotter extends Component {
         });
     }
 
+    handleCompareDropDownListChange(event) {
+        this.setState({
+            comparisonKPI: event.target.value
+        });
+    }
+
     render() {
         const childPlots = [];
         const hotSpots = [];
@@ -110,7 +118,51 @@ class EntityPlotter extends Component {
                             graphMode={this.state.graphMode}
                         />
                     );
-                    hotSpots.push({ navigableTitle: this.props.entity.children[childKey].navigableTitle, key: childKey, value: this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000 })
+                    let hotSpotsValue = null;
+                    switch(this.state.comparisonKPI) {
+                        case "activePerCapita":
+                            hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
+                            break;
+                        case "active":
+                            hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
+                            break;
+                        case "total":
+                            hotSpotsValue = this.props.entity.children[childKey].yConfirmed[this.props.entity.children[childKey].yConfirmed.length - 1];
+                            break;
+                        case "percentOfParent":
+                            hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1]/this.props.entity.yActive[this.props.entity.yActive.length - 1]*100;
+                            break;
+                        case "mortalityRate":
+                            hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate);
+                            break;
+                        case "deaths":
+                            hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.deaths);
+                            break;
+                        case "hospitalizationRate":
+                            hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate);
+                            break;
+                        case "hospitalizations":
+                            hotSpotsValue = isNaN(parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized)) ? 0 : parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized);
+                            break;
+                        case "tests":
+                            hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.peopleTested);
+                            break;
+                        case "newCasesPerThousandTests":
+                            hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.confirmed)/parseInt(this.props.entity.children[childKey].stats.current.peopleTested)*1000;
+                            break;
+                        case "testsPerCapita":
+                            hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.testingRate).toFixed(0)/100;
+                            break;
+                        default:
+                            hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
+                            break;
+                    }
+
+                    hotSpots.push({ 
+                        navigableTitle: this.props.entity.children[childKey].navigableTitle, 
+                        key: childKey, 
+                        value: hotSpotsValue
+                    })
                 }
             });
             hotSpots.sort((a, b) => { return b.value - a.value });
@@ -176,7 +228,7 @@ class EntityPlotter extends Component {
                     <div className={listKPISubtitleClasses}>
                         Tap a row to scroll to graph
                     </div>
-                    <HotSpotGrid data={hotSpots} />
+                    <HotSpotGrid data={hotSpots} handleCompareDropDownListChange={this.handleCompareDropDownListChange} comparisonKPI={this.state.comparisonKPI} childrenHaveStats={this.props.entity.title === "All States"} />
                 </div>
             );
         }
@@ -199,7 +251,7 @@ class EntityPlotter extends Component {
                 break;
 
             case "activePerCapita":
-                graphModeDisplayText = "Active Cases Per 1,000 People";
+                graphModeDisplayText = "Active Cases per 1,000 People";
                 break;
 
             default: break;
@@ -266,7 +318,7 @@ class EntityPlotter extends Component {
             peopleHospitalizedKPIContent = (
                 <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={"Hospitalized"}
+                            keyValueTitle={"Hospitalizations"}
                             keyValue={parseInt(this.props.entity.stats.current.peopleHospitalized)}
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
@@ -304,7 +356,7 @@ class EntityPlotter extends Component {
             testingRateKPIContent = (
                 <div className={kpiClasses}>
                         <KPI
-                            keyValueTitle={"Number Tested Per 1,000"}
+                            keyValueTitle={"Number Tested per 1,000"}
                             keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0)/100}
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
