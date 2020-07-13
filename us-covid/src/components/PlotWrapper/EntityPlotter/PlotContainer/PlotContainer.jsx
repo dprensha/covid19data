@@ -13,7 +13,8 @@ const propTypes = {
     entity: PropTypes.object,
     handlePlotClick: PropTypes.func,
     displayDetails: PropTypes.object,
-    graphMode: PropTypes.string
+    graphMode: PropTypes.string,
+    kpiBaselineDays: PropTypes.number
 }
 
 class PlotContainer extends Component {
@@ -34,7 +35,6 @@ class PlotContainer extends Component {
     }
 
     render() {
-        let COMPARISON_DAYS = 7;
         let isArrowButtonDisabled = !(this.props.entity.children && Object.keys(this.props.entity.children).length > 0);
 
         let yValue = null;
@@ -63,12 +63,12 @@ class PlotContainer extends Component {
         let infoPanelContent = null;
         if (this.state.isInfoExpanded) {
             const currentActive = this.props.entity.yActive[this.props.entity.yActive.length - 1];
-            const prevActive = this.props.entity.yActive[this.props.entity.yActive.length - 1 - COMPARISON_DAYS];
+            const prevActive = this.props.entity.yActive[this.props.entity.yActive.length - 1 - this.props.kpiBaselineDays];
 
             const currentActivePerCapita = this.props.entity.yActivePerCapita[this.props.entity.yActivePerCapita.length - 1];
 
             const currentTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1];
-            const prevTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - COMPARISON_DAYS];
+            const prevTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - this.props.kpiBaselineDays];
 
             infoPanelContent = (
                 <div className={styles.infoPanel}>
@@ -82,6 +82,7 @@ class PlotContainer extends Component {
                         displayDetails={this.props.displayDetails}
                         percentageParentCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
                         parentTitle={this.props.entity.parent.title}
+                        kpiBaselineDays={this.props.kpiBaselineDays}
                     />
                 </div>
             )

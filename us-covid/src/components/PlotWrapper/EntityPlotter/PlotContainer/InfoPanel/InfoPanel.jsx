@@ -14,7 +14,8 @@ const propTypes = {
     toggleInfoPanel: PropTypes.func,
     percentageParentCases: PropTypes.number,
     parentTitle: PropTypes.string,
-    displayDetails: PropTypes.object
+    displayDetails: PropTypes.object,
+    kpiBaselineDays: PropTypes.number
 }
 
 class InfoPanel extends Component {
@@ -36,7 +37,7 @@ class InfoPanel extends Component {
                     <KPI 
                         keyValueTitle={constants.strings.ACTIVE_CASES}
                         keyValue={activeCases}
-                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                        baselineValueTitle={`Past ${this.props.kpiBaselineDays} Days`}
                         baselineValue={prevActiveCases}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={true}
@@ -46,7 +47,7 @@ class InfoPanel extends Component {
                     <KPI
                         keyValueTitle={constants.strings.ACTIVE_CASES_PER_THOUSAND}
                         keyValue={currentActiveCasesPerCapita * 1000}
-                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                        baselineValueTitle={`Past ${this.props.kpiBaselineDays} Days`}
                         baselineValue={null}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={true}
@@ -56,7 +57,7 @@ class InfoPanel extends Component {
                     <KPI 
                         keyValueTitle={constants.strings.TOTAL_CASES}
                         keyValue={totalCases}
-                        baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
+                        baselineValueTitle={`Past ${this.props.kpiBaselineDays} Days`}
                         baselineValue={prevTotalCases}
                         baselineValueFormat={"Decimal"}
                         colorCodeBaselineValue={false}
@@ -64,7 +65,7 @@ class InfoPanel extends Component {
                         size={"small"}
                     />
                     <KPI
-                            keyValueTitle={`% ${parentTitle} Active Cases`}
+                            keyValueTitle={`% of ${parentTitle} Active Cases`}
                             keyValue={percentageParentCases}
                             keyValueFormat={"Percentage"}
                             baselineValueTitle={null}
