@@ -73,10 +73,10 @@ class KPI extends Component {
                 displayBaselineValue = totalDeltaPercentage;
                 break;
             case "Decimal":
-                displayBaselineValue = `${totalDelta > 0 ? "+" : ""}${totalDelta}`;
+                displayBaselineValue = `${keyValue - baselineValue > 0 ? "+" : ""}${totalDelta}`;
                 break;
             default:
-                displayBaselineValue = `${totalDelta > 0 ? "+" : ""}${totalDelta}`;
+                displayBaselineValue = `${keyValue - baselineValue > 0 ? "+" : ""}${totalDelta}`;
                 break;
         }
 

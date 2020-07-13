@@ -37,6 +37,29 @@ class PlotContainer extends Component {
         let COMPARISON_DAYS = 7;
         let isArrowButtonDisabled = !(this.props.entity.children && Object.keys(this.props.entity.children).length > 0);
 
+        let yValue = null;
+        switch (this.props.graphMode) {
+            case "active":
+                yValue = this.props.entity.yActive;
+                break;
+
+            case "total": 
+                yValue = this.props.entity.yConfirmed;
+                break;
+
+            case "activePerCapita":
+                yValue = this.props.entity.yActivePerCapita.map((val) => val * 1000);
+                break;
+
+            case "deaths":
+                yValue = this.props.entity.yDeaths;
+                break;
+
+            default: 
+                yValue = this.props.entity.yActive;
+                break;
+            }
+
         let infoPanelContent = null;
         if (this.state.isInfoExpanded) {
             const currentActive = this.props.entity.yActive[this.props.entity.yActive.length - 1];
@@ -71,7 +94,7 @@ class PlotContainer extends Component {
                     id={this.props.entity.navigableTitle}
                     data={this.props.entity}
                     x={this.props.entity.x}
-                    y={(this.props.graphMode === "active") ? this.props.entity.yActive : (this.props.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}
+                    y={yValue}
                     width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 350}
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 135 : 135}
                     format={(this.props.graphMode === "active") ? "~s" : (this.props.graphMode === "activePerCapita" ? "~f" : "~s")}

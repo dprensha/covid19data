@@ -247,20 +247,32 @@ class EntityPlotter extends Component {
         )
 
         let graphModeDisplayText = null;
+        let yValue = null;
         switch (this.state.graphMode) {
             case "active":
                 graphModeDisplayText = "Active Cases"
+                yValue = this.props.entity.yActive;
                 break;
 
             case "total": 
                 graphModeDisplayText = "Total Cases"
+                yValue = this.props.entity.yConfirmed;
                 break;
 
             case "activePerCapita":
                 graphModeDisplayText = "Active Cases per 1,000 People";
+                yValue = this.props.entity.yActivePerCapita.map((val) => val * 1000);
                 break;
 
-            default: break;
+            case "deaths":
+                graphModeDisplayText = "Deaths";
+                yValue = this.props.entity.yDeaths;
+                break;
+
+            default: 
+                graphModeDisplayText = "Active Cases"
+                yValue = this.props.entity.yActive;
+                break;
         }
 
         let percentageParentCasesKPIContent = null;
@@ -292,7 +304,7 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseInt(this.props.entity.stats.sevenDay.deaths)}
-                            baselineValueFormat={"Percentage"}
+                            baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -311,7 +323,7 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseInt(this.props.entity.stats.sevenDay.peopleTested)}
-                            baselineValueFormat={"Percentage"}
+                            baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -329,7 +341,7 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseInt(this.props.entity.stats.sevenDay.peopleHospitalized)}
-                            baselineValueFormat={"Percentage"}
+                            baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -367,7 +379,7 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseFloat(this.props.entity.stats.sevenDay.testingRate).toFixed(0)/100}
-                            baselineValueFormat={"Percentage"}
+                            baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -405,7 +417,7 @@ class EntityPlotter extends Component {
                             keyValueFormat={"Decimal"}
                             baselineValueTitle={"Past 7 Days"}
                             baselineValue={parseInt(this.props.entity.stats.sevenDay.confirmed)/parseInt(this.props.entity.stats.sevenDay.peopleTested)*1000}
-                            baselineValueFormat={"Percentage"}
+                            baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
@@ -444,6 +456,12 @@ class EntityPlotter extends Component {
                                     value="total"
                                     control={<Radio color="primary" />}
                                     label="Total Cases"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="deaths"
+                                    control={<Radio color="primary" />}
+                                    label="Deaths"
                                     labelPlacement="end"
                                 />
                             </RadioGroup>
@@ -495,7 +513,7 @@ class EntityPlotter extends Component {
                         width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 1024}
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 185 : 250}
                         x={this.props.entity.x}
-                        y={(this.state.graphMode === "active") ? this.props.entity.yActive : (this.state.graphMode === "activePerCapita" ? this.props.entity.yActivePerCapita.map((val) => val * 1000) : this.props.entity.yConfirmed)}
+                        y={yValue}
                         format={(this.state.graphMode === "active") ? "~s" : (this.state.graphMode === "activePerCapita" ? "~f" : "~s")}
                         tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 2 : 1}
                     />
@@ -531,7 +549,7 @@ class EntityPlotter extends Component {
                             keyValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1]}
                             baselineValueTitle={constants.strings.PAST_SEVEN_DAYS}
                             baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - 7]}
-                            baselineValueFormat={"Percentage"}
+                            baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}

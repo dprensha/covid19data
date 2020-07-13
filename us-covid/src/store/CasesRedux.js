@@ -42,6 +42,7 @@ export const actionCreators = {
             sevenDay: [],
             fourteenDay: []
         };
+        const deaths = [];
 
         dispatch({ 
             type: requestCases
@@ -90,6 +91,13 @@ export const actionCreators = {
                 mortalityRate: data["Mortality_Rate"],
                 testingRate: data["Testing_Rate"],
                 hospitalizationRate: data["Hospitalization_Rate"]
+            }
+        }),
+        d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv', (data) => {
+            const dates = Object.keys(data).filter(function(key) { return !isNaN(Date.parse(key)) });
+            deaths[data.UID] = [];
+            for(var j = 0; j < dates.length; j++) {
+                deaths[data.UID].push(parseInt(data[dates[j]]));
             }
         }),
         d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv', (data) => {
@@ -158,7 +166,6 @@ export const actionCreators = {
         })
     ])
         .then(() => {
-            console.log(stats);
             var sortedKeys = Object.keys(allData.children).sort();
 			for (var i = 0; i < sortedKeys.length; i++) {
 				allData.children[sortedKeys[i]].yRecovered = allData.children[sortedKeys[i]].yConfirmed.map(function(data, index) {
@@ -184,6 +191,12 @@ export const actionCreators = {
                     });
                     allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function(yConfirmed, index) { return yConfirmed - allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yRecovered[index] });
                     allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population = populationData[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID];
+                    allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yDeaths = deaths[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID];
+                    for(var k = 0; k < allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yDeaths.length; k++) {
+                        allData.children[sortedKeys[i]].yDeaths[k] = allData.children[sortedKeys[i]].yDeaths[k] === undefined ? 0 : allData.children[sortedKeys[i]].yDeaths[k] + deaths[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID][k];
+                        allData.yDeaths[k] = allData.yDeaths[k] === undefined ? 0 : allData.yDeaths[k] + deaths[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID][k];
+                    }
+
                     allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActivePerCapita = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive.map(function(yActive) { return yActive / allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population });
 
                     allData.children[sortedKeys[i]].population += parseInt(populationData[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID]);
