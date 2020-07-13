@@ -14,9 +14,9 @@ import { FormControl, MenuItem, Select } from "../../../Controls";
 import styles from './HotSpotGrid.module.scss';
 
 
-const HotSpotGrid = ({ data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats }) => {
+const HotSpotGrid = ({ data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile }) => {
     return (
-        <EnhancedTable data={data} handleCompareDropDownListChange={handleCompareDropDownListChange} comparisonKPI={comparisonKPI} childrenHaveStats={childrenHaveStats} />
+        <EnhancedTable data={data} handleCompareDropDownListChange={handleCompareDropDownListChange} comparisonKPI={comparisonKPI} childrenHaveStats={childrenHaveStats} isMobile={isMobile}/>
     )
 };
 
@@ -49,17 +49,56 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-    { id: 'rank', numeric: true, disablePadding: false, label: 'Rank',  },
-    { id: 'name', numeric: false, disablePadding: true, label: 'State/County' },
-    { id: 'cases', numeric: true, disablePadding: true, label: 'Active Cases Per 1,000' }
-];
-
 function EnhancedTableHead(props) {
-    const { classes, order, orderBy, numSelected, rowCount, onRequestSort, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats } = props;
+    const { classes, order, orderBy, numSelected, rowCount, onRequestSort, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
+    
+    let selectContents = null;
+    if(isMobile) {
+        selectContents = (
+            <Select
+                native
+                style={{fontSize: "12px"}}
+                value={comparisonKPI}
+                onChange={(e) => {e.preventDefault(); handleCompareDropDownListChange(e)}}
+            >
+                <option value={"activePerCapita"}>Active Cases Per 1,000</option>
+                <option value={"active"}>Active Cases</option>
+                <option value={"total"}>Total Cases</option>
+                <option value={"percentOfParent"}>% of Parent Active Cases</option>
+                <option value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</option>
+                <option value={"deaths"} style={childrenHaveStats ? {} : {display: "none"}}>Deaths</option>
+                <option value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</option>
+                <option value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</option>
+                <option value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</option>
+                <option value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</option>
+                <option value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</option>
+            </Select>
+        )
+    }
+    else {
+        selectContents = (
+            <Select
+                style={{fontSize: "12px"}}
+                value={comparisonKPI}
+                onChange={(e) => {e.preventDefault(); handleCompareDropDownListChange(e)}}
+            >
+                <MenuItem value={"activePerCapita"}>Active Cases Per 1,000</MenuItem>
+                <MenuItem value={"active"}>Active Cases</MenuItem>
+                <MenuItem value={"total"}>Total Cases</MenuItem>
+                <MenuItem value={"percentOfParent"}>% of Parent Active Cases</MenuItem>
+                <MenuItem value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</MenuItem>
+                <MenuItem value={"deaths"} style={childrenHaveStats ? {} : {display: "none"}}>Deaths</MenuItem>
+                <MenuItem value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</MenuItem>
+                <MenuItem value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</MenuItem>
+                <MenuItem value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</MenuItem>
+                <MenuItem value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</MenuItem>
+                <MenuItem value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</MenuItem>
+            </Select>
+        )
+    }
 
     return (
         <TableHead>
@@ -84,26 +123,9 @@ function EnhancedTableHead(props) {
                         style={{width: "200px"}}
                         align={'right'}
                         padding={'none'}
-                        onClick={(e) => {e.preventDefault();}}
                     >
                     <FormControl>
-                    <Select
-                        style={{fontSize: "12px"}}
-                        value={comparisonKPI}
-                        onChange={(e) => {e.preventDefault(); handleCompareDropDownListChange(e)}}
-                    >
-                        <MenuItem value={"activePerCapita"}>Active Cases Per 1,000</MenuItem>
-                        <MenuItem value={"active"}>Active Cases</MenuItem>
-                        <MenuItem value={"total"}>Total Cases</MenuItem>
-                        <MenuItem value={"percentOfParent"}>% of Parent Active Cases</MenuItem>
-                        <MenuItem value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</MenuItem>
-                        <MenuItem value={"deaths"} style={childrenHaveStats ? {} : {display: "none"}}>Deaths</MenuItem>
-                        <MenuItem value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</MenuItem>
-                        <MenuItem value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</MenuItem>
-                        <MenuItem value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</MenuItem>
-                        <MenuItem value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</MenuItem>
-                        <MenuItem value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</MenuItem>
-                    </Select>
+                        {selectContents}
                 </FormControl>
                 </TableCell>
             
@@ -136,7 +158,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function EnhancedTable(props) {
-    const { data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats } = props;
+    const { data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile } = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('cases');
@@ -186,11 +208,11 @@ function EnhancedTable(props) {
                         handleCompareDropDownListChange={handleCompareDropDownListChange}
                         comparisonKPI={comparisonKPI}
                         childrenHaveStats={childrenHaveStats}
+                        isMobile={isMobile}
                     />
                     <TableBody>
                         {stableSort(data, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                             const isItemSelected = isSelected(row.value);
-                            const labelId = `enhanced-table-checkbox-${index}`;
                             return (
                                 <TableRow
                                     hover
@@ -199,9 +221,9 @@ function EnhancedTable(props) {
                                     onClick={(event) => handleRowClick(event, row)}
                                     style={{cursor: "pointer"}}
                                 >
-                                    <TableCell component="th" id={labelId} scope="row" padding="none">{row.rank}</TableCell>
+                                    <TableCell component="th" scope="row" padding="none">{row.rank}</TableCell>
                                     <TableCell scope="row" padding="none">{row.key}</TableCell>
-                                    <TableCell align="right">{Math.round((row.value + Number.EPSILON) * 100) / 100}</TableCell>
+                                    <TableCell scope="row" align="right">{Math.round((row.value + Number.EPSILON) * 100) / 100}</TableCell>
                                 </TableRow>
                             );
                         })}

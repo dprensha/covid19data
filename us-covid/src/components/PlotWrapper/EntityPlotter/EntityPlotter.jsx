@@ -133,7 +133,7 @@ class EntityPlotter extends Component {
                             hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1]/this.props.entity.yActive[this.props.entity.yActive.length - 1]*100;
                             break;
                         case "mortalityRate":
-                            hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate);
+                            hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate);
                             break;
                         case "deaths":
                             hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.deaths);
@@ -228,7 +228,13 @@ class EntityPlotter extends Component {
                     <div className={listKPISubtitleClasses}>
                         Tap a row to scroll to graph
                     </div>
-                    <HotSpotGrid data={hotSpots} handleCompareDropDownListChange={this.handleCompareDropDownListChange} comparisonKPI={this.state.comparisonKPI} childrenHaveStats={this.props.entity.title === "All States"} />
+                    <HotSpotGrid 
+                        data={hotSpots} 
+                        handleCompareDropDownListChange={this.handleCompareDropDownListChange} 
+                        comparisonKPI={this.state.comparisonKPI} 
+                        childrenHaveStats={this.props.entity.title === "All States"} 
+                        isMobile={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE}
+                    />
                 </div>
             );
         }
