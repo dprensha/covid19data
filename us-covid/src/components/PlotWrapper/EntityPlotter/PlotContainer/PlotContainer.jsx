@@ -35,7 +35,7 @@ class PlotContainer extends Component {
 
     render() {
         let COMPARISON_DAYS = 7;
-        let isArrowButtonDisabled = !(this.props.entity.children && Object.keys(this.props.entity.children).length > 0);
+        let isArrowButtonEnabled = (this.props.entity.children && Object.keys(this.props.entity.children).length > 0) || this.props.entity.title === "US";
 
         let infoPanelContent = null;
         if (this.state.isInfoExpanded) {
@@ -80,7 +80,7 @@ class PlotContainer extends Component {
         }
 
         let arrowButtonContent = null;
-        if (!isArrowButtonDisabled) {
+        if (isArrowButtonEnabled) {
             arrowButtonContent = (
                 <div className={styles.childPlotTitleBarIcon}>
                     <IconButton

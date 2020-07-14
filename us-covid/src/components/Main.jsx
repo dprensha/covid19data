@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Switch, Route, useRouteMatch, BrowserRouter } from 'react-router-dom';
+import { Switch, Route, useRouteMatch, BrowserRouter, Redirect } from 'react-router-dom';
 import PlotWrapper from './PlotWrapper/PlotWrapper';
 //import Request from './Request/Request';
 
@@ -12,7 +12,8 @@ const Main = () => (
   <main>
      <BrowserRouter basename="">
       <Switch>
-        <Route exact path='/:title?' component={PlotWrapper}/>
+        <Redirect from='/' to='/Global' exact />
+        <Route exact path='/:mode?/:title?' component={PlotWrapper}/>
         {/* <Route path='/request/:id' component={Request}/> */}
       </Switch>
     </BrowserRouter>

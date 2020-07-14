@@ -19,7 +19,7 @@ export const actionCreators = {
             yConfirmed: [],
             yDeaths: [],
             yRecovered: [],
-            title: "All States",
+            title: "World",
             children: {},
             population: 0
         };
@@ -174,7 +174,7 @@ export const actionCreators = {
             yConfirmed: [],
             yDeaths: [],
             yRecovered: [],
-            title: "All States",
+            title: "United States",
             children: {},
             population: 0
         };

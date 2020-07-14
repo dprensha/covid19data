@@ -126,11 +126,11 @@ console.log(this.props.entity)
         );
 
         let backButtonContent = null;
-        if (this.props.entity.parent) {
+        if (this.props.entity.parent || this.props.entity.title === "United States") {
             backButtonContent = (
                 <IconButton
                     style={{ color: "white" }}
-                    onClick={() => { this.props.handlePlotClick(this.props.entity.parent) }}
+                    onClick={() => { this.props.handlePlotClick(this.props.entity.parent ? this.props.entity.parent : "Global") }}
                 >
                     <ArrowBackIcon />
                 </IconButton>
@@ -231,7 +231,7 @@ console.log(this.props.entity)
                             {backButtonContent}
                             <div>
                                 <Typography variant="h5" style={{ color: "white", flex: "1" }}>
-                                    {"US COVID-19 Tracker"}
+                                    {"COVID-19 Tracker"}
                                 </Typography>
                                 <Typography variant="h6" style={{ color: "white", flex: "1" }}>
                                     {this.props.entity.title}

@@ -30,8 +30,7 @@ const propTypes = {
     location: PropTypes.object,
 
     //from Redux
-    requests: PropTypes.array,
-    teams: PropTypes.array
+    requests: PropTypes.array
 }
 
 function ScrollTop(props) {
@@ -124,12 +123,12 @@ class PlotWrapper extends Component {
     }
 
     componentDidMount() {
-        //if(this.props.match.params.title == "US") {
-        //    this.props.requestUSCases();
-        //}
-        //else {
+        if(this.props.match.params.mode === "Global") {
             this.props.requestGlobalCases();
-        //}
+        }
+        else {
+            this.props.requestUSCases();
+        }
 
         //window.addEventListener("resize", this.onWindowResize, false);
         this.onWindowResize();
@@ -157,7 +156,15 @@ class PlotWrapper extends Component {
     }
 
     handlePlotClick(data) {
-        this.props.history.push((data.navigableTitle) ? `/${data.navigableTitle}` : '/');
+        if(data.navigableTitle === "US") {
+            window.location = "/US/"
+        }
+        else if (data === "Global") {
+            window.location = "/Global/"
+        }
+        else {
+            this.props.history.push((data.navigableTitle) ? `/${this.props.match.params.mode}/${data.navigableTitle}` : `/${this.props.match.params.mode}`);
+        }
         this.scrollToTop();
     }
 
