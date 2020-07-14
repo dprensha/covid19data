@@ -10,7 +10,7 @@ import PlotWrapper from './PlotWrapper/PlotWrapper';
 // when the pathname is exactly the string "/"
 const Main = () => (
   <main>
-     <BrowserRouter basename="/CovidTracker/">
+     <BrowserRouter basename="">
       <Switch>
         <Route exact path='/:title?' component={PlotWrapper}/>
         {/* <Route path='/request/:id' component={Request}/> */}

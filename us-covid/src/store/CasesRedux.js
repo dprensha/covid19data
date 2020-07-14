@@ -31,7 +31,7 @@ export const actionCreators = {
         });
         Promise.all([
             d3.csv('https://raw.githubusercontent.com/dprensha/covid19data/master/world-population-data.csv', (data) => {
-                populationData[`${data["Lat"]}_${data["Long"]}`] = data.Population;
+                populationData[`${data["Province/State"]}_${data["Country/Region"]}`] = data.Population;
             }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv', (data) => {
                 //deal with Denmark, France, Netherlands, United Kingdom
@@ -125,6 +125,7 @@ export const actionCreators = {
                     });
 
                     allData.children[sortedKeys[i]].yActive = allData.children[sortedKeys[i]].yConfirmed.map(function (yConfirmed, index) { return yConfirmed - allData.children[sortedKeys[i]].yRecovered[index] });
+                    allData.children[sortedKeys[i]].population = populationData[`_${allData.children[sortedKeys[i]].title}`] || 0
 
                     var sortedChildKeys = Object.keys(allData.children[sortedKeys[i]].children).sort();
                     for (var j = 0; j < sortedChildKeys.length; j++) {
@@ -137,14 +138,13 @@ export const actionCreators = {
                             }
                         });
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function (yConfirmed, index) { return yConfirmed - allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yRecovered[index] });
-                        allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population = populationData[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].lat}_${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].long}`];
-                        allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActivePerCapita = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive.map(function (yActive) { return yActive /*/ allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population*/ });
+                        allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population = parseInt(populationData[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`]);
+                        allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActivePerCapita = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive.map(function (yActive) { return yActive / allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population });
 
-                        allData.children[sortedKeys[i]].population += parseInt(populationData[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].lat}_${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].long}`]);
-                        //allData.population += parseInt(populationData[allData.children[sortedKeys[i]].children[sortedChildKeys[j]].UID]);
+                        allData.children[sortedKeys[i]].population += allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population;
                     }
-
-                    allData.children[sortedKeys[i]].yActivePerCapita = allData.children[sortedKeys[i]].yActive.map(function (yActive) { return yActive /*/ allData.children[sortedKeys[i]].population*/ })
+                    allData.population += parseInt(allData.children[sortedKeys[i]].population);
+                    allData.children[sortedKeys[i]].yActivePerCapita = allData.children[sortedKeys[i]].yActive.map(function (yActive) { return yActive / allData.children[sortedKeys[i]].population })
 
                     allData.yRecovered = allData.yConfirmed.map(function (data, index) {
                         if (index < RECOVERY_PERIOD_DAYS) {
@@ -155,7 +155,7 @@ export const actionCreators = {
                         }
                     });
                     allData.yActive = allData.yConfirmed.map(function (yConfirmed, index) { return yConfirmed - allData.yRecovered[index] });
-                    allData.yActivePerCapita = allData.yActive.map(function (yActive) { return yActive /*/ allData.population*/ });
+                    allData.yActivePerCapita = allData.yActive.map(function (yActive) { return yActive / allData.population });
 
                     allData.x = allData.children[Object.keys(allData.children)[0]].x;
                 }
