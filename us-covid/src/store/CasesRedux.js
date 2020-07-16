@@ -45,6 +45,12 @@ export const actionCreators = {
         };
 
         const populationData = [];
+        // const stats = {
+        //     current: [],
+        //     sevenDay: [],
+        //     fourteenDay: []
+        // };
+        const deaths = [];
 
         dispatch({
             type: requestGlobalCases
@@ -52,6 +58,52 @@ export const actionCreators = {
         Promise.all([
             d3.csv('https://raw.githubusercontent.com/dprensha/covid19data/master/world-population-data.csv', (data) => {
                 populationData[`${data["Province/State"]}_${data["Country/Region"]}`] = data.Population;
+            }),
+            // d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/${getDateString(0)}.csv`, (data) => {
+            //     stats.current[`${data["Province/State"]}_${data["Country/Region"]}`] = {
+            //         confirmed: data.Confirmed,
+            //         deaths: data.Deaths,
+            //         recovered: data.Recovered,
+            //         active: data.Active,
+            //         peopleTested: data["People_Tested"],
+            //         peopleHospitalized: data["People_Hospitalized"],
+            //         mortalityRate: data["Mortality_Rate"],
+            //         testingRate: data["Testing_Rate"],
+            //         hospitalizationRate: data["Hospitalization_Rate"]
+            //     }
+            // }),
+            // d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/${getDateString(7)}.csv`, (data) => {
+            //     stats.sevenDay[`${data["Province/State"]}_${data["Country/Region"]}`] = {
+            //         confirmed: data.Confirmed,
+            //         deaths: data.Deaths,
+            //         recovered: data.Recovered,
+            //         active: data.Active,
+            //         peopleTested: data["People_Tested"],
+            //         peopleHospitalized: data["People_Hospitalized"],
+            //         mortalityRate: data["Mortality_Rate"],
+            //         testingRate: data["Testing_Rate"],
+            //         hospitalizationRate: data["Hospitalization_Rate"]
+            //     }
+            // }),
+            // d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/${getDateString(14)}.csv`, (data) => {
+            //     stats.fourteenDay[`${data["Province/State"]}_${data["Country/Region"]}`] = {
+            //         confirmed: data.Confirmed,
+            //         deaths: data.Deaths,
+            //         recovered: data.Recovered,
+            //         active: data.Active,
+            //         peopleTested: data["People_Tested"],
+            //         peopleHospitalized: data["People_Hospitalized"],
+            //         mortalityRate: data["Mortality_Rate"],
+            //         testingRate: data["Testing_Rate"],
+            //         hospitalizationRate: data["Hospitalization_Rate"]
+            //     }
+            // }),
+            d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv', (data) => {
+                const dates = Object.keys(data).filter(function(key) { return !isNaN(Date.parse(key)) });
+                deaths[data.UID] = [];
+                for(var j = 0; j < dates.length; j++) {
+                    deaths[data.UID].push(parseInt(data[dates[j]]));
+                }
             }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv', (data) => {
                 //deal with Denmark, France, Netherlands, United Kingdom
@@ -160,6 +212,7 @@ export const actionCreators = {
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function (yConfirmed, index) { return yConfirmed - allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yRecovered[index] });
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population = parseInt(populationData[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`]);
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActivePerCapita = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive.map(function (yActive) { return yActive / allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population });
+                        //allData.children[sortedKeys[i]].children[sortedChildKeys[j]].deaths = ???
 
                         allData.children[sortedKeys[i]].population += allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population;
                     }
