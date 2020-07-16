@@ -120,7 +120,7 @@ class PlotWrapper extends Component {
     onWindowResize() {
         this.updateDisplayDetails(window.innerWidth, window.innerHeight);
 
-        window.requestAnimationFrame(() => this.forceUpdate());
+        window.requestAnimationFrame(() => this.forceUpdate()); 
     }
 
     componentDidMount() {
