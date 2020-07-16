@@ -33,10 +33,18 @@ class InfoDialog extends Component {
           <ul>
             <li>
               COVID-19 Data <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">Repository</a> at Johns Hopkins University
-                        </li>
+            </li>
             <li>
               US Census Bureau 2019 Population <a href="http://www2.census.gov/programs-surveys/popest/datasets/2010-2019/national/totals/nst-est2019-alldata.csv?#">Projections</a>
             </li>
+              World Bank <a href="https://data.worldbank.org/">Population Data</a>
+            <li>
+              <a href="https://www.abs.gov.au/ausstats/abs@.nsf/mf/3101.0">Australian Bureau of Statistics </a> population data
+            </li>
+            <li>
+              <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710000901">Statistics Canada Q2 2020 population estimates</a>
+            </li>
+
           </ul>
           <Divider style={{ marginTop: "24px", marginBottom: "24px" }} />
           <b>Note:</b> An "active" case is considered to be recovered (or, but hopefully not, a death) after 14 days of the originally reported date.

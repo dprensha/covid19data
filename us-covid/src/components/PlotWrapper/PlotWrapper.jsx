@@ -30,8 +30,7 @@ const propTypes = {
     location: PropTypes.object,
 
     //from Redux
-    requests: PropTypes.array,
-    teams: PropTypes.array
+    requests: PropTypes.array
 }
 
 function ScrollTop(props) {
@@ -120,13 +119,15 @@ class PlotWrapper extends Component {
     onWindowResize() {
         this.updateDisplayDetails(window.innerWidth, window.innerHeight);
 
-        window.requestAnimationFrame(() => this.forceUpdate()); 
+        window.requestAnimationFrame(() => this.forceUpdate());
     }
 
     componentDidMount() {
-        this.props.requestCases();
-        if(this.props.match.params.title) {
-            //this.props.history.push(`/`);
+        if(this.props.match.params.mode === "Global") {
+            this.props.requestGlobalCases();
+        }
+        else {
+            this.props.requestUSCases();
         }
 
         //window.addEventListener("resize", this.onWindowResize, false);
@@ -134,9 +135,20 @@ class PlotWrapper extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.navigableTitle !== nextProps.match.params.title && nextProps.cases.children && nextProps.match.params.title) {
-            const newEntity = Object.keys(nextProps.cases.children).map((key) => { return nextProps.cases.children[key]; }).filter((val) => val.navigableTitle === nextProps.match.params.title)[0];
+        let cases = null;
+        let navigableTitle = "";
+        if(nextProps.match.params.mode === "Global") {
+            cases = nextProps.globalCases;
+            navigableTitle = "World";
+        }
+        else {
+            cases  = nextProps.usCases;
+            navigableTitle = "US"
+        }
 
+        if (prevState.navigableTitle !== nextProps.match.params.title && cases.children && nextProps.match.params.title) {
+            const newEntity = Object.keys(cases.children).map((key) => { return cases.children[key]; }).filter((val) => val.navigableTitle === nextProps.match.params.title)[0];
+            console.log(newEntity);
             return {
                 navigableTitle: nextProps.match.params.title,
                 currentEntity: newEntity
@@ -144,8 +156,8 @@ class PlotWrapper extends Component {
         }
         else {
             return {
-                navigableTitle: "AllStates",
-                currentEntity: nextProps.cases
+                navigableTitle: navigableTitle,
+                currentEntity: cases
             }
         }
     }
@@ -155,12 +167,28 @@ class PlotWrapper extends Component {
     }
 
     handlePlotClick(data) {
-        this.props.history.push((data.navigableTitle) ? `/${data.navigableTitle}` : '/');
+        if(data.navigableTitle === "US") {
+            //window.location = "/US/"
+            this.props.history.push("/US");
+            if(this.props.usCases.length === 0) {
+                this.props.requestUSCases();
+            }
+        }
+        else if (data === "Global") {
+            //window.location = "/Global/"
+            this.props.history.push("/Global");
+            if(this.props.globalCases.length === 0) {
+                this.props.requestGlobalCases();
+            }
+        }
+        else {
+            this.props.history.push((data.navigableTitle) ? `/${this.props.match.params.mode}/${data.navigableTitle}` : `/${this.props.match.params.mode}`);
+        }
         this.scrollToTop();
     }
 
     render() {
-        if (this.props.cases.children) {
+        if ((this.props.match.params.mode === "Global" && this.props.globalCases && this.props.globalCases.children) || (this.props.match.params.mode === "US" && this.props.usCases && this.props.usCases.children)) {
             return (
                 <div>
                     <EntityPlotter

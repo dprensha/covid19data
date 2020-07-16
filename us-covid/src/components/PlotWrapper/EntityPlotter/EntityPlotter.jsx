@@ -117,63 +117,61 @@ class EntityPlotter extends Component {
             const childKeys = Object.keys(this.props.entity.children).sort();
 
             childKeys.forEach(childKey => {
-                if (childKey !== "Unassigned" && !childKey.startsWith("Out of")) {
-                    childPlots.push(
-                        <PlotContainer
-                            key={childKey}
-                            entity={this.props.entity.children[childKey]}
-                            handlePlotClick={this.props.handlePlotClick}
-                            displayDetails={this.props.displayDetails}
-                            graphMode={this.state.graphMode}
-                            kpiBaselineDays={parseInt(this.state.kpiBaselineDays)}
-                        />
-                    );
-                    let hotSpotsValue = null;
-                    switch(this.state.comparisonKPI) {
-                        case "activePerCapita":
-                            hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
-                            break;
-                        case "active":
-                            hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
-                            break;
-                        case "total":
-                            hotSpotsValue = this.props.entity.children[childKey].yConfirmed[this.props.entity.children[childKey].yConfirmed.length - 1];
-                            break;
-                        case "percentOfParent":
-                            hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1]/this.props.entity.yActive[this.props.entity.yActive.length - 1]*100;
-                            break;
-                        case "mortalityRate":
-                            hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate);
-                            break;
-                        case "deaths":
-                            hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.deaths);
-                            break;
-                        case "hospitalizationRate":
-                            hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate);
-                            break;
-                        case "hospitalizations":
-                            hotSpotsValue = isNaN(parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized)) ? 0 : parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized);
-                            break;
-                        case "tests":
-                            hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.peopleTested);
-                            break;
-                        case "newCasesPerThousandTests":
-                            hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.confirmed)/parseInt(this.props.entity.children[childKey].stats.current.peopleTested)*1000;
-                            break;
-                        case "testsPerCapita":
-                            hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.testingRate).toFixed(0)/100;
-                            break;
-                        default:
-                            hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
-                            break;
-                    }
-
-                    hotSpots.push({ 
-                        navigableTitle: this.props.entity.children[childKey].navigableTitle, 
-                        key: childKey, 
-                        value: hotSpotsValue
-                    })
+                childPlots.push(
+                    <PlotContainer
+                        key={childKey}
+                        entity={this.props.entity.children[childKey]}
+                        handlePlotClick={this.props.handlePlotClick}
+                        displayDetails={this.props.displayDetails}
+                        graphMode={this.state.graphMode}
+                        kpiBaselineDays={parseInt(this.state.kpiBaselineDays)}
+                    />
+                );
+                let hotSpotsValue = null;
+                switch (this.state.comparisonKPI) {
+                    case "activePerCapita":
+                        hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
+                        break;
+                    case "active":
+                        hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
+                        break;
+                    case "total":
+                        hotSpotsValue = this.props.entity.children[childKey].yConfirmed[this.props.entity.children[childKey].yConfirmed.length - 1];
+                        break;
+                    case "percentOfParent":
+                        hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1] / this.props.entity.yActive[this.props.entity.yActive.length - 1] * 100;
+                        break;
+                    case "mortalityRate":
+                        hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate);
+                        break;
+                    case "deaths":
+                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.deaths);
+                        break;
+                    case "hospitalizationRate":
+                        hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate);
+                        break;
+                    case "hospitalizations":
+                        hotSpotsValue = isNaN(parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized)) ? 0 : parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized);
+                        break;
+                    case "tests":
+                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.peopleTested);
+                        break;
+                    case "newCasesPerThousandTests":
+                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.confirmed) / parseInt(this.props.entity.children[childKey].stats.current.peopleTested) * 1000;
+                        break;
+                    case "testsPerCapita":
+                        hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.testingRate).toFixed(0) / 100;
+                        break;
+                    default:
+                        hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
+                        break;
                 }
+
+                hotSpots.push({
+                    navigableTitle: this.props.entity.children[childKey].navigableTitle,
+                    key: childKey,
+                    value: hotSpotsValue
+                })
             });
             hotSpots.sort((a, b) => { return b.value - a.value });
             for (var i = 0; i < hotSpots.length; i++) {
@@ -189,11 +187,11 @@ class EntityPlotter extends Component {
         );
 
         let backButtonContent = null;
-        if (this.props.entity.parent) {
+        if (this.props.entity.parent || this.props.entity.title === "United States") {
             backButtonContent = (
                 <IconButton
                     style={{ color: "white" }}
-                    onClick={() => { this.props.handlePlotClick(this.props.entity.parent) }}
+                    onClick={() => { this.props.handlePlotClick(this.props.entity.parent ? this.props.entity.parent : "Global")}}
                 >
                     <ArrowBackIcon />
                 </IconButton>
@@ -238,11 +236,11 @@ class EntityPlotter extends Component {
                     <div className={listKPISubtitleClasses}>
                         Tap a row to scroll to graph
                     </div>
-                    <HotSpotGrid 
-                        data={hotSpots} 
-                        handleCompareDropDownListChange={this.handleCompareDropDownListChange} 
-                        comparisonKPI={this.state.comparisonKPI} 
-                        childrenHaveStats={this.props.entity.title === "All States"} 
+                    <HotSpotGrid
+                        data={hotSpots}
+                        handleCompareDropDownListChange={this.handleCompareDropDownListChange}
+                        comparisonKPI={this.state.comparisonKPI}
+                        childrenHaveStats={this.props.entity.title === "All States"}
                         isMobile={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE}
                     />
                 </div>
@@ -264,7 +262,7 @@ class EntityPlotter extends Component {
                 yValue = this.props.entity.yActive;
                 break;
 
-            case "total": 
+            case "total":
                 graphModeDisplayText = "Total Cases"
                 yValue = this.props.entity.yConfirmed;
                 break;
@@ -279,182 +277,182 @@ class EntityPlotter extends Component {
                 yValue = this.props.entity.yDeaths;
                 break;
 
-            default: 
+            default:
                 graphModeDisplayText = "Active Cases"
                 yValue = this.props.entity.yActive;
                 break;
         }
 
         let baselineStats = null;
-        if(this.props.entity.stats) {
-            
-        switch (this.state.kpiBaselineDays) {
-            // case "1":
-            //     stats = this.props.entity.stats.
-            //     break;
+        if (this.props.entity.stats) {
 
-            case "7": 
-                baselineStats = this.props.entity.stats.sevenDay;
-                break;
+            switch (this.state.kpiBaselineDays) {
+                // case "1":
+                //     stats = this.props.entity.stats.
+                //     break;
 
-            case "14":
-                baselineStats = this.props.entity.stats.fourteenDay;
-                break;
+                case "7":
+                    baselineStats = this.props.entity.stats.sevenDay;
+                    break;
 
-            default: 
-                baselineStats = this.props.entity.stats.sevenDay;
-                break;
-        }
+                case "14":
+                    baselineStats = this.props.entity.stats.fourteenDay;
+                    break;
+
+                default:
+                    baselineStats = this.props.entity.stats.sevenDay;
+                    break;
+            }
         }
 
         let percentageParentCasesKPIContent = null;
-        if(this.props.entity.parent) {
+        if (this.props.entity.parent) {
             percentageParentCasesKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={`% of ${this.props.entity.parent.title} Active Cases`}
-                            keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
-                            keyValueFormat={"Percentage"}
-                            baselineValueTitle={null}
-                            baselineValue={null}
-                            baselineValueFormat={"Percentage"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={`% of ${this.props.entity.parent.title} Active Cases`}
+                        keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1] / this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1] * 100}
+                        keyValueFormat={"Percentage"}
+                        baselineValueTitle={null}
+                        baselineValue={null}
+                        baselineValueFormat={"Percentage"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
 
         let deathsKPIContent = null;
-        if(this.props.entity.stats) {
+        if (this.props.entity.stats) {
             deathsKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={"Deaths"}
-                            keyValue={parseInt(this.props.entity.stats.current.deaths)}
-                            keyValueFormat={"Decimal"}
-                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                            baselineValue={parseInt(baselineStats.deaths)}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={"Deaths"}
+                        keyValue={parseInt(this.props.entity.stats.current.deaths)}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={parseInt(baselineStats.deaths)}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
 
         let peopleTestedKPIContent = null;
-        if(this.props.entity.stats) {
+        if (this.props.entity.stats) {
             peopleTestedKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={"Tests"}
-                            keyValue={parseInt(this.props.entity.stats.current.peopleTested)}
-                            keyValueFormat={"Decimal"}
-                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                            baselineValue={parseInt(baselineStats.peopleTested)}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={"Tests"}
+                        keyValue={parseInt(this.props.entity.stats.current.peopleTested)}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={parseInt(baselineStats.peopleTested)}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
         let peopleHospitalizedKPIContent = null;
-        if(this.props.entity.stats) {
+        if (this.props.entity.stats) {
             peopleHospitalizedKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={"Hospitalizations"}
-                            keyValue={parseInt(this.props.entity.stats.current.peopleHospitalized)}
-                            keyValueFormat={"Decimal"}
-                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                            baselineValue={parseInt(baselineStats.peopleHospitalized)}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={"Hospitalizations"}
+                        keyValue={parseInt(this.props.entity.stats.current.peopleHospitalized)}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={parseInt(baselineStats.peopleHospitalized)}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
 
         let mortalityRateKPIContent = null;
-        if(this.props.entity.stats) {
+        if (this.props.entity.stats) {
             mortalityRateKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={"Mortality Rate"}
-                            keyValue={parseFloat(this.props.entity.stats.current.mortalityRate)}
-                            keyValueFormat={"Percentage"}
-                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                            baselineValue={parseFloat(baselineStats.mortalityRate)}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={true}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={"Mortality Rate"}
+                        keyValue={parseFloat(this.props.entity.stats.current.mortalityRate)}
+                        keyValueFormat={"Percentage"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={parseFloat(baselineStats.mortalityRate)}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={true}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
 
         let testingRateKPIContent = null;
-        if(this.props.entity.stats) {
+        if (this.props.entity.stats) {
             testingRateKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={"Number Tested per 1,000"}
-                            keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0)/100}
-                            keyValueFormat={"Decimal"}
-                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                            baselineValue={parseFloat(baselineStats.testingRate).toFixed(0)/100}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={"Number Tested per 1,000"}
+                        keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0) / 100}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={parseFloat(baselineStats.testingRate).toFixed(0) / 100}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
 
         let hospitalizationRateKPIContent = null;
-        if(this.props.entity.stats) {
+        if (this.props.entity.stats) {
             hospitalizationRateKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={"Hospitilization Rate"}
-                            keyValue={parseFloat(this.props.entity.stats.current.hospitalizationRate)}
-                            keyValueFormat={"Percentage"}
-                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                            baselineValue={parseFloat(baselineStats.hospitalizationRate)}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={true}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={"Hospitilization Rate"}
+                        keyValue={parseFloat(this.props.entity.stats.current.hospitalizationRate)}
+                        keyValueFormat={"Percentage"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={parseFloat(baselineStats.hospitalizationRate)}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={true}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
 
         let newCasesPerThousandTestedKPIContent = null;
-        if(this.props.entity.stats) {
+        if (this.props.entity.stats) {
             newCasesPerThousandTestedKPIContent = (
                 <div className={kpiClasses}>
-                        <KPI
-                            keyValueTitle={"New Cases per 1,000 Tests"}
-                            keyValue={parseInt(this.props.entity.stats.current.confirmed)/parseInt(this.props.entity.stats.current.peopleTested)*1000}
-                            keyValueFormat={"Decimal"}
-                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                            baselineValue={parseInt(baselineStats.confirmed)/parseInt(baselineStats.peopleTested)*1000}
-                            baselineValueFormat={"Decimal"}
-                            colorCodeBaselineValue={false}
-                            displayDetails={this.props.displayDetails}
-                            size={"large"}
-                        />
-                    </div>
+                    <KPI
+                        keyValueTitle={"New Cases per 1,000 Tests"}
+                        keyValue={parseInt(this.props.entity.stats.current.confirmed) / parseInt(this.props.entity.stats.current.peopleTested) * 1000}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={parseInt(baselineStats.confirmed) / parseInt(baselineStats.peopleTested) * 1000}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
             );
         }
 
@@ -540,7 +538,7 @@ class EntityPlotter extends Component {
                             {backButtonContent}
                             <div>
                                 <Typography variant="h5" style={{ color: "white", flex: "1" }}>
-                                    {"US COVID-19 Tracker"}
+                                    {"COVID-19 Tracker"}
                                 </Typography>
                                 <Typography variant="h6" style={{ color: "white", flex: "1" }}>
                                     {this.props.entity.title}

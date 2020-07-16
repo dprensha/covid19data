@@ -35,7 +35,7 @@ class PlotContainer extends Component {
     }
 
     render() {
-        let isArrowButtonDisabled = !(this.props.entity.children && Object.keys(this.props.entity.children).length > 0);
+        let isArrowButtonEnabled = (this.props.entity.children && Object.keys(this.props.entity.children).length > 0) || this.props.entity.title === "US";
 
         let yValue = null;
         switch (this.props.graphMode) {
@@ -106,7 +106,7 @@ class PlotContainer extends Component {
         }
 
         let arrowButtonContent = null;
-        if (!isArrowButtonDisabled) {
+        if (isArrowButtonEnabled) {
             arrowButtonContent = (
                 <div className={styles.childPlotTitleBarIcon}>
                     <IconButton
