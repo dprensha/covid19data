@@ -448,7 +448,7 @@ class EntityPlotter extends Component {
                         keyValueFormat={"Decimal"}
                         baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
                         baselineValue={parseFloat(baselineStats.testingRate).toFixed(0) / 100}
-                        baselineValueFormat={"Decimal"}
+                        baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
                         size={"large"}
@@ -486,7 +486,7 @@ class EntityPlotter extends Component {
                         keyValueFormat={"Decimal"}
                         baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
                         baselineValue={parseInt(baselineStats.confirmed) / parseInt(baselineStats.peopleTested) * 1000}
-                        baselineValueFormat={"Decimal"}
+                        baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
                         size={"large"}
@@ -658,7 +658,18 @@ class EntityPlotter extends Component {
                     </div>
                     {percentageParentCasesKPIContent}
                     {mortalityRateKPIContent}
-                    {deathsKPIContent}
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Deaths"}
+                            keyValue={this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1]}
+                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                            baselineValue={this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1 - parseInt(this.state.kpiBaselineDays)]}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
                     {hospitalizationRateKPIContent}
                     {peopleHospitalizedKPIContent}
                     {peopleTestedKPIContent}
