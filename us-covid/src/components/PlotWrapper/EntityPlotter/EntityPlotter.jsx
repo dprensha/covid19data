@@ -47,6 +47,7 @@ class EntityPlotter extends Component {
             filterText: "",
             comparisonKPI: "activePerCapita",
             kpiBaselineDays: "7",
+            scaleMode: "linear",
             filterTextDebounced: ""
         }
 
@@ -60,6 +61,7 @@ class EntityPlotter extends Component {
         this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
         this.handleCompareDropDownListChange = this.handleCompareDropDownListChange.bind(this);
         this.handleKPIBaselineChange = this.handleKPIBaselineChange.bind(this);
+        this.handleScaleModeChange = this.handleScaleModeChange.bind(this);
         this.handlePlotClick = this.handlePlotClick.bind(this);
     }
 
@@ -132,6 +134,13 @@ class EntityPlotter extends Component {
         })
     }
 
+    handleScaleModeChange(event) {
+        this.setState({
+            scaleMode: event.target.value,
+            isDrawerOpen: false
+        })
+    }
+
     handleCompareDropDownListChange(event) {
         this.setState({
             comparisonKPI: event.target.value
@@ -156,6 +165,7 @@ class EntityPlotter extends Component {
                         displayDetails={this.props.displayDetails}
                         graphMode={this.state.graphMode}
                         kpiBaselineDays={parseInt(this.state.kpiBaselineDays)}
+                        scaleMode={this.state.scaleMode}
                     />
                 );
                 }
@@ -569,6 +579,33 @@ class EntityPlotter extends Component {
                             </RadioGroup>
                         </FormControl>
                     </div>
+                    {/* <div className={styles.graphModeContainer}>
+                        <Divider />
+                        <Typography className={styles.comparisonWindowTitle} variant="h6">Scale:</Typography>
+                        <FormControl component="fieldset">
+                            <RadioGroup
+                                row={false}
+                                name="position"
+                                defaultValue="top"
+                                onChange={this.handleScaleModeChange}
+                                value={this.state.scaleMode}
+                                className={styles.graphModeButtonContainer}
+                            >
+                                <FormControlLabel
+                                    value="linear"
+                                    control={<Radio color="primary" />}
+                                    label="Linear"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="logarithmic"
+                                    control={<Radio color="primary" />}
+                                    label="Logarithmic"
+                                    labelPlacement="end"
+                                />
+                            </RadioGroup>
+                        </FormControl>
+                    </div> */}
                 </Drawer>
                 <AppBar style={{ position: "fixed", paddingTop: "4px", paddingBottom: "4px" }}>
                     <Toolbar style={{ justifyContent: "space-between" }}
@@ -617,6 +654,7 @@ class EntityPlotter extends Component {
                         x={this.props.entity.x}
                         y={yValue}
                         tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 2 : 1}
+                        scaleMode={this.state.scaleMode}
                     />
                 </div>
                 <div className={styles.kpiContainer}>

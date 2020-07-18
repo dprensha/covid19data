@@ -15,7 +15,8 @@ const propTypes = {
     handlePlotClick: PropTypes.func,
     displayDetails: PropTypes.object,
     graphMode: PropTypes.string,
-    kpiBaselineDays: PropTypes.number
+    kpiBaselineDays: PropTypes.number,
+    scaleMode: PropTypes.string
 }
 
 class PlotContainer extends Component {
@@ -100,7 +101,7 @@ class PlotContainer extends Component {
                     width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 350}
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 135 : 135}
                     tickInterval={2}
-
+                    scaleMode={this.props.scaleMode}
                 />
             )
         }

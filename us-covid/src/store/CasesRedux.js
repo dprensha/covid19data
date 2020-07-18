@@ -338,7 +338,6 @@ export const actionCreators = {
             }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv', (data) => {
                 const dates = Object.keys(data).filter(function (key) { return !isNaN(Date.parse(key)) });
-                if (data.Admin2 !== "Unassigned" && !data.Admin2.startsWith("Out of")) {
                     if (Object.keys(allData.children).indexOf(data.Province_State) === -1) {
                         allData.children[data.Province_State] = {
                             UID: null,
@@ -400,7 +399,6 @@ export const actionCreators = {
                             //allData.children[data.Province_State].children[data.Admin2].yDeaths.push(parseInt(deathsRow[dates[j]]));
                         }
                     }
-                }
             })
         ])
             .then(() => {

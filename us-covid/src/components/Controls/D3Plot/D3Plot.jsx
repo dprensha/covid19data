@@ -8,7 +8,8 @@ const propTypes = {
     y: PropTypes.array,
     width: PropTypes.number,
     height: PropTypes.number,
-    tickInterval: PropTypes.number
+    tickInterval: PropTypes.number,
+    scaleMode: PropTypes.string
 }
 
 class D3Plot extends Component {
@@ -27,7 +28,14 @@ class D3Plot extends Component {
         const { width, height } = this.props;
 
         var n = this.props.y.length;
-        var dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] } });
+        var dataset = null;
+        if(this.props.scaleMode === "linear"){
+            dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] } });
+        }
+        else if(this.props.scaleMode === "logarithmic"){
+            dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] <= 0 ? 1 : this.props.y[index] } });
+        }
+        
 
         var parseTime = d3.timeParse("%-m/%-d/%y");
         // 5. X scale will use the index of our data
@@ -35,10 +43,19 @@ class D3Plot extends Component {
             .domain([parseTime(this.props.x[0]), parseTime(this.props.x[this.props.x.length - 1])]) // input
             .range([0, width]); // output
 
+        var yScale = null;
         // 6. Y scale will use the randomly generate number 
-        var yScale = d3.scaleLinear()
+        if(this.props.scaleMode === "linear"){
+            yScale = d3.scaleLinear()
             .domain([0, Math.max(...this.props.y)]) // input 
             .range([height, 0]); // output 
+        }
+        else if(this.props.scaleMode === "logarithmic"){
+            yScale = d3.scaleLog()
+            .base(10)
+            .domain([1, Math.max(...this.props.y)]) // input 
+            .range([height, 0]); // output 
+        }
 
             var yMax = Math.max(...this.props.y);
 
@@ -98,7 +115,7 @@ class D3Plot extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y);
+        return (JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y) || this.props.scaleMode !== nextProps.scaleMode)
     }
 
     componentDidMount() {
