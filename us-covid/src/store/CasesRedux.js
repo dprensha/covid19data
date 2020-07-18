@@ -187,7 +187,9 @@ export const actionCreators = {
             })
         ])
             .then(() => {
-                console.log(deaths);
+                allData.x = allData.children[Object.keys(allData.children)[0]].x;
+                allData.yDeaths = new Array(allData.children[Object.keys(allData.children)[0]].x.length).fill(0);
+
                 var sortedKeys = Object.keys(allData.children).sort();
                 for (var i = 0; i < sortedKeys.length; i++) {
                     allData.children[sortedKeys[i]].yRecovered = allData.children[sortedKeys[i]].yConfirmed.map(function (data, index) {
@@ -223,10 +225,9 @@ export const actionCreators = {
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yDeaths = deaths[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`];
 
                         
-                        // for (var k = 0; k < allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yDeaths.length; k++) {
-                        //     allData.children[sortedKeys[i]].yDeaths[k] += allData.children[sortedKeys[i]].yDeaths[k] === undefined ? 0 : allData.children[sortedKeys[i]].yDeaths[k] + deaths[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`][k];
-                        //     allData.yDeaths[k] += allData.yDeaths[k] === undefined ? 0 : allData.yDeaths[k] + deaths[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`][k];
-                        // }
+                         for (var k = 0; k < allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yDeaths.length; k++) {
+                             allData.children[sortedKeys[i]].yDeaths[k] += deaths[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`][k];
+                         }
 
 
                         allData.children[sortedKeys[i]].population += allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population;
@@ -246,6 +247,11 @@ export const actionCreators = {
                     allData.yActivePerCapita = allData.yActive.map(function (yActive) { return yActive / allData.population });
 
                     allData.x = allData.children[Object.keys(allData.children)[0]].x;
+
+                    for(var k = 0; k < allData.children[sortedKeys[i]].yDeaths.length; k++) {
+                        allData.yDeaths[k] += allData.children[sortedKeys[i]].yDeaths[k];
+                    }
+
                 }
             })
             .then(() => {

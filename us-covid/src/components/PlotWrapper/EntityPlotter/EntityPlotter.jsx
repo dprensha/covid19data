@@ -240,7 +240,7 @@ class EntityPlotter extends Component {
                         data={hotSpots}
                         handleCompareDropDownListChange={this.handleCompareDropDownListChange}
                         comparisonKPI={this.state.comparisonKPI}
-                        childrenHaveStats={this.props.entity.title === "All States"}
+                        childrenHaveStats={this.props.entity.title === "United States"}
                         isMobile={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE}
                     />
                 </div>

@@ -76,7 +76,7 @@ class D3Plot extends Component {
         svg.append("g")
             .attr("class", "y axis")
             .call(d3.axisLeft(yScale)
-                .ticks(yMax === 1 ? 1 : 4)
+                .ticks(yMax < 4 ? yMax : 4)
                 .tickSizeInner(-width - margin.left - margin.right)
                 .tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
 
