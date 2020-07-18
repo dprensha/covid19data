@@ -167,6 +167,12 @@ class EntityPlotter extends Component {
                     case "active":
                         hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
                         break;
+                    case "activePctChange":
+                        const keyValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
+                        const baselineValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1 - parseInt(this.state.kpiBaselineDays)];
+                        const percentage = (keyValue - baselineValue) / baselineValue * 100;
+                        hotSpotsValue = isNaN(percentage) ? 0 : percentage;
+                        break;
                     case "total":
                         hotSpotsValue = this.props.entity.children[childKey].yConfirmed[this.props.entity.children[childKey].yConfirmed.length - 1];
                         break;
@@ -274,6 +280,7 @@ class EntityPlotter extends Component {
                         comparisonKPI={this.state.comparisonKPI}
                         childrenHaveStats={this.props.entity.title === "United States"}
                         isMobile={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE}
+                        comparisonWindow={this.state.kpiBaselineDays}
                     />
                 </div>
             );
