@@ -141,6 +141,7 @@ export const actionCreators = {
                             yActive: [],
                             title: data["Province/State"],
                             navigableTitle: data["Province/State"].replace(/[\.\W]/g, ''),
+                            parent: allData.children[data["Country/Region"]],
                             lat: data["Lat"],
                             long: data["Long"],
                             population: 0
@@ -171,6 +172,7 @@ export const actionCreators = {
                         yActive: [],
                         title: data["Province/State"],
                         navigableTitle: data["Province/State"].replace(/[\.\W]/g, ''),
+                        parent: allData.children[data["Country/Region"]],
                         lat: data["Lat"],
                         long: data["Long"],
                         population: 0
