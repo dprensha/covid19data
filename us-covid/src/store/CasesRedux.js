@@ -99,10 +99,13 @@ export const actionCreators = {
             //     }
             // }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv', (data) => {
+                if (data["Province/State"] === "" && (data["Country/Region"] === "United Kingdom" || data["Country/Region"] === "Denmark" || data["Country/Region"] === "France" || data["Country/Region"] === "Netherlands")) {
+                    data["Province/State"] = `Mainland ${data["Country/Region"]}`
+                }
                 const dates = Object.keys(data).filter(function(key) { return !isNaN(Date.parse(key)) });
-                deaths[data.UID] = [];
+                deaths[`${data["Province/State"]}_${data["Country/Region"]}`] = [];
                 for(var j = 0; j < dates.length; j++) {
-                    deaths[data.UID].push(parseInt(data[dates[j]]));
+                    deaths[`${data["Province/State"]}_${data["Country/Region"]}`].push(parseInt(data[dates[j]]));
                 }
             }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv', (data) => {
@@ -184,7 +187,7 @@ export const actionCreators = {
             })
         ])
             .then(() => {
-                console.log(populationData);
+                console.log(deaths);
                 var sortedKeys = Object.keys(allData.children).sort();
                 for (var i = 0; i < sortedKeys.length; i++) {
                     allData.children[sortedKeys[i]].yRecovered = allData.children[sortedKeys[i]].yConfirmed.map(function (data, index) {
@@ -197,7 +200,12 @@ export const actionCreators = {
                     });
 
                     allData.children[sortedKeys[i]].yActive = allData.children[sortedKeys[i]].yConfirmed.map(function (yConfirmed, index) { return yConfirmed - allData.children[sortedKeys[i]].yRecovered[index] });
-                    allData.children[sortedKeys[i]].population = populationData[`_${allData.children[sortedKeys[i]].title}`] || 0
+                    allData.children[sortedKeys[i]].population = populationData[`_${allData.children[sortedKeys[i]].title}`] || 0;
+                    allData.children[sortedKeys[i]].yDeaths = deaths[`_${allData.children[sortedKeys[i]].title}`];
+
+                    if(deaths[`_${allData.children[sortedKeys[i]].title}`] === undefined){
+                        allData.children[sortedKeys[i]].yDeaths = new Array(allData.children[sortedKeys[i]].yActive.length).fill(0);
+                    }
 
                     var sortedChildKeys = Object.keys(allData.children[sortedKeys[i]].children).sort();
                     for (var j = 0; j < sortedChildKeys.length; j++) {
@@ -212,7 +220,14 @@ export const actionCreators = {
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yConfirmed.map(function (yConfirmed, index) { return yConfirmed - allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yRecovered[index] });
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population = parseInt(populationData[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`]);
                         allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActivePerCapita = allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yActive.map(function (yActive) { return yActive / allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population });
-                        //allData.children[sortedKeys[i]].children[sortedChildKeys[j]].deaths = ???
+                        allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yDeaths = deaths[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`];
+
+                        
+                        // for (var k = 0; k < allData.children[sortedKeys[i]].children[sortedChildKeys[j]].yDeaths.length; k++) {
+                        //     allData.children[sortedKeys[i]].yDeaths[k] += allData.children[sortedKeys[i]].yDeaths[k] === undefined ? 0 : allData.children[sortedKeys[i]].yDeaths[k] + deaths[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`][k];
+                        //     allData.yDeaths[k] += allData.yDeaths[k] === undefined ? 0 : allData.yDeaths[k] + deaths[`${allData.children[sortedKeys[i]].children[sortedChildKeys[j]].title}_${allData.children[sortedKeys[i]].title}`][k];
+                        // }
+
 
                         allData.children[sortedKeys[i]].population += allData.children[sortedKeys[i]].children[sortedChildKeys[j]].population;
                     }
@@ -339,6 +354,7 @@ export const actionCreators = {
                             yActive: [],
                             title: data.Admin2,
                             navigableTitle: data.Admin2.replace(/[\.\W]/g, ''),
+                            parent: allData.children[data.Province_State],
                             population: 0
                         };
 
@@ -364,6 +380,7 @@ export const actionCreators = {
                             yActive: [],
                             title: data.Admin2,
                             navigableTitle: data.Admin2.replace(/[\.\W]/g, ''),
+                            parent: allData.children[data.Province_State],
                             population: 0
                         };
 
