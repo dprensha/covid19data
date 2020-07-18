@@ -98,7 +98,6 @@ class PlotContainer extends Component {
                     y={yValue}
                     width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 350}
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 135 : 135}
-                    format={(this.props.graphMode === "active") ? "~s" : (this.props.graphMode === "activePerCapita" ? "~f" : "~s")}
                     tickInterval={2}
 
                 />

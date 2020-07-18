@@ -8,7 +8,6 @@ const propTypes = {
     y: PropTypes.array,
     width: PropTypes.number,
     height: PropTypes.number,
-    format: PropTypes.string,
     tickInterval: PropTypes.number
 }
 
@@ -76,9 +75,10 @@ class D3Plot extends Component {
         svg.append("g")
             .attr("class", "y axis")
             .call(d3.axisLeft(yScale)
-                .ticks(yMax < 4 ? yMax : 4)
+                .ticks(4)
                 .tickSizeInner(-width - margin.left - margin.right)
-                .tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
+                //.tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
+                .tickFormat(d3.format(yMax < 1000 ? "~f" : "~s")));
 
         svg.selectAll(".line").remove();
         // 9. Append the path, bind the data, and call the line generator 

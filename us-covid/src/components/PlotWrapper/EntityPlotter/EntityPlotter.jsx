@@ -46,8 +46,11 @@ class EntityPlotter extends Component {
             popoverAnchorElement: null,
             filterText: "",
             comparisonKPI: "activePerCapita",
-            kpiBaselineDays: "7"
+            kpiBaselineDays: "7",
+            filterTextDebounced: ""
         }
+
+        this.timer = null;
 
         this.handleSettingsIconClick = this.handleSettingsIconClick.bind(this);
         this.handleCloseDrawer = this.handleCloseDrawer.bind(this);
@@ -57,12 +60,38 @@ class EntityPlotter extends Component {
         this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
         this.handleCompareDropDownListChange = this.handleCompareDropDownListChange.bind(this);
         this.handleKPIBaselineChange = this.handleKPIBaselineChange.bind(this);
+        this.handlePlotClick = this.handlePlotClick.bind(this);
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.filterText !== this.state.filterText) {
+            this.handleCheck();
+          }
+    }
+
+    handleCheck = () => {
+        // Clears running timer and starts a new one each time the user types
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.setState({
+              filterTextDebounced: this.state.filterText
+          })
+        console.log(this.state.filterText);
+        }, 500);
+      }
 
     handleFilterTextChange(e) {
         this.setState({
             filterText: e.target.value
         })
+    }
+
+    handlePlotClick(e) {
+        this.setState({
+            filterText: "",
+            filterTextDebounced: ""
+        });
+        this.props.handlePlotClick(e);
     }
 
     handleSettingsIconClick() {
@@ -117,16 +146,19 @@ class EntityPlotter extends Component {
             const childKeys = Object.keys(this.props.entity.children).sort();
 
             childKeys.forEach(childKey => {
+                //if(this.state.filterText.length < 2 || ( this.state.filterText.length >= 2 && this.props.entity.children[childKey].title.toLowerCase().includes(this.state.filterText.toLowerCase()))) {
+                if(this.props.entity.children[childKey].title.toLowerCase().includes(this.state.filterTextDebounced.toLowerCase())){
                 childPlots.push(
                     <PlotContainer
                         key={childKey}
                         entity={this.props.entity.children[childKey]}
-                        handlePlotClick={this.props.handlePlotClick}
+                        handlePlotClick={this.handlePlotClick}
                         displayDetails={this.props.displayDetails}
                         graphMode={this.state.graphMode}
                         kpiBaselineDays={parseInt(this.state.kpiBaselineDays)}
                     />
                 );
+                }
                 let hotSpotsValue = null;
                 switch (this.state.comparisonKPI) {
                     case "activePerCapita":
@@ -191,7 +223,7 @@ class EntityPlotter extends Component {
             backButtonContent = (
                 <IconButton
                     style={{ color: "white" }}
-                    onClick={() => { this.props.handlePlotClick(this.props.entity.parent ? this.props.entity.parent : "Global")}}
+                    onClick={() => { this.handlePlotClick(this.props.entity.parent ? this.props.entity.parent : "Global")}}
                 >
                     <ArrowBackIcon />
                 </IconButton>
@@ -498,6 +530,7 @@ class EntityPlotter extends Component {
                         </FormControl>
                     </div>
                     <div className={styles.graphModeContainer}>
+                        <Divider />
                         <Typography className={styles.comparisonWindowTitle} variant="h6">Comparison Window:</Typography>
                         <FormControl component="fieldset">
                             <RadioGroup
@@ -576,7 +609,6 @@ class EntityPlotter extends Component {
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 185 : 250}
                         x={this.props.entity.x}
                         y={yValue}
-                        format={(this.state.graphMode === "active") ? "~s" : (this.state.graphMode === "activePerCapita" ? "~f" : "~s")}
                         tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 2 : 1}
                     />
                 </div>
@@ -629,8 +661,10 @@ class EntityPlotter extends Component {
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
                 </div>
-                {/* <div style={{margin: "auto", width: "500px", margin: "auto"}}>
+                <Divider />
+                <div style={{width: "300px", margin: "32px auto 32px auto"}}>
                 <TextField
+                    style={{width: "100%"}}
                     InputProps={{
                     startAdornment: (
                         <InputAdornment position="start">
@@ -641,7 +675,7 @@ class EntityPlotter extends Component {
                     value={this.state.filterText}
                     onChange={this.handleFilterTextChange}
                 />
-                </div> */}
+                </div>
                 <div className={styles.childPlotContainer}>
                     {childPlots}
                 </div>
