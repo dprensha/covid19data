@@ -41,6 +41,8 @@ class D3Plot extends Component {
             .domain([0, Math.max(...this.props.y)]) // input 
             .range([height, 0]); // output 
 
+            var yMax = Math.max(...this.props.y);
+
         // 7. d3's line generator
         var line = d3.line()
             .x(function (d) { return xScale(parseTime(d.x)); }) // set the x values for the line generator
@@ -74,7 +76,7 @@ class D3Plot extends Component {
         svg.append("g")
             .attr("class", "y axis")
             .call(d3.axisLeft(yScale)
-                .ticks(4)
+                .ticks(yMax === 1 ? 1 : 4)
                 .tickSizeInner(-width - margin.left - margin.right)
                 .tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
 
