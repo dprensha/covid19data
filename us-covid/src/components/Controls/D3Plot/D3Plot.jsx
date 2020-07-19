@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import * as d3 from 'd3';
-import styles from './D3Plot.css';
+import './D3Plot.css';
 
 const propTypes = {
     x: PropTypes.array,
     y: PropTypes.array,
     width: PropTypes.number,
     height: PropTypes.number,
-    format: PropTypes.string,
-    tickInterval: PropTypes.number
+    tickInterval: PropTypes.number,
+    scaleMode: PropTypes.string
 }
 
 class D3Plot extends Component {
@@ -26,20 +26,37 @@ class D3Plot extends Component {
     drawChart() {
         var margin = { top: 24, right: 12, bottom: 56, left: 48 };
         const { width, height } = this.props;
+        var dataset = null;
 
-        var n = this.props.y.length;
-        var dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] } });
+        if(this.props.scaleMode === "linear"){
+            dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] } });
+        }
 
+        else if(this.props.scaleMode === "logarithmic"){
+            dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] <= 0 ? 1 : this.props.y[index] } });
+        }
+        
         var parseTime = d3.timeParse("%-m/%-d/%y");
         // 5. X scale will use the index of our data
         var xScale = d3.scaleTime()
             .domain([parseTime(this.props.x[0]), parseTime(this.props.x[this.props.x.length - 1])]) // input
             .range([0, width]); // output
 
+        var yScale = null;
         // 6. Y scale will use the randomly generate number 
-        var yScale = d3.scaleLinear()
+        if(this.props.scaleMode === "linear"){
+            yScale = d3.scaleLinear()
             .domain([0, Math.max(...this.props.y)]) // input 
             .range([height, 0]); // output 
+        }
+        else if(this.props.scaleMode === "logarithmic"){
+            yScale = d3.scaleLog()
+            .base(10)
+            .domain([1, Math.max(...this.props.y)]) // input 
+            .range([height, 0]); // output 
+        }
+
+            var yMax = Math.max(...this.props.y);
 
         // 7. d3's line generator
         var line = d3.line()
@@ -76,7 +93,8 @@ class D3Plot extends Component {
             .call(d3.axisLeft(yScale)
                 .ticks(4)
                 .tickSizeInner(-width - margin.left - margin.right)
-                .tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
+                //.tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
+                .tickFormat(d3.format(yMax < 1000 ? "~f" : "~s")));
 
         svg.selectAll(".line").remove();
         // 9. Append the path, bind the data, and call the line generator 
@@ -96,7 +114,7 @@ class D3Plot extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y);
+        return (JSON.stringify(this.props.y) !== JSON.stringify(nextProps.y) || this.props.scaleMode !== nextProps.scaleMode)
     }
 
     componentDidMount() {

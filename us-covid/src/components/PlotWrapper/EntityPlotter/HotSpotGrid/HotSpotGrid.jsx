@@ -14,9 +14,9 @@ import { FormControl, MenuItem, Select } from "../../../Controls";
 import styles from './HotSpotGrid.module.scss';
 
 
-const HotSpotGrid = ({ data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile }) => {
+const HotSpotGrid = ({ data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile, comparisonWindow }) => {
     return (
-        <EnhancedTable data={data} handleCompareDropDownListChange={handleCompareDropDownListChange} comparisonKPI={comparisonKPI} childrenHaveStats={childrenHaveStats} isMobile={isMobile}/>
+        <EnhancedTable data={data} handleCompareDropDownListChange={handleCompareDropDownListChange} comparisonKPI={comparisonKPI} childrenHaveStats={childrenHaveStats} isMobile={isMobile} comparisonWindow={comparisonWindow}/>
     )
 };
 
@@ -50,7 +50,7 @@ function stableSort(array, comparator) {
 }
 
 function EnhancedTableHead(props) {
-    const { classes, order, orderBy, numSelected, rowCount, onRequestSort, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile } = props;
+    const { classes, order, orderBy, numSelected, rowCount, onRequestSort, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile, comparisonWindow } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -66,6 +66,7 @@ function EnhancedTableHead(props) {
             >
                 <option value={"activePerCapita"}>Active Cases Per 1,000</option>
                 <option value={"active"}>Active Cases</option>
+                <option value={"activePctChange"}>{`Active ${comparisonWindow}-Day % Change`}</option>
                 <option value={"total"}>Total Cases</option>
                 <option value={"percentOfParent"}>% of Parent Active Cases</option>
                 <option value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</option>
@@ -87,6 +88,7 @@ function EnhancedTableHead(props) {
             >
                 <MenuItem value={"activePerCapita"}>Active Cases Per 1,000</MenuItem>
                 <MenuItem value={"active"}>Active Cases</MenuItem>
+                <MenuItem value={"activePctChange"}>{`Active ${comparisonWindow}-Day % Change`}</MenuItem>
                 <MenuItem value={"total"}>Total Cases</MenuItem>
                 <MenuItem value={"percentOfParent"}>% of Parent Active Cases</MenuItem>
                 <MenuItem value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</MenuItem>
@@ -158,13 +160,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function EnhancedTable(props) {
-    const { data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile } = props;
+    const { data, handleCompareDropDownListChange, comparisonKPI, childrenHaveStats, isMobile, comparisonWindow } = props;
     const classes = useStyles();
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('cases');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [rowsPerPage, setRowsPerPage] = React.useState(data.length < 10 ? data.length : 10);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -209,6 +211,7 @@ function EnhancedTable(props) {
                         comparisonKPI={comparisonKPI}
                         childrenHaveStats={childrenHaveStats}
                         isMobile={isMobile}
+                        comparisonWindow={comparisonWindow}
                     />
                     <TableBody>
                         {stableSort(data, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {

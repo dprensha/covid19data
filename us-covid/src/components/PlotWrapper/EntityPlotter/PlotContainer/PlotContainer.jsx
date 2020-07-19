@@ -4,6 +4,7 @@ import { IconButton } from "../../../Controls";
 import { constants } from "../../../Utilities"
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import classNames from 'classnames';
 import InfoPanel from './InfoPanel/InfoPanel';
 import styles from './PlotContainer.module.scss';
 import D3Plot from "../../../Controls/D3Plot/D3Plot";
@@ -14,7 +15,8 @@ const propTypes = {
     handlePlotClick: PropTypes.func,
     displayDetails: PropTypes.object,
     graphMode: PropTypes.string,
-    kpiBaselineDays: PropTypes.number
+    kpiBaselineDays: PropTypes.number,
+    scaleMode: PropTypes.string
 }
 
 class PlotContainer extends Component {
@@ -35,7 +37,7 @@ class PlotContainer extends Component {
     }
 
     render() {
-        let isArrowButtonDisabled = !(this.props.entity.children && Object.keys(this.props.entity.children).length > 0);
+        let isArrowButtonEnabled = !this.state.isInfoExpanded && ((this.props.entity.children && Object.keys(this.props.entity.children).length > 0) || this.props.entity.title === "US");
 
         let yValue = null;
         switch (this.props.graphMode) {
@@ -98,15 +100,14 @@ class PlotContainer extends Component {
                     y={yValue}
                     width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 250 : 350}
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 135 : 135}
-                    format={(this.props.graphMode === "active") ? "~s" : (this.props.graphMode === "activePerCapita" ? "~f" : "~s")}
                     tickInterval={2}
-
+                    scaleMode={this.props.scaleMode}
                 />
             )
         }
 
         let arrowButtonContent = null;
-        if (!isArrowButtonDisabled) {
+        if (isArrowButtonEnabled) {
             arrowButtonContent = (
                 <div className={styles.childPlotTitleBarIcon}>
                     <IconButton
@@ -118,6 +119,26 @@ class PlotContainer extends Component {
             )
         }
 
+        let infoButtonContent = null;
+        if(!this.state.isInfoExpanded) {
+            infoButtonContent = (
+                <div className={styles.childPlotTitleBarInfoIcon}>
+                    <IconButton
+                        onClick={this.toggleInfoPanel}
+                    >
+                        <InfoOutlinedIcon />
+                    </IconButton>
+                </div>
+            )
+        }
+
+        const childPlotTitleBarTitleStyles = classNames(
+            styles.childPlotTitleBarTitle,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+            }
+        );
+
         let content = null;
         if(this.props.entity.navigableTitle) {
             content = (
@@ -127,19 +148,13 @@ class PlotContainer extends Component {
                 >
                     <div
                         className={styles.childPlotTitleBar}
-                        style={(this.state.isInfoExpanded) ? { zIndex: -1 } : { zIndex: 0 }}
+                        //style={(this.state.isInfoExpanded) ? { zIndex: -1 } : { zIndex: 0 }}
                     >
-                        <div className={styles.childPlotTitleBarTitle}>
+                        <div className={childPlotTitleBarTitleStyles}>
                             {this.props.entity.title}
                         </div>
                         <div className={styles.iconButtonContainer}>
-                            <div className={styles.childPlotTitleBarInfoIcon}>
-                                <IconButton
-                                    onClick={this.toggleInfoPanel}
-                                >
-                                    <InfoOutlinedIcon />
-                                </IconButton>
-                            </div>
+                            {infoButtonContent}
                             {arrowButtonContent}
                         </div>
                     </div>
