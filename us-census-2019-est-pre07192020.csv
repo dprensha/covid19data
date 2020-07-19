@@ -1,86 +1,9 @@
 UID,State,County,Population
-16,American Samoa,,55465
-316,Guam,,165768
-580,Northern Mariana Islands,,56882
-63072001,Puerto Rico,Adjuntas,17363
-63072003,Puerto Rico,Aguada,36694
-63072005,Puerto Rico,Aguadilla,50265
-63072007,Puerto Rico,Aguas Buenas,24814
-63072009,Puerto Rico,Aibonito,22108
-63072011,Puerto Rico,Anasco,26161
-63072013,Puerto Rico,Arecibo,81966
-63072015,Puerto Rico,Arroyo,17238
-63072017,Puerto Rico,Barceloneta,23727
-63072019,Puerto Rico,Barranquitas,27725
-63072021,Puerto Rico,Bayamon,169269
-63072023,Puerto Rico,Cabo Rojo,47515
-63072025,Puerto Rico,Caguas,124606
-63072027,Puerto Rico,Camuy,30504
-63072029,Puerto Rico,Canovanas,44674
-63072031,Puerto Rico,Carolina,146984
-63072033,Puerto Rico,Catano,23121
-63072035,Puerto Rico,Cayey,42409
-63072037,Puerto Rico,Ceiba,10904
-63072039,Puerto Rico,Ciales,15808
-63072041,Puerto Rico,Cidra,38307
-63072043,Puerto Rico,Coamo,38336
-63072045,Puerto Rico,Comerio,18648
-63072047,Puerto Rico,Corozal,32293
-63072049,Puerto Rico,Culebra,1714
-63072051,Puerto Rico,Dorado,36141
-63072053,Puerto Rico,Fajardo,29454
-63072054,Puerto Rico,Florida,11317
-63072055,Puerto Rico,Guanica,15383
-63072057,Puerto Rico,Guayama,39465
-63072059,Puerto Rico,Guayanilla,17623
-63072061,Puerto Rico,Guaynabo,83728
-63072063,Puerto Rico,Gurabo,47093
-63072065,Puerto Rico,Hatillo,39218
-63072067,Puerto Rico,Hormigueros,15518
-63072069,Puerto Rico,Humacao,50653
-63072071,Puerto Rico,Isabela,40423
-63072073,Puerto Rico,Jayuya,13891
-63072075,Puerto Rico,Juana Diaz,44679
-63072077,Puerto Rico,Juncos,38155
-63072079,Puerto Rico,Lajas,22010
-63072081,Puerto Rico,Lares,24276
-63072083,Puerto Rico,Las Marias,7927
-63072085,Puerto Rico,Las Piedras,37007
-63072087,Puerto Rico,Loiza,24553
-63072089,Puerto Rico,Luquillo,17665
-63072091,Puerto Rico,Manati,37287
-63072093,Puerto Rico,Maricao,5430
-63072095,Puerto Rico,Maunabo,10321
-63072097,Puerto Rico,Mayaguez,71530
-63072099,Puerto Rico,Moca,34891
-63072101,Puerto Rico,Morovis,30335
-63072103,Puerto Rico,Naguabo,25761
-63072105,Puerto Rico,Naranjito,27349
-63072107,Puerto Rico,Orocovis,20220
-63072109,Puerto Rico,Patillas,16211
-63072111,Puerto Rico,Penuelas,19249
-63072113,Puerto Rico,Ponce,131881
-63072115,Puerto Rico,Quebradillas,22918
-63072117,Puerto Rico,Rincon,13656
-63072119,Puerto Rico,Rio Grande,48025
-63072121,Puerto Rico,Sabana Grande,21712
-63072123,Puerto Rico,Salinas,27128
-63072125,Puerto Rico,San German,30227
-63072127,Puerto Rico,San Juan,318441
-63072129,Puerto Rico,San Lorenzo,35989
-63072131,Puerto Rico,San Sebastian,35528
-63072133,Puerto Rico,Santa Isabel,21209
-63072135,Puerto Rico,Toa Alta,72025
-63072137,Puerto Rico,Toa Baja,74271
-63072139,Puerto Rico,Trujillo Alto,63674
-63072141,Puerto Rico,Utuado,27395
-63072143,Puerto Rico,Vega Alta,36061
-63072145,Puerto Rico,Vega Baja,50023
-63072147,Puerto Rico,Vieques,8386
-63072149,Puerto Rico,Villalba,21372
-63072151,Puerto Rico,Yabucoa,32282
-63072153,Puerto Rico,Yauco,33575
-850,Virgin Islands,,106977
+16,,,55465
+316,,,165768
+580,,,56882
+630,,,3194000
+850,,,106977
 84001001,Alabama,Autauga County,55869
 84001003,Alabama,Baldwin County,223234
 84001005,Alabama,Barbour County,24686
@@ -3337,5 +3260,3 @@ UID,State,County,Population
 84070018,,,-999
 84070019,,,-999
 84070020,,,-999
-63072888,,,-999
-63072999,,,-999
