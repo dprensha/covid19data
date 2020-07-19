@@ -39,7 +39,9 @@ class InfoDialog extends Component {
             <li>
               US Census Bureau 2019 Population <a href="http://www2.census.gov/programs-surveys/popest/datasets/2010-2019/national/totals/nst-est2019-alldata.csv?#">Projections</a>
             </li>
+            <li>
               World Bank <a href="https://data.worldbank.org/">Population Data</a>
+            </li>
             <li>
               <a href="https://www.abs.gov.au/ausstats/abs@.nsf/mf/3101.0">Australian Bureau of Statistics </a> population data
             </li>
