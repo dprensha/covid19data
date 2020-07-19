@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PlotContainer from './PlotContainer/PlotContainer'
-import Popover from '@material-ui/core/Popover';
 import HotSpotGrid from './HotSpotGrid/HotSpotGrid';
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
@@ -10,19 +9,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import TuneIcon from '@material-ui/icons/Tune';
 import SearchIcon from '@material-ui/icons/Search';
 import InfoDialog from './InfoDialog/InfoDialog';
-
-
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
-
-
-import { Typography, Toolbar, AppBar, IconButton, Plot, List, ListItem, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, Select, InputLabel, MenuItem } from "../../Controls";
+import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
 import D3Plot from "../../Controls/D3Plot/D3Plot";
@@ -267,12 +254,12 @@ class EntityPlotter extends Component {
             }
         );
 
-        const listKPIContainerClasses = classNames(
-            styles.listKPIContainer,
-            {
-                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
-            }
-        )
+        // const listKPIContainerClasses = classNames(
+        //     styles.listKPIContainer,
+        //     {
+        //         [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
+        //     }
+        // )
 
         let hotSpotsKPIContent = null;
         if (hotSpots.filter((hotSpot) => hotSpot.value > 0).length > 0) {
@@ -373,24 +360,24 @@ class EntityPlotter extends Component {
             );
         }
 
-        let deathsKPIContent = null;
-        if (this.props.entity.stats) {
-            deathsKPIContent = (
-                <div className={kpiClasses}>
-                    <KPI
-                        keyValueTitle={"Deaths"}
-                        keyValue={parseInt(this.props.entity.stats.current.deaths)}
-                        keyValueFormat={"Decimal"}
-                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseInt(baselineStats.deaths)}
-                        baselineValueFormat={"Decimal"}
-                        colorCodeBaselineValue={false}
-                        displayDetails={this.props.displayDetails}
-                        size={"large"}
-                    />
-                </div>
-            );
-        }
+        // let deathsKPIContent = null;
+        // if (this.props.entity.stats) {
+        //     deathsKPIContent = (
+        //         <div className={kpiClasses}>
+        //             <KPI
+        //                 keyValueTitle={"Deaths"}
+        //                 keyValue={parseInt(this.props.entity.stats.current.deaths)}
+        //                 keyValueFormat={"Decimal"}
+        //                 baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+        //                 baselineValue={parseInt(baselineStats.deaths)}
+        //                 baselineValueFormat={"Decimal"}
+        //                 colorCodeBaselineValue={false}
+        //                 displayDetails={this.props.displayDetails}
+        //                 size={"large"}
+        //             />
+        //         </div>
+        //     );
+        // }
 
         let peopleTestedKPIContent = null;
         if (this.props.entity.stats) {

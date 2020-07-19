@@ -30,7 +30,6 @@ import Typography from '@material-ui/core/Typography';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import MUITable from './MUITable';
 
 import D3Plot from './D3Plot';
 
@@ -80,6 +79,5 @@ export {
     ListItem,
     Divider,
     D3Plot,
-    KPI,
-    MUITable
+    KPI
 };

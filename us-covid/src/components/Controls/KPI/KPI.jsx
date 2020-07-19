@@ -17,9 +17,9 @@ const propTypes = {
 }
 
 class KPI extends Component {
-    constructor(props, context) {
-        super(props, context);
-    }
+    // constructor(props, context) {
+    //     super(props, context);
+    // }
 
     addThousandSeparators(value, formatMagnitude) {
         if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+6) {
@@ -45,7 +45,7 @@ class KPI extends Component {
     render() {
         const { keyValueTitle, keyValue, keyValueFormat, baselineValueTitle, baselineValue, baselineValueFormat, colorCodeBaselineValue } = this.props;
 
-        const formattedKeyValue = this.addThousandSeparators(keyValue, true);
+        //const formattedKeyValue = this.addThousandSeparators(keyValue, true);
         const totalDelta = this.addThousandSeparators(keyValue - baselineValue, true);
         const totalDeltaPercentage = this.formatPercentage(((keyValue - baselineValue) / baselineValue * 100) || 0, true);
 

@@ -13,8 +13,6 @@ import { constants } from "../Utilities";
 
 import EntityPlotter from './EntityPlotter/EntityPlotter';
 
-import classNames from 'classnames';
-
 const useStyles = makeStyles((theme) => ({
     root: {
       position: 'fixed',

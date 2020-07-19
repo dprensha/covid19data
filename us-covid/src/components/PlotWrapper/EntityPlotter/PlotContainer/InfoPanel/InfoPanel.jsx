@@ -19,9 +19,9 @@ const propTypes = {
 }
 
 class InfoPanel extends Component {
-    constructor(props, context) {
-        super(props, context);
-    }
+    // constructor(props, context) {
+    //     super(props, context);
+    // }
 
     render() {
         const { totalCases, activeCases, prevTotalCases, prevActiveCases, currentActiveCasesPerCapita, percentageParentCases, parentTitle } = this.props;

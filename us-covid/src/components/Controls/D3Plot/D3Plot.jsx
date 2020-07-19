@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import * as d3 from 'd3';
-import styles from './D3Plot.css';
+import './D3Plot.css';
 
 const propTypes = {
     x: PropTypes.array,
@@ -26,17 +26,16 @@ class D3Plot extends Component {
     drawChart() {
         var margin = { top: 24, right: 12, bottom: 56, left: 48 };
         const { width, height } = this.props;
-
-        var n = this.props.y.length;
         var dataset = null;
+
         if(this.props.scaleMode === "linear"){
             dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] } });
         }
+
         else if(this.props.scaleMode === "logarithmic"){
             dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] <= 0 ? 1 : this.props.y[index] } });
         }
         
-
         var parseTime = d3.timeParse("%-m/%-d/%y");
         // 5. X scale will use the index of our data
         var xScale = d3.scaleTime()

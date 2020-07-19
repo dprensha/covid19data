@@ -11,9 +11,9 @@ const propTypes = {
 }
 
 class InfoDialog extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
     return (
@@ -24,11 +24,13 @@ class InfoDialog extends Component {
         aria-labelledby="responsive-dialog-title"
         maxWidth={"lg"}
       >
-        <Typography variant="h4" style={{ padding: "24px" }}>Thanks for stopping by!</Typography>
+        <Typography variant="h4" className={styles.mainTitle}>Thanks for stopping by!</Typography>
         <DialogContent>
           <Typography variant="h6">Please report any bugs, suggestions, or ideas to <a href="mailto:covid@prenshaw.com">covid@prenshaw.com</a></Typography>
           <p>I sincerely hope that you find this site useful for your own informational purposes. Any feedback is appreciated!</p>
-          <Divider style={{ marginTop: "24px", marginBottom: "24px" }} />
+          <div className={styles.divider}>
+            <Divider />
+          </div>
           <span>Data Sources:</span>
           <ul>
             <li>
@@ -46,7 +48,9 @@ class InfoDialog extends Component {
             </li>
 
           </ul>
-          <Divider style={{ marginTop: "24px", marginBottom: "24px" }} />
+          <div className={styles.divider}>
+            <Divider />
+          </div>
           <b>Note:</b> An "active" case is considered to be recovered (or, but hopefully not, a death) after 14 days of the originally reported date.
               </DialogContent>
         <DialogActions>
