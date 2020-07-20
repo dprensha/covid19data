@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { IconButton } from "../../../Controls";
+import { IconButton, Map } from "../../../Controls";
 import { constants } from "../../../Utilities"
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
@@ -73,19 +73,22 @@ class PlotContainer extends Component {
             const prevTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - this.props.kpiBaselineDays];
 
             infoPanelContent = (
-                <div className={styles.infoPanel}>
-                    <InfoPanel
-                        activeCases={currentActive}
-                        prevActiveCases={prevActive}
-                        totalCases={currentTotal}
-                        prevTotalCases={prevTotal}
-                        currentActiveCasesPerCapita={currentActivePerCapita}
-                        toggleInfoPanel={this.toggleInfoPanel}
-                        displayDetails={this.props.displayDetails}
-                        percentageParentCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
-                        parentTitle={this.props.entity.parent.title}
-                        kpiBaselineDays={this.props.kpiBaselineDays}
-                    />
+                // <div className={styles.infoPanel}>
+                //     <InfoPanel
+                //         activeCases={currentActive}
+                //         prevActiveCases={prevActive}
+                //         totalCases={currentTotal}
+                //         prevTotalCases={prevTotal}
+                //         currentActiveCasesPerCapita={currentActivePerCapita}
+                //         toggleInfoPanel={this.toggleInfoPanel}
+                //         displayDetails={this.props.displayDetails}
+                //         percentageParentCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
+                //         parentTitle={this.props.entity.parent.title}
+                //         kpiBaselineDays={this.props.kpiBaselineDays}
+                //     />
+                // </div>
+                <div>
+                    <Map style={{margin: "auto"}} countryName={this.props.entity.title} long={this.props.entity.long} lat={this.props.entity.lat} width={350}/>
                 </div>
             )
         }
