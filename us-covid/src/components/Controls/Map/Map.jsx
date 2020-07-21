@@ -27,10 +27,10 @@ const Map = ({ width, countryName, long, lat }) => {
     <>
       <div style={{width: width, margin: "auto"}}>
         <ComposableMap data-tip="" projectionConfig={{ scale: 160 }} >
-          <ZoomableGroup
+          {/* <ZoomableGroup
           center={coordinates}
           zoom={2}
-          >
+          > */}
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
               geographies.map(geo => (
@@ -67,7 +67,7 @@ const Map = ({ width, countryName, long, lat }) => {
           <Marker coordinates={coordinates}>
             <circle r={4} fill="#F53" />
           </Marker>
-          </ZoomableGroup>
+          {/* </ZoomableGroup> */}
         </ComposableMap>
       </div>
       {/* <span>{content}</span> */}
