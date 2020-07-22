@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { IconButton, Map } from "../../../Controls";
+import { IconButton, Map, Tooltip } from "../../../Controls";
 import { constants } from "../../../Utilities"
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import CloseIcon from '@material-ui/icons/Close';
+import MapIcon from '@material-ui/icons/Map';
 import classNames from 'classnames';
 import InfoPanel from './InfoPanel/InfoPanel';
 import styles from './PlotContainer.module.scss';
@@ -24,20 +26,36 @@ class PlotContainer extends Component {
         super(props);
 
         this.state = {
-            isInfoExpanded: false
+            isInfoExpanded: false,
+            isMapExpanded: false
         }
 
-        this.toggleInfoPanel = this.toggleInfoPanel.bind(this);
+        this.openInfoPanel = this.openInfoPanel.bind(this);
+        this.openMapPanel = this.openMapPanel.bind(this);
+        this.closePanels = this.closePanels.bind(this);
     }
 
-    toggleInfoPanel() {
+    openInfoPanel() {
         this.setState({
-            isInfoExpanded: !this.state.isInfoExpanded
+            isInfoExpanded: true
+        })
+    }
+
+    openMapPanel() {
+        this.setState({
+            isMapExpanded: true
+        })
+    }
+
+    closePanels() {
+        this.setState({
+            isInfoExpanded: false,
+            isMapExpanded: false
         })
     }
 
     render() {
-        let isArrowButtonEnabled = !this.state.isInfoExpanded && ((this.props.entity.children && Object.keys(this.props.entity.children).length > 0) || this.props.entity.title === "US");
+        let isArrowButtonEnabled = !this.state.isInfoExpanded && !this.state.isMapExpanded && ((this.props.entity.children && Object.keys(this.props.entity.children).length > 0) || this.props.entity.title === "US");
 
         let yValue = null;
         switch (this.props.graphMode) {
@@ -73,28 +91,33 @@ class PlotContainer extends Component {
             const prevTotal = this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - this.props.kpiBaselineDays];
 
             infoPanelContent = (
-                // <div className={styles.infoPanel}>
-                //     <InfoPanel
-                //         activeCases={currentActive}
-                //         prevActiveCases={prevActive}
-                //         totalCases={currentTotal}
-                //         prevTotalCases={prevTotal}
-                //         currentActiveCasesPerCapita={currentActivePerCapita}
-                //         toggleInfoPanel={this.toggleInfoPanel}
-                //         displayDetails={this.props.displayDetails}
-                //         percentageParentCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
-                //         parentTitle={this.props.entity.parent.title}
-                //         kpiBaselineDays={this.props.kpiBaselineDays}
-                //     />
-                // </div>
-                <div>
-                    <Map style={{margin: "auto"}} countryName={this.props.entity.title} long={this.props.entity.long} lat={this.props.entity.lat} width={350}/>
+                <div className={styles.infoPanel}>
+                    <InfoPanel
+                        activeCases={currentActive}
+                        prevActiveCases={prevActive}
+                        totalCases={currentTotal}
+                        prevTotalCases={prevTotal}
+                        currentActiveCasesPerCapita={currentActivePerCapita}
+                        displayDetails={this.props.displayDetails}
+                        percentageParentCases={this.props.entity.yActive[this.props.entity.yActive.length - 1]/this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1]*100}
+                        parentTitle={this.props.entity.parent.title}
+                        kpiBaselineDays={this.props.kpiBaselineDays}
+                    />
                 </div>
             )
         }
 
+        let mapPanelContent = null;
+        if(this.state.isMapExpanded) {
+            mapPanelContent = (
+            <div style={{marginTop: "16px"}}>
+                <Map style={{margin: "auto"}} countryName={this.props.entity.title} long={this.props.entity.long} lat={this.props.entity.lat} width={400}/>
+            </div>
+            );
+        }
+
         let plotContent = null;
-        if (!this.state.isInfoExpanded) {
+        if (!this.state.isInfoExpanded && !this.state.isMapExpanded) {
             plotContent = (
                 <D3Plot
                     id={this.props.entity.navigableTitle}
@@ -113,24 +136,52 @@ class PlotContainer extends Component {
         if (isArrowButtonEnabled) {
             arrowButtonContent = (
                 <div className={styles.childPlotTitleBarIcon}>
+                    <Tooltip title="Navigate">
                     <IconButton
                         onClick={() => { this.props.handlePlotClick(this.props.entity) }}
                     >
                         <ArrowForwardIcon />
                     </IconButton>
+                    </Tooltip>
                 </div>
             )
         }
 
+        let closePanelButtonContent = null;
+        if(this.state.isInfoExpanded || this.state.isMapExpanded) {
+            closePanelButtonContent = (
+            <div className={styles.closeIcon}>
+                <IconButton onClick={this.closePanels} >
+                    <CloseIcon />
+                </IconButton>
+            </div>
+            )
+        }
+
+        let mapButtonContent = null;
+        if(!this.state.isMapExpanded && !this.state.isInfoExpanded) {
+            mapButtonContent = (
+                <div className={styles.closeIcon}>
+                    <Tooltip title="Show on map">
+                        <IconButton onClick={this.openMapPanel}>
+                            <MapIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+                )
+        }
+
         let infoButtonContent = null;
-        if(!this.state.isInfoExpanded) {
+        if(!this.state.isInfoExpanded && !this.state.isMapExpanded) {
             infoButtonContent = (
                 <div className={styles.childPlotTitleBarInfoIcon}>
-                    <IconButton
-                        onClick={this.toggleInfoPanel}
-                    >
-                        <InfoOutlinedIcon />
-                    </IconButton>
+                    <Tooltip title="Show details">
+                        <IconButton
+                            onClick={this.openInfoPanel}
+                        >
+                            <InfoOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>    
                 </div>
             )
         }
@@ -151,8 +202,9 @@ class PlotContainer extends Component {
                 >
                     <div
                         className={styles.childPlotTitleBar}
-                        //style={(this.state.isInfoExpanded) ? { zIndex: -1 } : { zIndex: 0 }}
                     >
+                        {closePanelButtonContent}
+                        {mapButtonContent}
                         <div className={childPlotTitleBarTitleStyles}>
                             {this.props.entity.title}
                         </div>
@@ -162,6 +214,7 @@ class PlotContainer extends Component {
                         </div>
                     </div>
                     {plotContent}
+                    {mapPanelContent}
                     {infoPanelContent}
                 </div>
             )

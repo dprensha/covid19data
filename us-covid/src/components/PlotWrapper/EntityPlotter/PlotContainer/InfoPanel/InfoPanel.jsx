@@ -11,7 +11,6 @@ const propTypes = {
     totalCases: PropTypes.number,
     prevTotalCases: PropTypes.number,
     currentActiveCasesPerCapita: PropTypes.number,
-    toggleInfoPanel: PropTypes.func,
     percentageParentCases: PropTypes.number,
     parentTitle: PropTypes.string,
     displayDetails: PropTypes.object,
@@ -27,12 +26,6 @@ class InfoPanel extends Component {
         const { totalCases, activeCases, prevTotalCases, prevActiveCases, currentActiveCasesPerCapita, percentageParentCases, parentTitle } = this.props;
 
         return (
-            <div>
-                <div className={styles.closeIcon}>
-                    <IconButton onClick={this.props.toggleInfoPanel} >
-                        <CloseIcon />
-                    </IconButton>
-                </div>
                 <div className={styles.kpiContainer}>
                     <KPI 
                         keyValueTitle={constants.strings.ACTIVE_CASES}
@@ -76,7 +69,6 @@ class InfoPanel extends Component {
                             size={"small"}
                         />
                 </div>
-            </div>
         );
     }
 }

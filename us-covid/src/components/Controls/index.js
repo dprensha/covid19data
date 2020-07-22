@@ -26,6 +26,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import List from '@material-ui/core/List';
@@ -76,6 +77,7 @@ export {
     SnackbarContent,
     TextField,
     Toolbar,
+    Tooltip,
     Typography,
     List,
     ListItem,
