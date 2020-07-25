@@ -25,7 +25,7 @@ const rounded = num => {
 
 const Map = ({ width, entityName, long, lat, parentEntityName }) => {
   const [content, setContent] = useState("");
-  const coordinates = [long, lat];
+  let coordinates = [long, lat];
   let center = coordinates;
   let projection = "geoMercator";
 
@@ -50,16 +50,28 @@ switch (parentEntityName) {
     break;
   case "China":
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/ChinaTopo.json";
-    center = [103.185, 34.147];
-    zoom = 2;
+    center = [106.185, 38.147];
+    zoom = 1.65;
     //projection = "geoAlbers"
     break;
   case "United States":
       geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json";
-      center = [-96.949, 38.329];
+      center =  [-96.949, 38.329];
       //zoom = .4;
       //projection = "geoAlbers";
       zoom = 2.4;
+      coordinates = [0, 0];
+
+      if(entityName === "Alaska") {
+        center = [-155.949, 64.329];
+        zoom = 1.5;
+      }
+
+      if(entityName === "Hawaii") {
+        center = [-158.949, 20.329];
+        zoom = 9;
+      }
+
       break;
   default:
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
