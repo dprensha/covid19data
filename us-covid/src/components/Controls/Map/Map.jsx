@@ -7,6 +7,9 @@ import {
   Geography,
   Marker
 } from "react-simple-maps";
+import { geoAlbersUsa } from "d3-geo";
+import { geoAlbers } from "d3-geo";
+import { geoEqualEarth } from "d3-geo";
 
 
 
@@ -24,6 +27,8 @@ const Map = ({ width, entityName, long, lat, parentEntityName }) => {
   const [content, setContent] = useState("");
   const coordinates = [long, lat];
   let center = coordinates;
+  let projection = "geoMercator";
+
   let zoom = 1;
   let geoURL = null;
 
@@ -33,19 +38,29 @@ switch (parentEntityName) {
     break;
   case "Canada": 
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/CanadaTopo.json";
-    center = [-94.245, 56.728];
-    zoom = 2;
+    center = [-94.245, 57.728];
+    zoom = 1.4;
+    //projection = "geoAlbers"
     break;
   case "Australia":
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/AustraliaTopo.json";
-    center = [136.423, -25.986];
-    zoom = 2;
+    center = [136.423, -27.986];
+    zoom = 1.9;
+    //projection = "geoAlbers"
     break;
   case "China":
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/ChinaTopo.json";
     center = [103.185, 34.147];
     zoom = 2;
+    //projection = "geoAlbers"
     break;
+  case "United States":
+      geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json";
+      center = [-96.949, 38.329];
+      //zoom = .4;
+      //projection = "geoAlbers";
+      zoom = 2.4;
+      break;
   default:
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
     break;
@@ -54,17 +69,18 @@ switch (parentEntityName) {
   return (
     <>
       <div style={{width: width, margin: "auto"}}>
-        <ComposableMap data-tip="" projectionConfig={{ scale: 160 }} height={200} width={400} >
+        <ComposableMap data-tip="" projection={projection} /*projectionConfig={{ scale: 160 }}*/ height={200} width={400} >
           <ZoomableGroup
           center={center}
           zoom={zoom}
           >
           <Geographies geography={geoURL}>
-            {({ geographies }) =>
+            {({ geographies, projection }) =>
               geographies.map(geo => (
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
+                  //projection={projection}
                   // onMouseEnter={() => {
                   //   const { NAME, POP_EST } = geo.properties;
                   //   setContent(`${NAME} - ${rounded(POP_EST)}`);
