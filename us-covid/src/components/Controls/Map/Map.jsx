@@ -41,6 +41,11 @@ switch (parentEntityName) {
     center = [136.423, -25.986];
     zoom = 2;
     break;
+  case "China":
+    geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/ChinaTopo.json";
+    center = [103.185, 34.147];
+    zoom = 2;
+    break;
   default:
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
     break;
