@@ -56,8 +56,8 @@ switch (parentEntityName) {
     break;
     case "Tennessee":
       geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/TN_counties.json";
-      center = [106.185, 38.147];
-      zoom = 1.65;
+      center = [-86, 36];
+      zoom = 16;
       //projection = "geoAlbers"
       break;
   case "United States":
@@ -111,18 +111,18 @@ switch (parentEntityName) {
                       fill: `${(geo.properties.DISPLAY_NAME === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
                       outline: "none",
                       stroke: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".5px"}`,
+                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".08px"}`,
                     },
                     hover: {
                       fill: `${(geo.properties.DISPLAY_NAME === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
                       stroke: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".5px"}`,
+                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".08px"}`,
                       outline: "none"
                     },
                     pressed: {
                       fill: `${(geo.properties.DISPLAY_NAME === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
                       stroke: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".5px"}`,
+                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".08px"}`,
                       outline: "none"
                     }
                   }}
