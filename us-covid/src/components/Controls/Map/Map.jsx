@@ -84,6 +84,95 @@ switch (parentEntityName) {
     break;
 }
 
+let cities = [
+  {
+      
+      
+      fields: {
+          city: "Knoxville",
+          coordinates: [
+              35.9606384,
+              -83.9207392
+          ],
+          state: "Tennessee",
+          
+          
+          population: 183270
+      },
+      geometry: {
+          type: "Point",
+          coordinates: [
+              -83.9207392,
+              35.9606384
+          ]
+      },
+      record_timestamp: "2017-06-01T10:40:33.222-04:00"
+  },
+  {
+      
+      
+      fields: {
+          city: "Kingsport",
+          coordinates: [
+              36.548434,
+              -82.5618186
+          ],
+          state: "Tennessee",
+          
+          
+          population: 52962
+      },
+      geometry: {
+          type: "Point",
+          coordinates: [
+              -82.5618186,
+              36.548434
+          ]
+      },
+      record_timestamp: "2017-06-01T10:40:33.222-04:00"
+  },
+  {
+      
+      
+      fields: {
+          city: "Nashville",
+          coordinates: [
+              36.1626638,
+              -86.7816016
+          ],
+          state: "Tennessee",
+          
+          
+          population: 634464
+      },
+      geometry: {
+          type: "Point",
+          coordinates: [
+              -86.7816016,
+              36.1626638
+          ]
+      },
+      record_timestamp: "2017-06-01T10:40:33.222-04:00"
+  }
+];
+let pointsList = [];
+for(var i = 0; i < cities.length; i++) {
+  if(cities[i].fields.state === "Tennessee") {
+    //pointsList.push({name: cities[i].fields.city, coordinates: cities[i].fields.coordinates})
+    pointsList.push(
+      <Marker 
+        coordinates={[cities[i].fields.coordinates[1], cities[i].fields.coordinates[0]]}
+        key={i}
+      >
+        <circle r={2} fill="#000" style={{transform: "scale(.05)"}} />
+        <text style={{transform: "scale(.04)"}}>{cities[i].fields.city}</text>
+      </Marker>
+    )
+  }
+}
+
+console.log(pointsList);
+
   return (
     <>
       <div style={{width: width, margin: "auto"}}>
@@ -130,9 +219,10 @@ switch (parentEntityName) {
               ))
             }
           </Geographies>
-          <Marker coordinates={coordinates}>
+          {/* <Marker coordinates={coordinates}>
             <circle r={2} fill="#F53" />
-          </Marker>
+          </Marker> */}
+          {pointsList}
           </ZoomableGroup>
         </ComposableMap>
       </div>
