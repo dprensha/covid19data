@@ -24,6 +24,7 @@ const Map = ({ width, entityName, long, lat, parentEntityName }) => {
   const [content, setContent] = useState("");
   const coordinates = [long, lat];
   let center = coordinates;
+  let zoom = 1;
   let geoURL = null;
 
 switch (parentEntityName) {
@@ -32,11 +33,13 @@ switch (parentEntityName) {
     break;
   case "Canada": 
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/CanadaTopo.json";
-    center = [-94.245, 56.728]
+    center = [-94.245, 56.728];
+    zoom = 2;
     break;
   case "Australia":
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/AustraliaTopo.json";
     center = [136.423, -25.986];
+    zoom = 2;
     break;
   default:
     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
@@ -49,7 +52,7 @@ switch (parentEntityName) {
         <ComposableMap data-tip="" projectionConfig={{ scale: 160 }} height={200} width={400} >
           <ZoomableGroup
           center={center}
-          zoom={2}
+          zoom={zoom}
           >
           <Geographies geography={geoURL}>
             {({ geographies }) =>
@@ -66,21 +69,21 @@ switch (parentEntityName) {
                   // }}
                   style={{
                     default: {
-                      fill: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
+                      fill: `${(geo.properties.DISPLAY_NAME === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
                       outline: "none",
-                      stroke: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : ".5px"}`,
+                      stroke: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : "#FFF"}`,
+                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".5px"}`,
                     },
                     hover: {
-                      fill: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
-                      stroke: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : ".5px"}`,
+                      fill: `${(geo.properties.DISPLAY_NAME === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
+                      stroke: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : "#FFF"}`,
+                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".5px"}`,
                       outline: "none"
                     },
                     pressed: {
-                      fill: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
-                      stroke: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : ".5px"}`,
+                      fill: `${(geo.properties.DISPLAY_NAME === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
+                      stroke: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : "#FFF"}`,
+                      strokeWidth: `${(geo.properties.DISPLAY_NAME === entityName) ? "none" : ".5px"}`,
                       outline: "none"
                     }
                   }}
