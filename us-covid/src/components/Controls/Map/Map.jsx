@@ -8,8 +8,7 @@ import {
   Marker
 } from "react-simple-maps";
 
-const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+
 
 const rounded = num => {
   if (num > 1000000000) {
@@ -21,18 +20,38 @@ const rounded = num => {
   }
 };
 
-const Map = ({ width, countryName, long, lat }) => {
+const Map = ({ width, entityName, long, lat, parentEntityName }) => {
   const [content, setContent] = useState("");
   const coordinates = [long, lat];
+  let center = coordinates;
+  let geoURL = null;
+
+switch (parentEntityName) {
+  case "World": 
+    geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
+    break;
+  case "Canada": 
+    geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/CanadaTopo.json";
+    center = [-94.245, 56.728]
+    break;
+  case "Australia":
+    geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/AustraliaTopo.json";
+    center = [136.423, -25.986];
+    break;
+  default:
+    geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
+    break;
+}
+
   return (
     <>
       <div style={{width: width, margin: "auto"}}>
         <ComposableMap data-tip="" projectionConfig={{ scale: 160 }} height={200} width={400} >
           <ZoomableGroup
-          center={coordinates}
-          zoom={1}
+          center={center}
+          zoom={2}
           >
-          <Geographies geography={geoUrl}>
+          <Geographies geography={geoURL}>
             {({ geographies }) =>
               geographies.map(geo => (
                 <Geography
@@ -47,21 +66,21 @@ const Map = ({ width, countryName, long, lat }) => {
                   // }}
                   style={{
                     default: {
-                      fill: `${(geo.properties.NAME_LONG === countryName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
+                      fill: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
                       outline: "none",
-                      stroke: `${(geo.properties.NAME_LONG === countryName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.NAME_LONG === countryName) ? "none" : ".5px"}`,
+                      stroke: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : "#FFF"}`,
+                      strokeWidth: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : ".5px"}`,
                     },
                     hover: {
-                      fill: `${(geo.properties.NAME_LONG === countryName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
-                      stroke: `${(geo.properties.NAME_LONG === countryName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.NAME_LONG === countryName) ? "none" : ".5px"}`,
+                      fill: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
+                      stroke: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : "#FFF"}`,
+                      strokeWidth: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : ".5px"}`,
                       outline: "none"
                     },
                     pressed: {
-                      fill: `${(geo.properties.NAME_LONG === countryName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
-                      stroke: `${(geo.properties.NAME_LONG === countryName) ? "none" : "#FFF"}`,
-                      strokeWidth: `${(geo.properties.NAME_LONG === countryName) ? "none" : ".5px"}`,
+                      fill: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "rgb(255,85,51)" : "#D6D6DA"}`,
+                      stroke: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : "#FFF"}`,
+                      strokeWidth: `${(geo.properties.NAME_LONG || geo.properties.NAME_1 === entityName) ? "none" : ".5px"}`,
                       outline: "none"
                     }
                   }}
@@ -70,7 +89,7 @@ const Map = ({ width, countryName, long, lat }) => {
             }
           </Geographies>
           <Marker coordinates={coordinates}>
-            <circle r={4} fill="#F53" />
+            <circle r={2} fill="#F53" />
           </Marker>
           </ZoomableGroup>
         </ComposableMap>
