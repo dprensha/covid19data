@@ -54,6 +54,12 @@ switch (parentEntityName) {
     zoom = 1.65;
     //projection = "geoAlbers"
     break;
+    case "Tennessee":
+      geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/TN_counties.json";
+      center = [106.185, 38.147];
+      zoom = 1.65;
+      //projection = "geoAlbers"
+      break;
   case "United States":
       geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json";
       center =  [-96.949, 38.329];
