@@ -55,7 +55,7 @@ switch (parentEntityName) {
     //projection = "geoAlbers"
     break;
   case "United States":
-      geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo2.json";
+      geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json";
       center =  [-96.949, 38.329];
       //zoom = .4;
       //projection = "geoAlbers";
