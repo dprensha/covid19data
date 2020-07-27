@@ -111,7 +111,17 @@ class PlotContainer extends Component {
         if(this.state.isMapExpanded) {
             mapPanelContent = (
             <div style={{marginTop: "16px"}}>
-                <Map style={{margin: "auto"}} entityName={this.props.entity.title} long={this.props.entity.long} lat={this.props.entity.lat} width={400} parentEntityName={this.props.entity.parent.title}/>
+                <Map 
+                    style={{margin: "auto"}} 
+                    entityName={this.props.entity.title} 
+                    long={this.props.entity.long} 
+                    lat={this.props.entity.lat} 
+                    width={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 317 : 400}
+                    height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 200 : 200}
+                    displayDetails={this.props.displayDetails}
+                    parentEntityName={this.props.entity.parent.title} 
+                    grandparentEntityName={this.props.entity.parent.parent ? this.props.entity.parent.parent.title : null}
+                />
             </div>
             );
         }
