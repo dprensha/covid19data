@@ -2,17 +2,12 @@ import React, { useState } from "react";
 import {
   ZoomableGroup,
   ComposableMap,
-  CanvasMap,
   Geographies,
   Geography,
   Marker
 } from "react-simple-maps";
 import { constants } from "../../Utilities";
-import { geoAlbersUsa } from "d3-geo";
-import { geoAlbers } from "d3-geo";
-import { geoEqualEarth } from "d3-geo";
-
-
+//import cities from '../../../utilities/USCities.json';
 
 const rounded = num => {
   if (num > 1000000000) {
@@ -35,193 +30,39 @@ const Map = ({ displayDetails, width, height, entityName, long, lat, parentEntit
   let mapConfig = null;
 
   mapConfig = getMapConfig(parentEntityName, entityName, grandparentEntityName);
-  if(mapConfig.geoURL) {
+  if (mapConfig.geoURL) {
     geoURL = mapConfig.geoURL;
   }
-  if(mapConfig.center) {
+  if (mapConfig.center) {
     center = mapConfig.center;
   }
-  if(mapConfig.coordinates) {
+  if (mapConfig.coordinates) {
     coordinates = mapConfig.coordinates;
   }
-  if(mapConfig.zoom) {
+  if (mapConfig.zoom) {
     zoom = mapConfig.zoom;
   }
-  if(mapConfig.strokeWidth){
+  if (mapConfig.strokeWidth) {
     strokeWidth = mapConfig.strokeWidth;
   }
 
-  // switch (parentEntityName) {
-  //   case "World":
-  //     // geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
-  //     // break;
-  //     mapConfig = getMapConfig(parentEntityName, entityName);
-  //     geoURL = mapConfig.geoURL;
-  //     break;
-  //   case "Canada":
-  //     // geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/CanadaTopo.json";
-  //     // center = [-94.245, 57.728];
-  //     // zoom = 1.4;
-  //     // //projection = "geoAlbers"
-  //     mapConfig = getMapConfig(parentEntityName, entityName);
-  //     geoURL = mapConfig.geoURL;
-  //     center = mapConfig.center;
-  //     zoom = mapConfig.zoom;
+  // let pointsList = [];
+  // for (var i = 0; i < cities.length; i++) {
+  //   if (cities[i].fields.state === parentEntityName) {
+  //     //pointsList.push({name: cities[i].fields.city, coordinates: cities[i].fields.coordinates})
+  //     pointsList.push(
+  //       <Marker
+  //         coordinates={[cities[i].fields.coordinates[1], cities[i].fields.coordinates[0]]}
+  //         key={i}
+  //       >
+  //         <circle r={2} fill="#000" style={{ transform: "scale(.05)" }} />
+  //         <text style={{ transform: "scale(.04)" }}>{cities[i].fields.city}</text>
+  //       </Marker>
+  //     )
+  //   }
+  // }
 
-  //     break;
-  //   case "Australia":
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/AustraliaTopo.json";
-  //     center = [136.423, -27.986];
-  //     zoom = 1.9;
-  //     //projection = "geoAlbers"
-  //     break;
-  //   case "China":
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/ChinaTopo.json";
-  //     center = [106.185, 38.147];
-  //     zoom = 1.65;
-  //     //projection = "geoAlbers"
-  //     break;
-  //   case "Tennessee":
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/US_Counties.json";
-  //     center = [-86, 36];
-  //     zoom = 16;
-  //     strokeWidth = ".08px";
-  //     //projection = "geoAlbers"
-  //     break;
-  //   case "North Carolina":
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/US_Counties.json";
-  //     center = [-80.1, 35.4];
-  //     zoom = 17;
-  //     strokeWidth = ".08px";
-  //     //projection = "geoAlbers"
-  //     break;
-  //   case "California":
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/US_Counties.json";
-  //     center = [-119, 37];
-  //     zoom = 6;
-  //     strokeWidth = ".08px";
-  //     //projection = "geoAlbers"
-  //     break;
-  //   case "Arizona":
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/US_Counties.json";
-  //     center = [-111.75, 33.71];
-  //     zoom = 10;
-  //     strokeWidth = ".08px";
-  //     //projection = "geoAlbers"
-  //     break;
-  //   case "United States":
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json";
-  //     center = [-96.949, 38.329];
-  //     //zoom = .4;
-  //     //projection = "geoAlbers";
-  //     zoom = 2.4;
-  //     coordinates = [0, 0];
-  //     strokeWidth = "0.5px";
-
-  //     if (entityName === "Alaska") {
-  //       center = [-155.949, 64.329];
-  //       zoom = 1.5;
-  //     }
-
-  //     if (entityName === "Hawaii") {
-  //       center = [-158.949, 20.329];
-  //       zoom = 9;
-  //     }
-
-  //     break;
-  //   default:
-  //     geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
-  //     break;
-  //}
-
-  let cities = [
-    {
-
-
-      fields: {
-        city: "Knoxville",
-        coordinates: [
-          35.9606384,
-          -83.9207392
-        ],
-        state: "Tennessee",
-
-
-        population: 183270
-      },
-      geometry: {
-        type: "Point",
-        coordinates: [
-          -83.9207392,
-          35.9606384
-        ]
-      },
-      record_timestamp: "2017-06-01T10:40:33.222-04:00"
-    },
-    {
-
-
-      fields: {
-        city: "Kingsport",
-        coordinates: [
-          36.548434,
-          -82.5618186
-        ],
-        state: "Tennessee",
-
-
-        population: 52962
-      },
-      geometry: {
-        type: "Point",
-        coordinates: [
-          -82.5618186,
-          36.548434
-        ]
-      },
-      record_timestamp: "2017-06-01T10:40:33.222-04:00"
-    },
-    {
-
-
-      fields: {
-        city: "Nashville",
-        coordinates: [
-          36.1626638,
-          -86.7816016
-        ],
-        state: "Tennessee",
-
-
-        population: 634464
-      },
-      geometry: {
-        type: "Point",
-        coordinates: [
-          -86.7816016,
-          36.1626638
-        ]
-      },
-      record_timestamp: "2017-06-01T10:40:33.222-04:00"
-    }
-  ];
-  let pointsList = [];
-  for (var i = 0; i < cities.length; i++) {
-    if (cities[i].fields.state === "Tennessee") {
-      //pointsList.push({name: cities[i].fields.city, coordinates: cities[i].fields.coordinates})
-      pointsList.push(
-        <Marker
-          coordinates={[cities[i].fields.coordinates[1], cities[i].fields.coordinates[0]]}
-          key={i}
-        >
-          <circle r={2} fill="#000" style={{ transform: "scale(.05)" }} />
-          <text style={{ transform: "scale(.04)" }}>{cities[i].fields.city}</text>
-        </Marker>
-      )
-    }
-  }
-
-  console.log(pointsList);
+  // console.log(pointsList);
 
   return (
     <>
@@ -229,7 +70,7 @@ const Map = ({ displayDetails, width, height, entityName, long, lat, parentEntit
         <ComposableMap data-tip="" projection={projection} /*projectionConfig={{ scale: 160 }}*/ height={height} width={width} >
           <ZoomableGroup
             center={center}
-            zoom={displayDetails.formFactor === constants.display.formFactors.MOBILE ? zoom*.82 : zoom}
+            zoom={displayDetails.formFactor === constants.display.formFactors.MOBILE ? zoom * .82 : zoom}
           >
             <Geographies geography={geoURL}>
               {({ geographies, projection }) =>
@@ -292,7 +133,7 @@ const fips = {
   "Delaware": "10",
   "District of Columbia": "11",
   "Florida": "12",
-  "Geogia": "13",
+  "Georgia": "13",
   "Hawaii": "15",
   "Idaho": "16",
   "Illinois": "17",
@@ -375,86 +216,125 @@ const mapConfig = {
     coordinates: [0, 0],
     strokeWidth: "0.5px",
   },
-  // "Tennessee": {
-  //   center: [-86, 36],
-  //   zoom: 16
-  // },
-  // "North Carolina": {
-  //   center: [-80.1, 35.4],
-  //   zoom: 17
-  // },
-  // "California": {
-  //   center: [-119, 37],
-  //   zoom: 6
-  // },
-  // "Arizona": {
-  //   center: [-111.75, 33.71],
-  //   zoom: 10
-  // },
 
-"Alabama": { center: [-86.8287,32.8794], zoom: 12 },
-"Alaska": { center: [-152.2782,62.0685], zoom: 1.65 },
-"Arizona": { center: [-111.6602,34.2744], zoom: 10 },
-"Arkansas": { center: [-92.4426,34.8938], zoom: 16 },
-"California": { center: [-119.4696,37.1841], zoom: 6 },
-"Colorado": { center: [-105.5478,38.9972], zoom: 14 },
-"Connecticut": { center: [-72.7273,41.6219], zoom: 40 },
-"Delaware": { center: [-75.505,39.1896], zoom: 40 },
-"District of Columbia": { center: [-77.0147,38.9101], zoom: 100 },
-"Florida": { center: [-83.4497,27.6305], zoom: 10 },
-"Georgia": { center: [-83.4426,32.6415], zoom: 10 }, ///WHY DOESN'T THIS WORK????????????????
-"Hawaii": { center: [-156.3737,20.2927], zoom: 10 }, ///Name not unique
-"Idaho": { center: [-114.613,45.3509], zoom: 7 },
-"Illinois": { center: [-89.1965,40.0417], zoom: 10 },
-"Indiana": { center: [-86.2816,39.8942], zoom: 14 },
-"Iowa": { center: [-93.496,42.0751], zoom: 17 },
-"Kansas": { center: [-98.3804,38.4937], zoom: 17 },
-"Kentucky": { center: [-85.7021,37.7347], zoom: 19 },
-"Louisiana": { center: [-91.9968,31.0689], zoom: 15.25 },
-"Maine": { center: [-69.2428,45.3695], zoom: 12 },
-"Maryland": { center: [-77.2909,38.855], zoom: 30 },
-"Massachusetts": { center: [-71.8083,42.2596], zoom: 10 },
-"Michigan": { center: [-85.4102,44.6467], zoom: 9 },
-"Minnesota": { center: [-94.3053,46.3807], zoom: 8.5 },
-"Mississippi": { center: [-89.6678,32.7364], zoom: 13 },
-"Missouri": { center: [-92.458,38.3566], zoom: 12 },
-"Montana": { center: [-109.8333,46.9527], zoom: 10 },
-"Nebraska": { center: [-99.7951,41.5378], zoom: 16 },
-"Nevada": { center: [-116.6312,38.8289], zoom: 8 },
-"New Hampshire": { center: [-71.5811,43.9805], zoom: 20 },
-"New Jersey": { center: [-74.6728,40.1907], zoom: 23 },
-"New Mexico": { center: [-106.1126,34.3071], zoom: 10.5 },
-"New York": { center: [-75.5268,42.8538], zoom: 11.5 },
-"North Carolina": { center: [-80.0877,35.5557], zoom: 17 },
-"North Dakota": { center: [-100.4659,47.4501], zoom: 15 },
-"Ohio": { center: [-82.7937,40.1862], zoom: 16 },
-"Oklahoma": { center: [-98.4943,35.5889], zoom: 15 },
-"Oregon": { center: [-120.5583,44.0336], zoom: 12 },
-"Pennsylvania": { center: [-77.7996,40.9781], zoom: 21 },
-"Rhode Island": { center: [-71.5562,41.6762], zoom: 60 },
-"South Carolina": { center: [-80.8964,33.6169], zoom: 18 },
-"South Dakota": { center: [-100.2263,44.4443], zoom: 14 },
-"Tennessee": { center: [-85.9505,35.858], zoom: 16.5 },
-"Texas": { center: [-99.3312,31.4757], zoom: 6 },
-"Utah": { center: [-111.6703,39.5055], zoom: 11 },   //why is 1st county not highlighted???
-"Vermont": { center: [-72.6658,44.0687], zoom: 20 },
-"Virginia": { center: [-79.54537,37.9215], zoom: 17 },
-"Washington": { center: [-120.4472,47.3826], zoom: 14 },
-"West Virginia": { center: [-80.6227,38.9409], zoom: 17 },
-"Wisconsin": { center: [-89.9941,44.8243], zoom: 11 },
-"Wyoming": { center: [-107.5512,42.9957], zoom: 13 },
-  
+  "Alabama": { center: [-86.8287, 32.8794], zoom: 12 },
+  "Alaska": { center: [-152.2782, 62.0685], zoom: 1.65 },
+  "Arizona": { center: [-111.6602, 34.2744], zoom: 10 },
+  "Arkansas": { center: [-92.4426, 34.8938], zoom: 16 },
+  "California": { center: [-119.4696, 37.1841], zoom: 6 },
+  "Colorado": { center: [-105.5478, 38.9972], zoom: 14 },
+  "Connecticut": { center: [-72.7273, 41.6219], zoom: 40 },
+  "Delaware": { center: [-75.505, 39.1896], zoom: 40 },
+  "District of Columbia": { center: [-77.0147, 38.9101], zoom: 100 },
+  "Florida": { center: [-83.4497, 27.6305], zoom: 10 },
+  "Georgia": { center: [-83.4426, 32.6415], zoom: 13 },
+  "Hawaii": { center: [-157.2737, 20.4927], zoom: 17 },
+  "Idaho": { center: [-114.613, 45.3509], zoom: 7 },
+  "Illinois": { center: [-89.1965, 40.0417], zoom: 10 },
+  "Indiana": { center: [-86.2816, 39.8942], zoom: 14 },
+  "Iowa": { center: [-93.496, 42.0751], zoom: 17 },
+  "Kansas": { center: [-98.3804, 38.4937], zoom: 17 },
+  "Kentucky": { center: [-85.7021, 37.7347], zoom: 19 },
+  "Louisiana": { center: [-91.9968, 31.0689], zoom: 15.25 },
+  "Maine": { center: [-69.2428, 45.3695], zoom: 12 },
+  "Maryland": { center: [-77.2909, 38.855], zoom: 30 },
+  "Massachusetts": { center: [-71.8083, 42.2596], zoom: 10 },
+  "Michigan": { center: [-85.4102, 44.6467], zoom: 9 },
+  "Minnesota": { center: [-94.3053, 46.3807], zoom: 8.5 },
+  "Mississippi": { center: [-89.6678, 32.7364], zoom: 13 },
+  "Missouri": { center: [-92.458, 38.3566], zoom: 12 },
+  "Montana": { center: [-109.8333, 46.9527], zoom: 10 },
+  "Nebraska": { center: [-99.7951, 41.5378], zoom: 16 },
+  "Nevada": { center: [-116.6312, 38.8289], zoom: 8 },
+  "New Hampshire": { center: [-71.5811, 43.9805], zoom: 20 },
+  "New Jersey": { center: [-74.6728, 40.1907], zoom: 23 },
+  "New Mexico": { center: [-106.1126, 34.3071], zoom: 10.5 },
+  "New York": { center: [-75.5268, 42.8538], zoom: 11.5 },
+  "North Carolina": { center: [-80.0877, 35.5557], zoom: 17 },
+  "North Dakota": { center: [-100.4659, 47.4501], zoom: 15 },
+  "Ohio": { center: [-82.7937, 40.1862], zoom: 16 },
+  "Oklahoma": { center: [-98.4943, 35.5889], zoom: 15 },
+  "Oregon": { center: [-120.5583, 44.0336], zoom: 12 },
+  "Pennsylvania": { center: [-77.7996, 40.9781], zoom: 21 },
+  "Rhode Island": { center: [-71.5562, 41.6762], zoom: 60 },
+  "South Carolina": { center: [-80.8964, 33.6169], zoom: 18 },
+  "South Dakota": { center: [-100.2263, 44.4443], zoom: 14 },
+  "Tennessee": { center: [-85.9505, 35.858], zoom: 16.5 },
+  "Texas": { center: [-99.3312, 31.4757], zoom: 6 },
+  "Utah": { center: [-111.6703, 39.5055], zoom: 11 },
+  "Vermont": { center: [-72.6658, 44.0687], zoom: 20 },
+  "Virginia": { center: [-79.54537, 37.9215], zoom: 17 },
+  "Washington": { center: [-120.4472, 47.3826], zoom: 14 },
+  "West Virginia": { center: [-80.6227, 38.9409], zoom: 17 },
+  "Wisconsin": { center: [-89.9941, 44.8243], zoom: 11 },
+  "Wyoming": { center: [-107.5512, 42.9957], zoom: 13 },
+
+  "American Samoa": {
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    center: [170.73, -14.31],
+    zoom: 1,
+    coordinates: [180, -14.31], //not completely accurate, but i want it to show to the right of Asia
+    strokeWidth: "0.5px",
+  },
+  "Diamond Princess": { //done
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    center: [139.648, 35.452],
+    zoom: 2,
+    coordinates: [139.648, 35.452],
+    strokeWidth: "0.5px",
+  },
+  "Grand Princess": { //done
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    center: [-122.27, 37.79],
+    zoom: 2,
+    coordinates: [-122.27, 37.79],
+    strokeWidth: "0.5px",
+  },
+  "Guam": { //done
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    center: [144.776, 13.456],
+    zoom: 1,
+    coordinates: [144.776, 13.456],
+    strokeWidth: "1px",
+  },
+  "Northern Mariana Islands": {
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    center: [145.677, 15.108],
+    zoom: 1,
+    coordinates: [145.677, 15.108],
+    strokeWidth: "0.5px",
+  },
+  "Puerto Rico": { //done
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    center: [-73.002, 22.329],
+    zoom: 2,
+    coordinates: [0, 0],
+    strokeWidth: "0.5px",
+  },
+  "Virgin Islands": {
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    center: [-73.002, 22.329],
+    zoom: 2,
+    coordinates: [-64.821, 18.335],
+    strokeWidth: "0.5px",
+  }
 }
 
 
 const getMapConfig = (parentEntityName, entityName, grandparentEntityName) => {
-  
-  if (entityName === "Alaska") {
-    return mapConfig["AlaskaState"];
-  }
+  if (parentEntityName === "United States") {
 
-  if (entityName === "Hawaii") {
-    return mapConfig["HawaiiState"];
+    if (entityName === "Alaska") {
+      return mapConfig["AlaskaState"];
+    }
+
+    else if (entityName === "Hawaii") {
+      return mapConfig["HawaiiState"];
+    }
+
+    else if (entityName === "American Samoa" || entityName === "Diamond Princess" || entityName === "Grand Princess" || entityName === "Guam" || entityName === "Northern Mariana Islands" || entityName === "Puerto Rico" || entityName === "Virgin Islands") {
+      return mapConfig[entityName];
+    }
   }
 
   if (grandparentEntityName === "United States") {

@@ -1,0 +1,69 @@
+[
+    {
+      "fields": {
+        "city": "Knoxville",
+        "coordinates": [
+          35.9606384,
+          -83.9207392
+        ],
+        "state": "Tennessee",
+
+
+        "population": 183270
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.9207392,
+          35.9606384
+        ]
+      },
+      "record_timestamp": "2017-06-01T10:40:33.222-04:00"
+    },
+    {
+
+
+      "fields": {
+        "city": "Kingsport",
+        "coordinates": [
+          36.548434,
+          -82.5618186
+        ],
+        "state": "Tennessee",
+
+
+        "population": 52962
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.5618186,
+          36.548434
+        ]
+      },
+      "record_timestamp": "2017-06-01T10:40:33.222-04:00"
+    },
+    {
+
+
+      "fields": {
+        "city": "Nashville",
+        "coordinates": [
+          36.1626638,
+          -86.7816016
+        ],
+        "state": "Tennessee",
+
+
+        "population": 634464
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.7816016,
+          36.1626638
+        ]
+      },
+      "record_timestamp": "2017-06-01T10:40:33.222-04:00"
+    }
+  ]
