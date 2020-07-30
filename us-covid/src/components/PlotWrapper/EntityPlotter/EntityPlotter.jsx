@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PlotContainer from './PlotContainer/PlotContainer'
@@ -22,7 +22,7 @@ const propTypes = {
     displayDetails: PropTypes.object
 }
 
-class EntityPlotter extends Component {
+class EntityPlotter extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -65,7 +65,6 @@ class EntityPlotter extends Component {
           this.setState({
               filterTextDebounced: this.state.filterText
           })
-        console.log(this.state.filterText);
         }, 500);
       }
 
@@ -177,7 +176,7 @@ class EntityPlotter extends Component {
                         hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1] / this.props.entity.yActive[this.props.entity.yActive.length - 1] * 100;
                         break;
                     case "mortalityRate":
-                        hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate);
+                        hotSpotsValue = isNaN((this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100) ? 0 : (this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100;
                         break;
                     case "deaths":
                         hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.deaths);
@@ -416,25 +415,6 @@ class EntityPlotter extends Component {
             );
         }
 
-        let mortalityRateKPIContent = null;
-        if (this.props.entity.stats) {
-            mortalityRateKPIContent = (
-                <div className={kpiClasses}>
-                    <KPI
-                        keyValueTitle={"Mortality Rate"}
-                        keyValue={parseFloat(this.props.entity.stats.current.mortalityRate)}
-                        keyValueFormat={"Percentage"}
-                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseFloat(baselineStats.mortalityRate)}
-                        baselineValueFormat={"Decimal"}
-                        colorCodeBaselineValue={true}
-                        displayDetails={this.props.displayDetails}
-                        size={"large"}
-                    />
-                </div>
-            );
-        }
-
         let testingRateKPIContent = null;
         if (this.props.entity.stats) {
             testingRateKPIContent = (
@@ -479,10 +459,10 @@ class EntityPlotter extends Component {
                 <div className={kpiClasses}>
                     <KPI
                         keyValueTitle={"New Cases per 1,000 Tests"}
-                        keyValue={parseInt(this.props.entity.stats.current.confirmed) / parseInt(this.props.entity.stats.current.peopleTested) * 1000}
+                        keyValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1] / parseInt(this.props.entity.stats.current.peopleTested) * 1000}
                         keyValueFormat={"Decimal"}
                         baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseInt(baselineStats.confirmed) / parseInt(baselineStats.peopleTested) * 1000}
+                        baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - parseInt(this.state.kpiBaselineDays)] / parseInt(baselineStats.peopleTested) * 1000}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
@@ -703,7 +683,6 @@ class EntityPlotter extends Component {
                         />
                     </div>
                     {percentageParentCasesKPIContent}
-                    {mortalityRateKPIContent}
                     <div className={kpiClasses}>
                         <KPI
                             keyValueTitle={"Deaths"}
@@ -712,6 +691,19 @@ class EntityPlotter extends Component {
                             baselineValue={this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1 - parseInt(this.state.kpiBaselineDays)]}
                             baselineValueFormat={"Decimal"}
                             colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Mortality Rate"}
+                            keyValue={(this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100}
+                            keyValueFormat={"Percentage"}
+                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                            baselineValue={(this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1 - parseInt(this.state.kpiBaselineDays)]) / (this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - parseInt(this.state.kpiBaselineDays)]) * 100}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={true}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
                         />

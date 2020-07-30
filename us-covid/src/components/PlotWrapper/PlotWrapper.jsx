@@ -146,7 +146,6 @@ class PlotWrapper extends Component {
 
         if (prevState.navigableTitle !== nextProps.match.params.title && cases.children && nextProps.match.params.title) {
             const newEntity = Object.keys(cases.children).map((key) => { return cases.children[key]; }).filter((val) => val.navigableTitle === nextProps.match.params.title)[0];
-            console.log(newEntity);
             return {
                 navigableTitle: nextProps.match.params.title,
                 currentEntity: newEntity

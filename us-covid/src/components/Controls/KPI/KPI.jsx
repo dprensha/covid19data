@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
@@ -16,7 +16,7 @@ const propTypes = {
     displayDetails: PropTypes.object
 }
 
-class KPI extends Component {
+class KPI extends PureComponent {
     // constructor(props, context) {
     //     super(props, context);
     // }

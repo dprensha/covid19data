@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { constants } from "../../../../Utilities";
 import { KPI } from "../../../../Controls";
@@ -16,7 +16,7 @@ const propTypes = {
     kpiBaselineDays: PropTypes.number
 }
 
-class InfoPanel extends Component {
+class InfoPanel extends PureComponent {
     // constructor(props, context) {
     //     super(props, context);
     // }

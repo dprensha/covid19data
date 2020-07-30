@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { constants } from "../../../Utilities"
 import { Typography, Divider, Dialog, DialogActions, DialogContent, Button } from "../../../Controls";
@@ -10,7 +10,7 @@ const propTypes = {
   displayDetails: PropTypes.object
 }
 
-class InfoDialog extends Component {
+class InfoDialog extends PureComponent {
   // constructor(props) {
   //   super(props);
   // }

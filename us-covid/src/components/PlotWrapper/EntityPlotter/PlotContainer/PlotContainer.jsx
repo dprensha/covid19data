@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { IconButton, Map, Tooltip } from "../../../Controls";
 import { constants } from "../../../Utilities"
@@ -21,7 +21,7 @@ const propTypes = {
     scaleMode: PropTypes.string
 }
 
-class PlotContainer extends Component {
+class PlotContainer extends PureComponent {
     constructor(props) {
         super(props);
 
