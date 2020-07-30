@@ -492,6 +492,27 @@ class EntityPlotter extends Component {
             );
         }
 
+        let searchFieldContent = null;
+        if(this.props.entity.children && Object.keys(this.props.entity.children).length > 1) {
+            searchFieldContent = (
+                <div style={{width: "300px", margin: "32px auto 32px auto"}}>
+                    <TextField
+                        style={{width: "100%"}}
+                        label={"Search"}
+                        InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                        }}
+                        value={this.state.filterText}
+                        onChange={this.handleFilterTextChange}
+                    />
+                </div>
+            );
+        }
+
         return (
             <div>
                 <Drawer anchor={'right'} open={this.state.isDrawerOpen} onClose={this.handleCloseDrawer}>
@@ -705,20 +726,7 @@ class EntityPlotter extends Component {
                     {hotSpotsKPIContent}
                 </div>
                 <Divider />
-                <div style={{width: "300px", margin: "32px auto 32px auto"}}>
-                <TextField
-                    style={{width: "100%"}}
-                    InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    ),
-                    }}
-                    value={this.state.filterText}
-                    onChange={this.handleFilterTextChange}
-                />
-                </div>
+                {searchFieldContent}
                 <div className={styles.childPlotContainer}>
                     {childPlots}
                 </div>

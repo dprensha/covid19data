@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   ZoomableGroup,
   ComposableMap,
@@ -9,18 +9,7 @@ import {
 import { constants } from "../../Utilities";
 //import cities from '../../../utilities/USCities.json';
 
-const rounded = num => {
-  if (num > 1000000000) {
-    return Math.round(num / 100000000) / 10 + "B";
-  } else if (num > 1000000) {
-    return Math.round(num / 100000) / 10 + "M";
-  } else {
-    return Math.round(num / 100) / 10 + "K";
-  }
-};
-
 const Map = ({ displayDetails, width, height, entityName, long, lat, parentEntityName, grandparentEntityName }) => {
-  const [content, setContent] = useState("");
   let coordinates = [long, lat];
   let center = coordinates;
   let projection = "geoMercator";
