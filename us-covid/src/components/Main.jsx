@@ -1,8 +1,6 @@
 ﻿import React from 'react';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import PlotWrapper from './PlotWrapper/PlotWrapper';
-import Map from './Controls/Map/Map';
-//import Request from './Request/Request';
 
 // The Main component renders one of the three provided
 // Routes (provided that one matches). Both the /roster

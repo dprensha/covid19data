@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import CloseIcon from '@material-ui/icons/Close';
 import { constants } from "../../../../Utilities";
-import { IconButton, KPI } from "../../../../Controls";
+import { KPI } from "../../../../Controls";
 import styles from './InfoPanel.module.scss';
 
 const propTypes = {

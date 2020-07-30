@@ -173,7 +173,8 @@ const fips = {
   "Washington": "53",
   "West Virginia": "54",
   "Wisconsin": "55",
-  "Wyoming": "56"
+  "Wyoming": "56",
+  "Puerto Rico": "72"
 };
 
 const mapConfig = {
@@ -268,6 +269,7 @@ const mapConfig = {
   "West Virginia": { center: [-80.6227, 38.9409], zoom: 17 },
   "Wisconsin": { center: [-89.9941, 44.8243], zoom: 11 },
   "Wyoming": { center: [-107.5512, 42.9957], zoom: 13 },
+  "Puerto Rico": {center: [-66.6, 18.24], zoom: 50, strokeWidth: "0.01px"},
 
   "American Samoa": {
     geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
@@ -276,21 +278,21 @@ const mapConfig = {
     coordinates: [180, -14.31], //not completely accurate, but i want it to show to the right of Asia
     strokeWidth: "0.5px",
   },
-  "Diamond Princess": { //done
+  "Diamond Princess": {
     geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
     center: [139.648, 35.452],
     zoom: 2,
     coordinates: [139.648, 35.452],
     strokeWidth: "0.5px",
   },
-  "Grand Princess": { //done
+  "Grand Princess": { 
     geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
     center: [-122.27, 37.79],
     zoom: 2,
     coordinates: [-122.27, 37.79],
     strokeWidth: "0.5px",
   },
-  "Guam": { //done
+  "Guam": { 
     geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
     center: [144.776, 13.456],
     zoom: 1,
@@ -304,7 +306,7 @@ const mapConfig = {
     coordinates: [145.677, 15.108],
     strokeWidth: "0.5px",
   },
-  "Puerto Rico": { //done
+  "Puerto Rico State": { 
     geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
     center: [-73.002, 22.329],
     zoom: 2,
@@ -332,14 +334,18 @@ const getMapConfig = (parentEntityName, entityName, grandparentEntityName) => {
       return mapConfig["HawaiiState"];
     }
 
-    else if (entityName === "American Samoa" || entityName === "Diamond Princess" || entityName === "Grand Princess" || entityName === "Guam" || entityName === "Northern Mariana Islands" || entityName === "Puerto Rico" || entityName === "Virgin Islands") {
+    else if (entityName === "Puerto Rico") {
+      return mapConfig["Puerto Rico State"];
+    }
+
+    else if (entityName === "American Samoa" || entityName === "Diamond Princess" || entityName === "Grand Princess" || entityName === "Guam" || entityName === "Northern Mariana Islands" || entityName === "Virgin Islands") {
       return mapConfig[entityName];
     }
   }
 
   if (grandparentEntityName === "United States") {
     let mc = mapConfig[parentEntityName];
-    mc.strokeWidth = "0.05px";
+    mc.strokeWidth = mc.strokeWidth ? mc.strokeWidth : "0.05px";
     mc.geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/US_Counties.json";
     return mc;
   }
