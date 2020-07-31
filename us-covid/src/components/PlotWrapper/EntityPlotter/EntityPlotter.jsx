@@ -410,6 +410,7 @@ class EntityPlotter extends PureComponent {
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
                         size={"large"}
+                        disclaimerSymbol={this.props.entity.stats.current.hospitalizedReporting ? "*" : ""}
                     />
                 </div>
             );
@@ -448,6 +449,7 @@ class EntityPlotter extends PureComponent {
                         colorCodeBaselineValue={true}
                         displayDetails={this.props.displayDetails}
                         size={"large"}
+                        disclaimerSymbol={this.props.entity.stats.current.hospitalizedReporting ? "*" : ""}
                     />
                 </div>
             );
@@ -470,6 +472,17 @@ class EntityPlotter extends PureComponent {
                     />
                 </div>
             );
+        }
+
+        let disclaimerArea = null;
+        if (this.props.entity.stats && this.props.entity.stats.current.hospitalizedReporting) {
+            disclaimerArea = (
+                <div className={styles.disclaimerAreaContainer}>
+                    <div>
+                        {`* ${this.props.entity.stats.current.hospitalizedReporting} States and Territories Reporting`}
+                    </div>
+                </div>
+            )
         }
 
         let searchFieldContent = null;
@@ -708,12 +721,13 @@ class EntityPlotter extends PureComponent {
                             size={"large"}
                         />
                     </div>
-                    {hospitalizationRateKPIContent}
                     {peopleHospitalizedKPIContent}
+                    {hospitalizationRateKPIContent}
                     {peopleTestedKPIContent}
                     {newCasesPerThousandTestedKPIContent}
                     {testingRateKPIContent}
                 </div>
+                {disclaimerArea}
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
                 </div>

@@ -13,7 +13,8 @@ const propTypes = {
     baselineValueFormat: PropTypes.string,
     colorCodeBaselineValue: PropTypes.bool,
     size: PropTypes.string,
-    displayDetails: PropTypes.object
+    displayDetails: PropTypes.object,
+    disclaimerSymbol: PropTypes.string
 }
 
 class KPI extends PureComponent {
@@ -43,7 +44,7 @@ class KPI extends PureComponent {
     }
 
     render() {
-        const { keyValueTitle, keyValue, keyValueFormat, baselineValueTitle, baselineValue, baselineValueFormat, colorCodeBaselineValue } = this.props;
+        const { keyValueTitle, keyValue, keyValueFormat, baselineValueTitle, baselineValue, baselineValueFormat, colorCodeBaselineValue, disclaimerSymbol } = this.props;
 
         //const formattedKeyValue = this.addThousandSeparators(keyValue, true);
         const totalDelta = this.addThousandSeparators(keyValue - baselineValue, true);
@@ -130,7 +131,7 @@ class KPI extends PureComponent {
         return (
             <div className={styles.kpi}>
                 <div className={kpiTitleStyles}>
-                    {keyValueTitle}
+                    {`${keyValueTitle}${disclaimerSymbol || ""}`}
                 </div>
                 <div className={kpiValueStyles}>
                     {displayKeyValue}
