@@ -9,7 +9,8 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import TuneIcon from '@material-ui/icons/Tune';
 import SearchIcon from '@material-ui/icons/Search';
 import InfoDialog from './InfoDialog/InfoDialog';
-import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer } from "../../Controls";
+import LeafletMap from './LeafletMap/LeafletMap';
+import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
 import D3Plot from "../../Controls/D3Plot/D3Plot";
@@ -35,7 +36,8 @@ class EntityPlotter extends PureComponent {
             comparisonKPI: "activePerCapita",
             kpiBaselineDays: "7",
             scaleMode: "linear",
-            filterTextDebounced: ""
+            filterTextDebounced: "",
+            childViewMode: "map"
         }
 
         this.timer = null;
@@ -50,6 +52,7 @@ class EntityPlotter extends PureComponent {
         this.handleKPIBaselineChange = this.handleKPIBaselineChange.bind(this);
         this.handleScaleModeChange = this.handleScaleModeChange.bind(this);
         this.handlePlotClick = this.handlePlotClick.bind(this);
+        this.handleChildViewModeChange = this.handleChildViewModeChange.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -111,6 +114,15 @@ class EntityPlotter extends PureComponent {
             graphMode: event.target.value,
             isDrawerOpen: false
         });
+    }
+
+    handleChildViewModeChange(event) {
+        console.log(event);
+        if(event.target) {
+            this.setState({
+                childViewMode: event.target.value
+            });
+        }
     }
 
     handleKPIBaselineChange(event) {
@@ -179,7 +191,7 @@ class EntityPlotter extends PureComponent {
                         hotSpotsValue = isNaN((this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100) ? 0 : (this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100;
                         break;
                     case "deaths":
-                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.deaths);
+                        hotSpotsValue = parseInt(this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]);
                         break;
                     case "hospitalizationRate":
                         hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate);
@@ -506,6 +518,29 @@ class EntityPlotter extends PureComponent {
             );
         }
 
+        let childViewContent = null;
+        if(this.state.childViewMode === "map") {
+            childViewContent = (
+                <div style={{width: this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "100vw" : "90vw", height: this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "500px" : "700px", margin: "auto"}}>
+                    <LeafletMap
+                        entity={this.props.entity}
+                        height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "500px" : "700px"}
+                    />
+                </div>
+            );
+        }
+        else {
+            childViewContent = (
+                <div>
+                    <Divider />
+                    {searchFieldContent}
+                    <div className={styles.childPlotContainer}>
+                        {childPlots}
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div>
                 <Drawer anchor={'right'} open={this.state.isDrawerOpen} onClose={this.handleCloseDrawer}>
@@ -731,11 +766,31 @@ class EntityPlotter extends PureComponent {
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
                 </div>
-                <Divider />
-                {searchFieldContent}
-                <div className={styles.childPlotContainer}>
-                    {childPlots}
+                <div style={{textAlign: "center"}}>
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            row={true}
+                            name="position"
+                            defaultValue="top"
+                            onChange={this.handleChildViewModeChange} 
+                            value={this.state.childViewMode}
+                        >
+                            <FormControlLabel
+                                value="graphs"
+                                control={<Radio color="primary" />}
+                                label="Graph View"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="map"
+                                control={<Radio color="primary" />}
+                                label="Map View"
+                                labelPlacement="end"
+                            />
+                        </RadioGroup>
+                    </FormControl>
                 </div>
+                {childViewContent}
             </div>
         )
     }

@@ -1,6 +1,7 @@
 //MaterialUI Controls
 import AppBar from '@material-ui/core/AppBar';
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -53,6 +54,7 @@ import Map from './Map'
 export {
     AppBar,
     Button,
+    ButtonGroup,
     Card,
     CardContent,
     Checkbox,

@@ -1,6 +1,8 @@
 ﻿import React from 'react';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import PlotWrapper from './PlotWrapper/PlotWrapper';
+//import GoogleMap from './PlotWrapper/EntityPlotter/GoogleMap/GoogleMap';
+//import LeafletMap from './PlotWrapper/EntityPlotter/LeafletMap/LeafletMap';
 
 // The Main component renders one of the three provided
 // Routes (provided that one matches). Both the /roster
@@ -13,7 +15,6 @@ const Main = () => (
       <Switch>
         <Redirect from='/' to='/Global' exact />
         <Route exact path='/:mode?/:title?' component={PlotWrapper}/>
-        {/* <Route path='/request/:id' component={Request}/> */}
       </Switch>
     </BrowserRouter>
   </main>

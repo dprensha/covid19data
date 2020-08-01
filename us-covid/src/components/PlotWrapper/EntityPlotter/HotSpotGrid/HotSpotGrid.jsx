@@ -69,8 +69,8 @@ function EnhancedTableHead(props) {
                 <option value={"activePctChange"}>{`Active ${comparisonWindow}-Day % Change`}</option>
                 <option value={"total"}>Total Cases</option>
                 <option value={"percentOfParent"}>% of Parent Active Cases</option>
-                <option value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</option>
-                <option value={"deaths"} style={childrenHaveStats ? {} : {display: "none"}}>Deaths</option>
+                <option value={"mortalityRate"}>Mortality Rate</option>
+                <option value={"deaths"}>Deaths</option>
                 <option value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</option>
                 <option value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</option>
                 <option value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</option>
@@ -91,8 +91,8 @@ function EnhancedTableHead(props) {
                 <MenuItem value={"activePctChange"}>{`Active ${comparisonWindow}-Day % Change`}</MenuItem>
                 <MenuItem value={"total"}>Total Cases</MenuItem>
                 <MenuItem value={"percentOfParent"}>% of Parent Active Cases</MenuItem>
-                <MenuItem value={"mortalityRate"} style={childrenHaveStats ? {} : {display: "none"}}>Mortality Rate</MenuItem>
-                <MenuItem value={"deaths"} style={childrenHaveStats ? {} : {display: "none"}}>Deaths</MenuItem>
+                <MenuItem value={"mortalityRate"}>Mortality Rate</MenuItem>
+                <MenuItem value={"deaths"}>Deaths</MenuItem>
                 <MenuItem value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</MenuItem>
                 <MenuItem value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</MenuItem>
                 <MenuItem value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</MenuItem>
