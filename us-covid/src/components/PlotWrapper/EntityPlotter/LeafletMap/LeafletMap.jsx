@@ -3,6 +3,10 @@ import PropTypes from "prop-types";
 import { Map, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
 import WorldGeo from '../../../../mapData/WorldGeo.json';
 import USGeo from '../../../../mapData/USGeo.json';
+import AustraliaGeo from '../../../../mapData/AustraliaGeo.json';
+import CanadaGeo from '../../../../mapData/CanadaGeo.json';
+import ChinaGeo from '../../../../mapData/ChinaGeo.json';
+import USCountyGeo from '../../../../mapData/USCountyGeo.json';
 
 const propTypes = {
   //from Redux
@@ -25,7 +29,7 @@ class LeafletMap extends PureComponent {
 
   getStyle = (property) => {
     if(property.properties.DISPLAY_NAME === "Tennessee") {
-    return {fillColor: "orange", fillOpacity: ".6"};
+      return {fillColor: "orange", fillOpacity: ".4"};
     }
     else return {fillColor: "blue", fillOpacity: ".2"}
   };
@@ -97,8 +101,18 @@ class LeafletMap extends PureComponent {
     }
 
     let data = WorldGeo;
-    if(this.props.entity.title === "United States") {
-      data = USGeo;
+    switch(this.props.entity.title) {
+      case "United States":
+        data = USGeo; break;
+      case "Australia":
+        data = AustraliaGeo; break;
+      case "Canada":
+        data = CanadaGeo; break;
+      case "China":
+        data = ChinaGeo; break;
+    }
+    if(this.props.entity.parent && this.props.entity.parent.title === "United States") {
+      data = USCountyGeo;
     }
 
     const position = [this.state.lat, this.state.lng]
