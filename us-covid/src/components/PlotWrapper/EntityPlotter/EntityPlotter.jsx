@@ -37,7 +37,7 @@ class EntityPlotter extends PureComponent {
             kpiBaselineDays: "7",
             scaleMode: "linear",
             filterTextDebounced: "",
-            childViewMode: "map"
+            childViewMode: "graphs"
         }
 
         this.timer = null;
