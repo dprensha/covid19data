@@ -24,6 +24,9 @@ const styles = createMuiTheme({
         body2: {
             color: "#444"
         },
+        h3: {
+            fontSize: "1.7rem"
+        },
         h4: {
             fontSize: "1.5rem"
         },

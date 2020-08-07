@@ -73,7 +73,7 @@ class PlotWrapper extends Component {
 
         this.handlePlotClick = this.handlePlotClick.bind(this);
         this.scrollToTop = this.scrollToTop.bind(this);
-
+        this.navigate = this.navigate.bind(this);
     }
 
     componentDidMount() {
@@ -137,6 +137,16 @@ class PlotWrapper extends Component {
         this.scrollToTop();
     }
 
+    navigate(route) {
+        if(route === "/US" && this.props.usCases.length === 0) {
+            this.props.requestUSCases();
+        }
+        else if (route.startsWith("/Global") && this.props.globalCases.length === 0) {
+            this.props.requestGlobalCases();
+        }
+        this.props.history.push(route);
+    }
+
     render() {
         if ((this.props.match.params.mode === "Global" && this.props.globalCases && this.props.globalCases.children) || (this.props.match.params.mode === "US" && this.props.usCases && this.props.usCases.children)) {
             return (
@@ -145,6 +155,7 @@ class PlotWrapper extends Component {
                         entity={this.state.currentEntity}
                         handlePlotClick={this.handlePlotClick}
                         displayDetails={this.props.displayDetails}
+                        navigate={this.navigate}
                     ></EntityPlotter>
                     <ScrollTop>
                     <Fab 

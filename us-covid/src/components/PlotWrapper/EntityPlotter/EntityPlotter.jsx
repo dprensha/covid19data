@@ -8,8 +8,11 @@ import { constants } from "../../Utilities"
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import TuneIcon from '@material-ui/icons/Tune';
 import SearchIcon from '@material-ui/icons/Search';
+import MenuIcon from '@material-ui/icons/Menu';
+
 import InfoDialog from './InfoDialog/InfoDialog';
 import LeafletMap from '../../Controls/LeafletMap/LeafletMap';
+import Navigation from '../../Navigation/Navigation';
 import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
@@ -37,7 +40,8 @@ class EntityPlotter extends PureComponent {
             kpiBaselineDays: "7",
             scaleMode: "linear",
             filterTextDebounced: "",
-            childViewMode: "graphs"
+            childViewMode: "graphs",
+            isMenuExpanded: false
         }
 
         this.timer = null;
@@ -53,12 +57,27 @@ class EntityPlotter extends PureComponent {
         this.handleScaleModeChange = this.handleScaleModeChange.bind(this);
         this.handlePlotClick = this.handlePlotClick.bind(this);
         this.handleChildViewModeChange = this.handleChildViewModeChange.bind(this);
+        this.handleMenuIconClick = this.handleMenuIconClick.bind(this);
+        this.handleCloseMenu = this.handleCloseMenu.bind(this);
+        this.handleNavigate = this.handleNavigate.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState) {
         if(prevState.filterText !== this.state.filterText) {
             this.handleCheck();
           }
+    }
+
+    handleMenuIconClick() {
+        this.setState({
+            isMenuExpanded: true
+        })
+    }
+
+    handleCloseMenu() {
+        this.setState({
+            isMenuExpanded: false
+        })
     }
 
     handleCheck = () => {
@@ -143,6 +162,13 @@ class EntityPlotter extends PureComponent {
         this.setState({
             comparisonKPI: event.target.value
         });
+    }
+
+    handleNavigate(route) {
+        this.setState({
+            isMenuExpanded: false
+        })
+        this.props.navigate(route);
     }
 
     render() {
@@ -233,7 +259,34 @@ class EntityPlotter extends PureComponent {
         );
 
         let backButtonContent = null;
-        if (this.props.entity.parent || this.props.entity.title === "United States") {
+        // if (this.props.entity.parent || this.props.entity.title === "United States") {
+        //     backButtonContent = (
+        //         <IconButton
+        //             style={{ color: "white" }}
+        //             onClick={() => { this.handlePlotClick(this.props.entity.parent ? this.props.entity.parent : "Global")}}
+        //         >
+        //             <ArrowBackIcon />
+        //         </IconButton>
+        //     )
+        // }
+        // else {
+        //     backButtonContent = (
+        //         <div style={{ paddingLeft: "12px" }}>
+
+        //         </div>
+        //     )
+        // }
+        if (this.props.entity.title === "World" || (this.props.entity.parent && this.props.entity.parent.title === "World") || this.props.entity.title === "United States") {
+            backButtonContent = (
+                <IconButton
+                    style={{ color: "white" }}
+                    onClick={this.handleMenuIconClick}
+                >
+                    <MenuIcon />
+                </IconButton>
+            )
+        }
+        else {
             backButtonContent = (
                 <IconButton
                     style={{ color: "white" }}
@@ -243,13 +296,7 @@ class EntityPlotter extends PureComponent {
                 </IconButton>
             )
         }
-        else {
-            backButtonContent = (
-                <div style={{ paddingLeft: "12px" }}>
 
-                </div>
-            )
-        }
 
         const listKPITitleClasses = classNames(
             styles.listKPITitle,
@@ -543,6 +590,11 @@ class EntityPlotter extends PureComponent {
 
         return (
             <div>
+                <Navigation 
+                    isOpen={this.state.isMenuExpanded} 
+                    handleClose={this.handleCloseMenu} 
+                    handleNavigate={this.handleNavigate} 
+                />
                 <Drawer anchor={'right'} open={this.state.isDrawerOpen} onClose={this.handleCloseDrawer}>
                     <div className={styles.graphModeContainer}>
                         <Typography className={styles.graphModeTitle} variant="h6">Graph Mode:</Typography>

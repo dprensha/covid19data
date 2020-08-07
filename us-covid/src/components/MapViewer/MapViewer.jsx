@@ -30,6 +30,7 @@ class MapViewer extends Component {
         
         this.handleMenuIconClick = this.handleMenuIconClick.bind(this);
         this.handleCloseMenu = this.handleCloseMenu.bind(this);
+        this.navigate = this.navigate.bind(this);
     }
 
     handleCloseInfoIcon() {
@@ -54,6 +55,10 @@ class MapViewer extends Component {
         this.setState({
             isMenuExpanded: false
         })
+    }
+
+    navigate(route) {
+        this.props.history.push(route);
     }
 
 
@@ -97,7 +102,7 @@ class MapViewer extends Component {
                     </Toolbar>
                 </AppBar>
                 <InfoDialog isOpen={this.state.isInfoExpanded} displayDetails={this.props.displayDetails} handleClose={this.handleCloseInfoIcon} />
-                <Navigation isOpen={this.state.isMenuExpanded} handleClose={this.handleCloseMenu} />
+                <Navigation isOpen={this.state.isMenuExpanded} handleClose={this.handleCloseMenu} handleNavigate={this.navigate} />
                 </div>
         );
     }
