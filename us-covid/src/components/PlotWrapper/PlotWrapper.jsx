@@ -65,7 +65,6 @@ class PlotWrapper extends Component {
     constructor(props) {
         super(props);
 
-        this.displayDetails = { formFactor: constants.display.formFactors.MOBILE, orientation: constants.display.orientations.LANDSCAPE }; // Assume mobile layout until we learn otherwise
 
         this.state = {
             navigableTitle: props.match.params.title,
@@ -74,50 +73,7 @@ class PlotWrapper extends Component {
 
         this.handlePlotClick = this.handlePlotClick.bind(this);
         this.scrollToTop = this.scrollToTop.bind(this);
-        this.updateDisplayDetails = this.updateDisplayDetails.bind(this);
-        this.onWindowResize = this.onWindowResize.bind(this);
 
-    }
-
-    updateDisplayDetails(windowWidth, windowHeight) {
-        const { formFactors, orientations } = constants.display;
-        const orientation = (windowHeight > windowWidth) ? orientations.PORTRAIT : orientations.LANDSCAPE;
-        let formFactor;
-
-        if (orientation === orientations.LANDSCAPE) {
-            if (windowWidth <= 640) {
-                formFactor = formFactors.MOBILE;
-            }
-            else if (windowWidth <= 1024) {
-                formFactor = formFactors.TABLET;
-            }
-            else {
-                formFactor = formFactors.DESKTOP;
-            }
-        }
-        else {
-            if (windowWidth <= 485) {
-                formFactor = formFactors.MOBILE;
-            }
-            else if (windowWidth <= 975) {
-                formFactor = formFactors.TABLET;
-            }
-            else {
-                formFactor = formFactors.DESKTOP;
-            }
-        }
-
-        this.displayDetails = {
-            formFactor: formFactor,
-            orientation: orientation
-        };
-    }
-
-    // Immediate callback for window resize events.  DO NOT DO EXPENSIZE OPERATIONS IN THIS METHOD. (definitatly no DOM manipulations)
-    onWindowResize() {
-        this.updateDisplayDetails(window.innerWidth, window.innerHeight);
-
-        window.requestAnimationFrame(() => this.forceUpdate());
     }
 
     componentDidMount() {
@@ -127,9 +83,6 @@ class PlotWrapper extends Component {
         else {
             this.props.requestUSCases();
         }
-
-        //window.addEventListener("resize", this.onWindowResize, false);
-        this.onWindowResize();
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -191,7 +144,7 @@ class PlotWrapper extends Component {
                     <EntityPlotter
                         entity={this.state.currentEntity}
                         handlePlotClick={this.handlePlotClick}
-                        displayDetails={this.displayDetails}
+                        displayDetails={this.props.displayDetails}
                     ></EntityPlotter>
                     <ScrollTop>
                     <Fab 

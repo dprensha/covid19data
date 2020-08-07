@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from "prop-types";
 import { Map, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
-import WorldGeo from '../../../../mapData/WorldGeo.json';
-import USGeo from '../../../../mapData/USGeo.json';
-import AustraliaGeo from '../../../../mapData/AustraliaGeo.json';
-import CanadaGeo from '../../../../mapData/CanadaGeo.json';
-import ChinaGeo from '../../../../mapData/ChinaGeo.json';
-import USCountyGeo from '../../../../mapData/USCountyGeo.json';
+import WorldGeo from '../../../mapData/WorldGeo.json';
+import USGeo from '../../../mapData/USGeo.json';
+import AustraliaGeo from '../../../mapData/AustraliaGeo.json';
+import CanadaGeo from '../../../mapData/CanadaGeo.json';
+import ChinaGeo from '../../../mapData/ChinaGeo.json';
+import USCountyGeo from '../../../mapData/USCountyGeo.json';
 
 const propTypes = {
   //from Redux
@@ -23,7 +23,6 @@ class LeafletMap extends PureComponent {
     const activePerThousand = [];
     const stops = [];
     for (let i = 0; i < sortedKeys.length; i++) {
-      console.log(this.props.entity.children[sortedKeys[i]].title);
       if (this.props.entity.children[sortedKeys[i]].yActivePerCapita[this.props.entity.children[sortedKeys[i]].yActive.length - 1] * 1000 > 0) {
         activePerThousand.push(this.props.entity.children[sortedKeys[i]].yActivePerCapita[this.props.entity.children[sortedKeys[i]].yActive.length - 1] * 1000);
       }
@@ -31,10 +30,13 @@ class LeafletMap extends PureComponent {
     const min = Math.min(...activePerThousand);
     const max = Math.max(...activePerThousand);
     const range = max - min;
-    for(let j = 0; j < 6; j++) {
-      stops[j] = range / 6 * (j+1);
+    for(let j = 0; j < 9; j++) {
+      stops[j] = range / 9 * (j+1);
     }
-    
+    // for(let j = 0; j < 9; j++) {
+    //   stops[j] = activePerThousand.sort()[((j+1) * sortedKeys.length / 10).toFixed(0)];
+    // }
+    console.log(stops);
     this.state = {
       lat: 20,
       lng: 0,
@@ -55,23 +57,60 @@ class LeafletMap extends PureComponent {
     let style = { fillColor: "blue", fillOpacity: "0" };
     const { stops } = this.state;
 
+    // if(activePerCapita < stops[0]) {
+    //   style = { fillColor: "#00FFEB", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[1]) {
+    //   style = { fillColor: "#00FF75", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[2]) {
+    //   style = { fillColor: "#00FF00", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[3]) {
+    //   style = { fillColor: "#7FFF00", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[4]) {
+    //   style = { fillColor: "#FFFF00", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[5]) {
+    //   style = { fillColor: "#FF7F00", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[6]) {
+    //   style = { fillColor: "#FF0000", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[7]) {
+    //   style = { fillColor: "#FF0075", fillOpacity: ".5" }
+    // }
+    // else if(activePerCapita < stops[8]) {
+    //   style = { fillColor: "#FF00EB", fillOpacity: ".5" }
+    // }
+
     if(activePerCapita < stops[0]) {
-      style = { fillColor: "blue", fillOpacity: ".1" }
+      style = { fillColor: "#0000FF", fillOpacity: ".05" }
     }
     else if(activePerCapita < stops[1]) {
-      style = { fillColor: "blue", fillOpacity: ".2" }
+      style = { fillColor: "#0000FF", fillOpacity: ".1" }
     }
     else if(activePerCapita < stops[2]) {
-      style = { fillColor: "blue", fillOpacity: ".3" }
+      style = { fillColor: "#0000FF", fillOpacity: ".2" }
     }
     else if(activePerCapita < stops[3]) {
-      style = { fillColor: "blue", fillOpacity: ".4" }
+      style = { fillColor: "#0000FF", fillOpacity: ".3" }
     }
     else if(activePerCapita < stops[4]) {
-      style = { fillColor: "blue", fillOpacity: ".5" }
+      style = { fillColor: "#0000FF", fillOpacity: ".4" }
+    }
+    else if(activePerCapita < stops[5]) {
+      style = { fillColor: "#0000FF", fillOpacity: ".5" }
+    }
+    else if(activePerCapita < stops[6]) {
+      style = { fillColor: "#0000FF", fillOpacity: ".6" }
+    }
+    else if(activePerCapita < stops[7]) {
+      style = { fillColor: "#0000FF", fillOpacity: ".73" }
     }
     else {
-      style = { fillColor: "blue", fillOpacity: ".6" }
+      style = { fillColor: "#0000FF", fillOpacity: ".86" }
     }
 
     return style;
@@ -147,7 +186,7 @@ class LeafletMap extends PureComponent {
     }
 
     let data = WorldGeo;
-    let zoom = 1;
+    let zoom = 2;
     let lat = 0;
     let long = 20;
     switch (this.props.entity.title) {
@@ -189,6 +228,8 @@ class LeafletMap extends PureComponent {
         <TileLayer
           attribution='&amp;copy <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/#/-74.5/40/10">Improve this map</a>'
           url="https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHByZW5zaGF3IiwiYSI6ImNrZGIwY3kzeTB5cHoydXBkOXBhN2F5MzIifQ.yG_odeS3UupdDhn9hVfwTw"
+          //tileSize="512"
+          //zoomOffset="-1"
         />
         {/* <Marker position={position}>
           <Popup>

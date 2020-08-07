@@ -9,7 +9,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import TuneIcon from '@material-ui/icons/Tune';
 import SearchIcon from '@material-ui/icons/Search';
 import InfoDialog from './InfoDialog/InfoDialog';
-import LeafletMap from './LeafletMap/LeafletMap';
+import LeafletMap from '../../Controls/LeafletMap/LeafletMap';
 import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
