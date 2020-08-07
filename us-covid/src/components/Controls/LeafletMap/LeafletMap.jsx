@@ -1,12 +1,15 @@
 import React, { PureComponent } from 'react'
 import PropTypes from "prop-types";
 import { Map, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
+import LocateControl from './LocateControl';
+import CountryControl from './CountryControl';
 import WorldGeo from '../../../mapData/WorldGeo.json';
 import USGeo from '../../../mapData/USGeo.json';
 import AustraliaGeo from '../../../mapData/AustraliaGeo.json';
 import CanadaGeo from '../../../mapData/CanadaGeo.json';
 import ChinaGeo from '../../../mapData/ChinaGeo.json';
 import USCountyGeo from '../../../mapData/USCountyGeo.json';
+import './LeafletMap.css';
 
 const propTypes = {
   //from Redux
@@ -186,9 +189,9 @@ class LeafletMap extends PureComponent {
     }
 
     let data = WorldGeo;
-    let zoom = 2;
-    let lat = 0;
-    let long = 20;
+    let zoom = 3;
+    let lat = 20;
+    let long = 0;
     switch (this.props.entity.title) {
       case "United States":
         data = USGeo; 
@@ -222,6 +225,16 @@ class LeafletMap extends PureComponent {
       long = -94;
     }
 
+    const locateOptions = {
+      position: 'topleft',
+      flyTo: true,
+      keepCurrentZoomLevel: true,
+      strings: {
+          title: 'Show my location'
+      },
+      //onActivate: () => {} // callback before engine starts retrieving locations
+    }
+
     const position = [lat, long]
     return (
       <Map center={position} zoom={zoom} height={this.props.height} style={{ height: this.props.height }}>
@@ -233,7 +246,7 @@ class LeafletMap extends PureComponent {
         />
         {/* <Marker position={position}>
           <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
+          A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
         </Marker> */}
         <GeoJSON data={data} style={this.getStyle} onclick={this.onClickThing} weight={.5}>
@@ -241,6 +254,8 @@ class LeafletMap extends PureComponent {
             {tooltipContent}
           </Popup>
         </GeoJSON>
+        <LocateControl options={locateOptions} />
+        <CountryControl options={locateOptions} />
       </Map>
     )
   }

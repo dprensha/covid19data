@@ -565,29 +565,6 @@ class EntityPlotter extends PureComponent {
             );
         }
 
-        let childViewContent = null;
-        if(this.state.childViewMode === "map") {
-            childViewContent = (
-                <div style={{width: this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "100vw" : "90vw", height: this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "500px" : "700px", margin: "auto"}}>
-                    <LeafletMap
-                        entity={this.props.entity}
-                        height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "500px" : "700px"}
-                    />
-                </div>
-            );
-        }
-        else {
-            childViewContent = (
-                <div>
-                    <Divider />
-                    {searchFieldContent}
-                    <div className={styles.childPlotContainer}>
-                        {childPlots}
-                    </div>
-                </div>
-            );
-        }
-
         return (
             <div>
                 <Navigation 
@@ -818,31 +795,11 @@ class EntityPlotter extends PureComponent {
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
                 </div>
-                <div style={{textAlign: "center"}}>
-                    <FormControl component="fieldset">
-                        <RadioGroup
-                            row={true}
-                            name="position"
-                            defaultValue="top"
-                            onChange={this.handleChildViewModeChange} 
-                            value={this.state.childViewMode}
-                        >
-                            <FormControlLabel
-                                value="graphs"
-                                control={<Radio color="primary" />}
-                                label="Graph View"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="map"
-                                control={<Radio color="primary" />}
-                                label="Map View"
-                                labelPlacement="end"
-                            />
-                        </RadioGroup>
-                    </FormControl>
+                <Divider />
+                {searchFieldContent}
+                <div className={styles.childPlotContainer}>
+                    {childPlots}
                 </div>
-                {childViewContent}
             </div>
         )
     }
