@@ -70,12 +70,15 @@ class MapViewer extends Component {
         if (this.props.globalCases.length === 0) {
             this.props.requestGlobalCases();
         }
+        if (this.props.usCases.length === 0) {
+            this.props.requestUSCases();
+        }
     }
 
     renderMapContent() {
-        if (this.props.globalCases.length === 0) {
+        if (this.props.globalCases.length === 0 /*|| this.props.usCases.length === 0*/) {
             return (
-                <div>Loading...</div>
+                <div style={{marginTop: "100px", marginLeft: "16px"}}>Loading...</div>
             );
         }
 

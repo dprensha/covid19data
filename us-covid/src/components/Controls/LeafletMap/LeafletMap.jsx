@@ -52,6 +52,7 @@ class LeafletMap extends PureComponent {
   }
 
   getStyle = (property, b, c) => {
+    console.log(property);
     // if (property.properties.DISPLAY_NAME === "Tennessee") {
     //   return { fillColor: "orange", fillOpacity: ".4" };
     // }
@@ -61,32 +62,41 @@ class LeafletMap extends PureComponent {
     let style = { fillColor: "blue", fillOpacity: "0" };
     const { stops } = this.state;
 
-    if (activePerCapita < stops[0]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".05" }
+    const stateProvinceCountries = ["US", "Canada", "Australia", "China"]
+
+    if ((this.state.dataLabel === "StateProvince" || this.state.dataLabel === "County") && stateProvinceCountries.includes(property.properties.DISPLAY_NAME)) {
+      
     }
-    else if (activePerCapita < stops[1]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".1" }
-    }
-    else if (activePerCapita < stops[2]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".2" }
-    }
-    else if (activePerCapita < stops[3]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".3" }
-    }
-    else if (activePerCapita < stops[4]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".4" }
-    }
-    else if (activePerCapita < stops[5]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".5" }
-    }
-    else if (activePerCapita < stops[6]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".6" }
-    }
-    else if (activePerCapita < stops[7]) {
-      style = { fillColor: "#0000FF", fillOpacity: ".73" }
-    }
+    
     else {
-      style = { fillColor: "#0000FF", fillOpacity: ".86" }
+
+      if (activePerCapita < stops[0]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".05" }
+      }
+      else if (activePerCapita < stops[1]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".1" }
+      }
+      else if (activePerCapita < stops[2]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".2" }
+      }
+      else if (activePerCapita < stops[3]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".3" }
+      }
+      else if (activePerCapita < stops[4]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".4" }
+      }
+      else if (activePerCapita < stops[5]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".5" }
+      }
+      else if (activePerCapita < stops[6]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".6" }
+      }
+      else if (activePerCapita < stops[7]) {
+        style = { fillColor: "#0000FF", fillOpacity: ".73" }
+      }
+      else {
+        style = { fillColor: "#0000FF", fillOpacity: ".86" }
+      }
     }
 
     return style;
@@ -232,7 +242,7 @@ class LeafletMap extends PureComponent {
     let stateProvince = null;
     if (this.state.dataLabel === "StateProvince" || this.state.dataLabel === "County") {
       let us = null;
-      if(this.state.dataLabel === "StateProvince") {
+      if (this.state.dataLabel === "StateProvince") {
         us = (
           <GeoJSON key={`${this.state.dataLabel}2`} data={USGeo} style={this.getStyle} onclick={this.onClickThing} weight={.5}>
             <Popup>
@@ -283,7 +293,7 @@ class LeafletMap extends PureComponent {
         //tileSize="512"
         //zoomOffset="-1"
         />
-        <GeoJSON data={WorldGeo} style={this.getStyle} onclick={this.onClickThing} weight={.5}>
+        <GeoJSON key={this.state.dataLabel} data={WorldGeo} style={this.getStyle} onclick={this.onClickThing} weight={.5}>
           <Popup style={{ backgroundColor: "red" }}>
             {tooltipContent}
           </Popup>
