@@ -89,6 +89,7 @@ class MapViewer extends Component {
                 >
                 <LeafletMap
                     entity={this.props.globalCases}
+                    usCases={this.props.usCases}
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
                 />
                 </div>
