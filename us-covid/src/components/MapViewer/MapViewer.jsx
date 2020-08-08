@@ -7,6 +7,7 @@ import InfoDialog from '../PlotWrapper/EntityPlotter/InfoDialog/InfoDialog';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import MenuIcon from '@material-ui/icons/Menu';
 import Navigation from '../Navigation/Navigation';
+import { constants } from "../Utilities";
 import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../Controls";
 import styles from './MapViewer.module.scss';
 
@@ -85,7 +86,7 @@ class MapViewer extends Component {
                 >
                 <LeafletMap
                     entity={this.props.globalCases}
-                    height={"calc(100vh - 72px)"}
+                    height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
                 />
                 </div>
             );
