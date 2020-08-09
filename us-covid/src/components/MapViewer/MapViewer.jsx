@@ -9,7 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import TuneIcon from '@material-ui/icons/Tune';
 import Navigation from '../Navigation/Navigation';
 import { constants } from "../Utilities";
-import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../Controls";
+import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, Drawer } from "../Controls";
 import styles from './MapViewer.module.scss';
 
 const propTypes = {
@@ -210,15 +210,15 @@ class MapViewer extends Component {
                                 labelPlacement="end"
                             />
                             {/* <FormControlLabel
-                                value="total"
+                                value="activeChangeSevenDay"
                                 control={<Radio color="primary" />}
-                                label="Total Cases"
+                                label="Active Cases % Change (7 Days)"
                                 labelPlacement="end"
                             />
                             <FormControlLabel
-                                value="deaths"
+                                value="activeIncreaseFourteenDay"
                                 control={<Radio color="primary" />}
-                                label="Deaths"
+                                label="Active Cases % Change (14 Days)"
                                 labelPlacement="end"
                             /> */}
                         </RadioGroup>

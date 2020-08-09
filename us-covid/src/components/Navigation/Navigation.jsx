@@ -1,20 +1,11 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../Controls";
-
-import ListSubheader from '@material-ui/core/ListSubheader';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import { Typography, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, SvgIcon, Collapse } from "../Controls";
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import MapIcon from '@material-ui/icons/Map';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PublicIcon from '@material-ui/icons/Public';
-import SvgIcon from '@material-ui/core/SvgIcon';
 import styles from './Navigation.module.scss'
 
 

@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from "prop-types";
-import { Map, TileLayer, Marker, Popup, GeoJSON } from 'react-leaflet';
+import { Map, TileLayer, Popup, GeoJSON } from 'react-leaflet';
 import LocateControl from './LocateControl';
 import WorldGeo from '../../../mapData/WorldGeo.json';
 import USGeo from '../../../mapData/USGeo.json';
@@ -8,7 +8,6 @@ import AustraliaGeo from '../../../mapData/AustraliaGeo.json';
 import CanadaGeo from '../../../mapData/CanadaGeo.json';
 import ChinaGeo from '../../../mapData/ChinaGeo.json';
 import USCountyGeo from '../../../mapData/USCountyGeo.json';
-import FIPSToState from '../../../utilities/FIPSToState.json';
 import styles from './LeafletMap.module.scss';
 import './LeafletMap.css';
 
@@ -146,7 +145,6 @@ class LeafletMap extends PureComponent {
     
     //const activePerCapita = currentEntity && currentEntity.yConfirmed ? currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1] / parseInt(currentEntity.population) * 1000 : 0;
     let style = { fillColor: "blue", fillOpacity: "0" };
-    const { stops } = this.state;
 
     const stateProvinceCountries = ["US", "Canada", "Australia", "China"]
 
@@ -158,34 +156,34 @@ class LeafletMap extends PureComponent {
 
 
       if (visualizationMetric < breakpoint * 1) { //0-.4
-        style = { fillColor: "#0000FF", fillOpacity: ".05" }
+        style = { fillColor: "#0000B0", fillOpacity: ".05" }
       }
       else if (visualizationMetric < breakpoint * 2) { //.4-.8
-        style = { fillColor: "#0000FF", fillOpacity: ".1" }
+        style = { fillColor: "#0000B0", fillOpacity: ".1" }
       }
       else if (visualizationMetric < breakpoint * 3) { //.8-1.2
-        style = { fillColor: "#0000FF", fillOpacity: ".2" }
+        style = { fillColor: "#0000B0", fillOpacity: ".2" }
       }
       else if (visualizationMetric < breakpoint * 4) { //1.2-1.6
-        style = { fillColor: "#0000FF", fillOpacity: ".3" }
+        style = { fillColor: "#0000B0", fillOpacity: ".3" }
       }
       else if (visualizationMetric < breakpoint * 5) {
-        style = { fillColor: "#0000FF", fillOpacity: ".4" }
+        style = { fillColor: "#0000B0", fillOpacity: ".4" }
       }
       else if (visualizationMetric < breakpoint * 6) {
-        style = { fillColor: "#0000FF", fillOpacity: ".5" }
+        style = { fillColor: "#0000B0", fillOpacity: ".5" }
       }
       else if (visualizationMetric < breakpoint * 7) {
-        style = { fillColor: "#0000FF", fillOpacity: ".6" }
+        style = { fillColor: "#0000B0", fillOpacity: ".6" }
       }
       else if (visualizationMetric < breakpoint * 8) {
-        style = { fillColor: "#0000FF", fillOpacity: ".7" }
+        style = { fillColor: "#0000B0", fillOpacity: ".7" }
       }
       else if (visualizationMetric < breakpoint * 9) {
-        style = { fillColor: "#0000FF", fillOpacity: ".8" }
+        style = { fillColor: "#0000B0", fillOpacity: ".8" }
       }
       else if (visualizationMetric < breakpoint * 10) {
-        style = { fillColor: "#0000FF", fillOpacity: ".9" }
+        style = { fillColor: "#0000B0", fillOpacity: ".9" }
       }
       else if (visualizationMetric < breakpoint * 11) {
         style = { fillColor: "#B00000", fillOpacity: ".5" }
@@ -277,7 +275,6 @@ class LeafletMap extends PureComponent {
   render() {
     let tooltipContent = "No data available";
     if (this.state.selectedEntity && this.state.selectedEntity.yActive) {
-      const title =
         tooltipContent = (
           <table className={styles.popupTable}>
             <tbody>
@@ -329,43 +326,10 @@ class LeafletMap extends PureComponent {
         )
     }
 
-    let data = WorldGeo;
     let zoom = 3;
     let lat = 20;
     let long = 0;
-    // switch (this.props.entity.title) {
-    //   case "United States":
-    //     data = USGeo;
-    //     zoom = 5;
-    //     lat = 38;
-    //     long = -94;
-    //     break;
-    //   case "Australia":
-    //     data = AustraliaGeo;
-    //     zoom = 4;
-    //     lat = -26;
-    //     long = 135;
-    //     break;
-    //   case "Canada":
-    //     data = CanadaGeo;
-    //     zoom = 4;
-    //     lat = 60;
-    //     long = -95;
-    //     break;
-    //   case "China":
-    //     data = ChinaGeo;
-    //     zoom = 4;
-    //     lat = 34;
-    //     long = 104
-    //     break;
-    // }
-    // if (this.props.entity.parent && this.props.entity.parent.title === "United States") {
-    //   data = USCountyGeo;
-    //   zoom = 5;
-    //   lat = 38;
-    //   long = -94;
-    // }
-
+ 
     const locateOptions = {
       position: 'topleft',
       flyTo: false,

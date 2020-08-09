@@ -3,14 +3,11 @@ import { connect } from 'react-redux';
 import { actionCreators } from '../../store/CasesRedux'
 import { bindActionCreators } from 'redux';
 import PropTypes from "prop-types";
-
 import Zoom from '@material-ui/core/Zoom';
 import { makeStyles } from '@material-ui/core/styles';
 import  useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Fab from '@material-ui/core/Fab';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { constants } from "../Utilities";
-
 import EntityPlotter from './EntityPlotter/EntityPlotter';
 
 const useStyles = makeStyles((theme) => ({

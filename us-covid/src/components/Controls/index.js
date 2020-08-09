@@ -30,8 +30,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import SvgIcon from '@material-ui/core/SvgIcon';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+
 
 import D3Plot from './D3Plot';
 
@@ -60,6 +65,7 @@ export {
     Card,
     CardContent,
     Checkbox,
+    Collapse,
     Dialog,
     DialogActions,
     DialogContent,
@@ -79,12 +85,15 @@ export {
     Slide,
     Snackbar,
     SnackbarContent,
+    SvgIcon,
     TextField,
     Toolbar,
     Tooltip,
     Typography,
     List,
     ListItem,
+    ListItemIcon,
+    ListItemText,
     Divider,
     D3Plot,
     KPI,

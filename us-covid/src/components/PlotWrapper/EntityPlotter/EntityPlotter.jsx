@@ -11,9 +11,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import InfoDialog from './InfoDialog/InfoDialog';
-import LeafletMap from '../../Controls/LeafletMap/LeafletMap';
 import Navigation from '../../Navigation/Navigation';
-import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../../Controls";
+import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
 import D3Plot from "../../Controls/D3Plot/D3Plot";
