@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import InfoDialog from '../PlotWrapper/EntityPlotter/InfoDialog/InfoDialog';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import MenuIcon from '@material-ui/icons/Menu';
+import TuneIcon from '@material-ui/icons/Tune';
 import Navigation from '../Navigation/Navigation';
 import { constants } from "../Utilities";
 import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer, ButtonGroup, Button } from "../Controls";
@@ -27,11 +28,16 @@ class MapViewer extends Component {
 
         this.state = {
             isInfoExpanded: false,
-            isMenuExpanded: false
+            isMenuExpanded: false,
+            isSettingsExpanded: false,
+            graphMode: "activePerCapita"
         }
 
         this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
         this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
+
+        this.handleSettingsIconClick = this.handleSettingsIconClick.bind(this);
+        this.handleCloseSettings = this.handleCloseSettings.bind(this);
 
         this.handleMenuIconClick = this.handleMenuIconClick.bind(this);
         this.handleCloseMenu = this.handleCloseMenu.bind(this);
@@ -47,6 +53,18 @@ class MapViewer extends Component {
     handleInfoIconClick() {
         this.setState({
             isInfoExpanded: true
+        })
+    }
+
+    handleSettingsIconClick() {
+        this.setState({
+            isSettingsExpanded: true
+        })
+    }
+
+    handleCloseSettings() {
+        this.setState({
+            isSettingsExpanded: false
         })
     }
 
@@ -120,7 +138,7 @@ class MapViewer extends Component {
                                 <td className={styles.legendLabel}>4.8</td>
                                 <td className={styles.legendLabel}>5.6</td>
                                 <td className={styles.legendLabel}>6.4</td>
-                                <td className={styles.legendLabel}>7.2</td>
+                                <td className={styles.legendLabel}>7.2+</td>
                             </tr>
                             <tr>
                                 <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
@@ -138,6 +156,51 @@ class MapViewer extends Component {
                 </div>
             );
         }
+    }
+
+    renderSettingsDrawer() {
+        return (
+            <Drawer anchor={'right'} open={this.state.isSettingsExpanded} onClose={this.handleCloseSettings}>
+                <div className={styles.graphModeContainer}>
+                    <Typography className={styles.graphModeTitle} variant="h6">Visualization Mode:</Typography>
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            row={false}
+                            name="position"
+                            defaultValue="top"
+                            onChange={this.handleGraphModeChange}
+                            value={this.state.graphMode}
+                            className={styles.graphModeButtonContainer}
+                        >
+                            <FormControlLabel
+                                value="active"
+                                control={<Radio color="primary" />}
+                                label="Active Cases"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="activePerCapita"
+                                control={<Radio color="primary" />}
+                                label="Active Cases Per 1,000"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="total"
+                                control={<Radio color="primary" />}
+                                label="Total Cases"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="deaths"
+                                control={<Radio color="primary" />}
+                                label="Deaths"
+                                labelPlacement="end"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </div>
+            </Drawer>
+        )
     }
 
     render() {
@@ -164,12 +227,12 @@ class MapViewer extends Component {
                             </div>
                         </div>
                         <div>
-                            {/* <IconButton
+                            <IconButton
                                 style={{ color: "white" }}
                                 onClick={this.handleSettingsIconClick}
                             >
                                 <TuneIcon />
-                            </IconButton> */}
+                            </IconButton>
                             <IconButton
                                 style={{ color: "white" }}
                                 onClick={this.handleInfoIconClick}
@@ -183,6 +246,7 @@ class MapViewer extends Component {
                 <Navigation isOpen={this.state.isMenuExpanded} handleClose={this.handleCloseMenu} handleNavigate={this.navigate} />
                 {this.renderMapContent()}
                 {this.renderLegendContent()}
+                {this.renderSettingsDrawer()}
             </div>
         );
 

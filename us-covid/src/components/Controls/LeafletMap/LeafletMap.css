@@ -1,4 +1,5 @@
 @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+@import url("https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css");
 
 .fa {
     display: inline-block;
