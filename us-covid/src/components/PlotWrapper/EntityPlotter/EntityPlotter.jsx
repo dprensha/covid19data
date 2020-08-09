@@ -135,7 +135,6 @@ class EntityPlotter extends PureComponent {
     }
 
     handleChildViewModeChange(event) {
-        console.log(event);
         if(event.target) {
             this.setState({
                 childViewMode: event.target.value

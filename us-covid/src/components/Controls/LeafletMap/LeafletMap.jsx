@@ -118,7 +118,8 @@ class LeafletMap extends PureComponent {
         entity = this.props.usCases.children[FIPSLookup[parseInt(property.properties.STATEFP)]].children[property.properties.DISPLAY_NAME];
       }
       else {
-        console.log(property)
+        //Couldn't find the property
+        //console.log(property)
       }
     }
 
@@ -219,7 +220,7 @@ class LeafletMap extends PureComponent {
 
   onClickThing = (event) => {
     const entity = this.getEntity(event.layer.feature)
-    console.log(entity);
+
     this.setState({
       selectedEntity: entity ? entity : {
         yActivePerCapita: [0],
@@ -232,8 +233,6 @@ class LeafletMap extends PureComponent {
   }
 
   onViewportChanged = (event) => {
-    console.log(event);
-
     if (event.zoom >= 6) {
       this.setState({
         dataLabel: "County"
