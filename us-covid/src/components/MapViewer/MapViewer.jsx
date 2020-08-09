@@ -78,7 +78,7 @@ class MapViewer extends Component {
     renderMapContent() {
         if (this.props.globalCases.length === 0 /*|| this.props.usCases.length === 0*/) {
             return (
-                <div style={{marginTop: "100px", marginLeft: "16px"}}>Loading...</div>
+                <div style={{ marginTop: "100px", marginLeft: "16px" }}>Loading...</div>
             );
         }
 
@@ -87,11 +87,54 @@ class MapViewer extends Component {
                 <div
                     className={styles.map}
                 >
-                <LeafletMap
-                    entity={this.props.globalCases}
-                    usCases={this.props.usCases}
-                    height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
-                />
+                    <LeafletMap
+                        entity={this.props.globalCases}
+                        usCases={this.props.usCases}
+                        height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
+                    />
+                </div>
+            );
+        }
+    }
+
+    renderLegendContent() {
+        if (this.props.globalCases.length === 0 /*|| this.props.usCases.length === 0*/) {
+            return (
+                <div></div>
+            );
+        }
+
+        else {
+            return (
+                <div className={styles.legend} style={{}}>
+                    <div>Active Cases Per 1,000</div>
+                    <div className={styles.legendSubtitle}>{`as of ${this.props.globalCases.x[this.props.globalCases.x.length - 1]}`}</div>
+                    <table style={{ borderCollapse: "collapse" }}>
+                        <tbody>
+                            <tr>
+                                <td className={styles.legendLabel}>0.8</td>
+                                <td className={styles.legendLabel}>1.6</td>
+                                <td className={styles.legendLabel}>2.4</td>
+                                <td className={styles.legendLabel}>3.2</td>
+                                <td className={styles.legendLabel}>4.0</td>
+                                <td className={styles.legendLabel}>4.8</td>
+                                <td className={styles.legendLabel}>5.6</td>
+                                <td className={styles.legendLabel}>6.4</td>
+                                <td className={styles.legendLabel}>7.2</td>
+                            </tr>
+                            <tr>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .55)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .65)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .75)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .85)" }}></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             );
         }
@@ -139,6 +182,7 @@ class MapViewer extends Component {
                 <InfoDialog isOpen={this.state.isInfoExpanded} displayDetails={this.props.displayDetails} handleClose={this.handleCloseInfoIcon} />
                 <Navigation isOpen={this.state.isMenuExpanded} handleClose={this.handleCloseMenu} handleNavigate={this.navigate} />
                 {this.renderMapContent()}
+                {this.renderLegendContent()}
             </div>
         );
 

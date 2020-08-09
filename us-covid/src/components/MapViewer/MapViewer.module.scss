@@ -1,3 +1,28 @@
 .map {
     margin-top: 72px;
 }
+
+.legend {
+    background: rgba(255, 255, 255, .9);
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    z-index: 9999;
+    padding: 12px;
+}
+
+.legendSubtitle {
+    margin-bottom: 4px;
+    font-size: 11px;
+}
+
+.legendLabel {
+    font-size: 11px;
+    text-align: right;
+    transform: translateX(8px);
+}
+
+.legendItem {
+    width: 30px;
+    height: 10px;
+}

@@ -159,16 +159,16 @@ class LeafletMap extends PureComponent {
     else {
       const breakpoint = .4;
 
-      if (activePerCapita < breakpoint * 1) {
+      if (activePerCapita < breakpoint * 1) { //0-.4
         style = { fillColor: "#0000FF", fillOpacity: ".05" }
       }
-      else if (activePerCapita < breakpoint * 2) {
+      else if (activePerCapita < breakpoint * 2) { //.4-.8
         style = { fillColor: "#0000FF", fillOpacity: ".1" }
       }
-      else if (activePerCapita < breakpoint * 3) {
+      else if (activePerCapita < breakpoint * 3) { //.8-1.2
         style = { fillColor: "#0000FF", fillOpacity: ".2" }
       }
-      else if (activePerCapita < breakpoint * 4) {
+      else if (activePerCapita < breakpoint * 4) { //1.2-1.6
         style = { fillColor: "#0000FF", fillOpacity: ".3" }
       }
       else if (activePerCapita < breakpoint * 5) {
