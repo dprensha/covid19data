@@ -30,7 +30,9 @@ class MapViewer extends Component {
             isInfoExpanded: false,
             isMenuExpanded: false,
             isSettingsExpanded: false,
-            graphMode: "activePerCapita"
+            visualizationMode: "activePerCapita",
+            breakpoint: .4,
+            visualizationTitle: "Active Cases Per 1,000"
         }
 
         this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
@@ -38,6 +40,7 @@ class MapViewer extends Component {
 
         this.handleSettingsIconClick = this.handleSettingsIconClick.bind(this);
         this.handleCloseSettings = this.handleCloseSettings.bind(this);
+        this.handleVisualizationModeChange = this.handleVisualizationModeChange.bind(this);
 
         this.handleMenuIconClick = this.handleMenuIconClick.bind(this);
         this.handleCloseMenu = this.handleCloseMenu.bind(this);
@@ -60,6 +63,30 @@ class MapViewer extends Component {
         this.setState({
             isSettingsExpanded: true
         })
+    }
+
+    handleVisualizationModeChange(event) {
+        let breakpoint = 0;
+        let visualizationTitle = 0;
+
+        switch(event.target.value) {
+            case "activePerCapita":
+                breakpoint = .4;
+                visualizationTitle = "Active Cases Per 1,000";
+                break;
+            case "mortalityRate":
+                breakpoint = .5;
+                visualizationTitle = "Mortality Rate";
+                break;
+            default: break;
+        }
+        
+        this.setState({
+            visualizationMode: event.target.value,
+            breakpoint: breakpoint,
+            visualizationTitle: visualizationTitle,
+            isSettingsExpanded: false
+        });
     }
 
     handleCloseSettings() {
@@ -94,7 +121,7 @@ class MapViewer extends Component {
     }
 
     renderMapContent() {
-        if (this.props.globalCases.length === 0 /*|| this.props.usCases.length === 0*/) {
+        if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
             return (
                 <div style={{ marginTop: "100px", marginLeft: "16px" }}>Loading...</div>
             );
@@ -109,6 +136,8 @@ class MapViewer extends Component {
                         entity={this.props.globalCases}
                         usCases={this.props.usCases}
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
+                        visualizationMode={this.state.visualizationMode}
+                        breakpoint={this.state.breakpoint}
                     />
                 </div>
             );
@@ -116,29 +145,25 @@ class MapViewer extends Component {
     }
 
     renderLegendContent() {
-        if (this.props.globalCases.length === 0 /*|| this.props.usCases.length === 0*/) {
+        if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
             return (
                 <div></div>
             );
         }
 
         else {
+            const breakpointColumns = [];
+            for(var i = 2; i <= 18; i += 2) {
+                breakpointColumns.push(<td key={i} className={styles.legendLabel}>{Math.round((this.state.breakpoint * i + Number.EPSILON) * 10) / 10}{this.state.visualizationMode === "mortalityRate" ? "%" : ""}{i === 18 ? "+" : ""}</td>)
+            }
             return (
                 <div className={styles.legend} style={{}}>
-                    <div>Active Cases Per 1,000</div>
+                    <div>{this.state.visualizationTitle}</div>
                     <div className={styles.legendSubtitle}>{`as of ${this.props.globalCases.x[this.props.globalCases.x.length - 1]}`}</div>
                     <table style={{ borderCollapse: "collapse" }}>
                         <tbody>
                             <tr>
-                                <td className={styles.legendLabel}>0.8</td>
-                                <td className={styles.legendLabel}>1.6</td>
-                                <td className={styles.legendLabel}>2.4</td>
-                                <td className={styles.legendLabel}>3.2</td>
-                                <td className={styles.legendLabel}>4.0</td>
-                                <td className={styles.legendLabel}>4.8</td>
-                                <td className={styles.legendLabel}>5.6</td>
-                                <td className={styles.legendLabel}>6.4</td>
-                                <td className={styles.legendLabel}>7.2+</td>
+                                {breakpointColumns}
                             </tr>
                             <tr>
                                 <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
@@ -168,16 +193,10 @@ class MapViewer extends Component {
                             row={false}
                             name="position"
                             defaultValue="top"
-                            onChange={this.handleGraphModeChange}
-                            value={this.state.graphMode}
+                            onChange={this.handleVisualizationModeChange}
+                            value={this.state.visualizationMode}
                             className={styles.graphModeButtonContainer}
                         >
-                            <FormControlLabel
-                                value="active"
-                                control={<Radio color="primary" />}
-                                label="Active Cases"
-                                labelPlacement="end"
-                            />
                             <FormControlLabel
                                 value="activePerCapita"
                                 control={<Radio color="primary" />}
@@ -185,6 +204,12 @@ class MapViewer extends Component {
                                 labelPlacement="end"
                             />
                             <FormControlLabel
+                                value="mortalityRate"
+                                control={<Radio color="primary" />}
+                                label="Mortality Rate"
+                                labelPlacement="end"
+                            />
+                            {/* <FormControlLabel
                                 value="total"
                                 control={<Radio color="primary" />}
                                 label="Total Cases"
@@ -195,7 +220,7 @@ class MapViewer extends Component {
                                 control={<Radio color="primary" />}
                                 label="Deaths"
                                 labelPlacement="end"
-                            />
+                            /> */}
                         </RadioGroup>
                     </FormControl>
                 </div>

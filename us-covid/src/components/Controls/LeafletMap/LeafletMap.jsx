@@ -16,38 +16,21 @@ const propTypes = {
   //from Redux
   entity: PropTypes.object,
   handlePlotClick: PropTypes.func,
-  displayDetails: PropTypes.object
+  displayDetails: PropTypes.object,
+  visualizationMode: PropTypes.string,
+  breakpoint: PropTypes.number
 }
 
 class LeafletMap extends PureComponent {
   constructor(props) {
     super(props);
 
-    const sortedKeys = Object.keys(this.props.entity.children).sort();
-    const activePerThousand = [];
-    const stops = [];
-    for (let i = 0; i < sortedKeys.length; i++) {
-      if (this.props.entity.children[sortedKeys[i]].yActivePerCapita[this.props.entity.children[sortedKeys[i]].yActive.length - 1] * 1000 > 0) {
-        activePerThousand.push(this.props.entity.children[sortedKeys[i]].yActivePerCapita[this.props.entity.children[sortedKeys[i]].yActive.length - 1] * 1000);
-      }
-    }
-    const min = Math.min(...activePerThousand);
-    const max = Math.max(...activePerThousand);
-    const range = max - min;
-    for (let j = 0; j < 9; j++) {
-      stops[j] = range / 9 * (j + 1);
-    }
-    // for(let j = 0; j < 9; j++) {
-    //   stops[j] = activePerThousand.sort()[((j+1) * sortedKeys.length / 10).toFixed(0)];
-    // }
-    console.log(stops);
     this.state = {
       lat: 20,
       lng: 0,
       zoom: 2,
       popupText: "",
       selectedEntity: this.props.entity,
-      stops: stops,
       dataLabel: "World"
     }
 
@@ -145,8 +128,23 @@ class LeafletMap extends PureComponent {
 
   getStyle = (property, FIPSLookup) => {
     const currentEntity = this.getEntity(property);
+    const breakpoint = this.props.breakpoint;
+    let visualizationMetric = 0;
 
-    const activePerCapita = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[currentEntity.yActivePerCapita.length - 1] * 1000 : 0
+    if(this.props.visualizationMode === "activePerCapita") {
+      visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[currentEntity.yActivePerCapita.length - 1] * 1000 : 0 //activePerCapita
+    }
+
+    else if(this.props.visualizationMode === "mortalityRate") {
+      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1]) * 100 : 0; //mortalityRate
+    }
+
+    else if(this.props.visualizationMode === "total") {
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.state.selectedEntity.yDeaths.length - 1]) : 0; //total
+    }
+
+    
+    //const activePerCapita = currentEntity && currentEntity.yConfirmed ? currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1] / parseInt(currentEntity.population) * 1000 : 0;
     let style = { fillColor: "blue", fillOpacity: "0" };
     const { stops } = this.state;
 
@@ -157,60 +155,60 @@ class LeafletMap extends PureComponent {
     }
 
     else {
-      const breakpoint = .4;
 
-      if (activePerCapita < breakpoint * 1) { //0-.4
+
+      if (visualizationMetric < breakpoint * 1) { //0-.4
         style = { fillColor: "#0000FF", fillOpacity: ".05" }
       }
-      else if (activePerCapita < breakpoint * 2) { //.4-.8
+      else if (visualizationMetric < breakpoint * 2) { //.4-.8
         style = { fillColor: "#0000FF", fillOpacity: ".1" }
       }
-      else if (activePerCapita < breakpoint * 3) { //.8-1.2
+      else if (visualizationMetric < breakpoint * 3) { //.8-1.2
         style = { fillColor: "#0000FF", fillOpacity: ".2" }
       }
-      else if (activePerCapita < breakpoint * 4) { //1.2-1.6
+      else if (visualizationMetric < breakpoint * 4) { //1.2-1.6
         style = { fillColor: "#0000FF", fillOpacity: ".3" }
       }
-      else if (activePerCapita < breakpoint * 5) {
+      else if (visualizationMetric < breakpoint * 5) {
         style = { fillColor: "#0000FF", fillOpacity: ".4" }
       }
-      else if (activePerCapita < breakpoint * 6) {
+      else if (visualizationMetric < breakpoint * 6) {
         style = { fillColor: "#0000FF", fillOpacity: ".5" }
       }
-      else if (activePerCapita < breakpoint * 7) {
+      else if (visualizationMetric < breakpoint * 7) {
         style = { fillColor: "#0000FF", fillOpacity: ".6" }
       }
-      else if (activePerCapita < breakpoint * 8) {
+      else if (visualizationMetric < breakpoint * 8) {
         style = { fillColor: "#0000FF", fillOpacity: ".7" }
       }
-      else if (activePerCapita < breakpoint * 9) {
+      else if (visualizationMetric < breakpoint * 9) {
         style = { fillColor: "#0000FF", fillOpacity: ".8" }
       }
-      else if (activePerCapita < breakpoint * 10) {
+      else if (visualizationMetric < breakpoint * 10) {
         style = { fillColor: "#0000FF", fillOpacity: ".9" }
       }
-      else if (activePerCapita < breakpoint * 11) {
+      else if (visualizationMetric < breakpoint * 11) {
         style = { fillColor: "#B00000", fillOpacity: ".5" }
       }
-      else if (activePerCapita < breakpoint * 12) {
+      else if (visualizationMetric < breakpoint * 12) {
         style = { fillColor: "#B00000", fillOpacity: ".55" }
       }
-      else if (activePerCapita < breakpoint * 13) {
+      else if (visualizationMetric < breakpoint * 13) {
         style = { fillColor: "#B00000", fillOpacity: ".6" }
       }
-      else if (activePerCapita < breakpoint * 14) {
+      else if (visualizationMetric < breakpoint * 14) {
         style = { fillColor: "#B00000", fillOpacity: ".65" }
       }
-      else if (activePerCapita < breakpoint * 15) {
+      else if (visualizationMetric < breakpoint * 15) {
         style = { fillColor: "#B00000", fillOpacity: ".7" }
       }
-      else if (activePerCapita < breakpoint * 16) {
+      else if (visualizationMetric < breakpoint * 16) {
         style = { fillColor: "#B00000", fillOpacity: ".75" }
       }
-      else if (activePerCapita < breakpoint * 17) {
+      else if (visualizationMetric < breakpoint * 17) {
         style = { fillColor: "#B00000", fillOpacity: ".8" }
       }
-      else if (activePerCapita < breakpoint * 18) {
+      else if (visualizationMetric < breakpoint * 18) {
         style = { fillColor: "#B00000", fillOpacity: ".85" }
       }
       else {
@@ -424,17 +422,12 @@ class LeafletMap extends PureComponent {
       )
     }
 
-
-
     return (
       <Map center={position} zoom={zoom} height={this.props.height} style={{ height: this.props.height }} onViewportChanged={this.onViewportChanged}
       >
         <TileLayer
           attribution='&amp;copy <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/#/-74.5/40/10">Improve this map</a>'
-          url="https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZHByZW5zaGF3IiwiYSI6ImNrZGIwY3kzeTB5cHoydXBkOXBhN2F5MzIifQ.yG_odeS3UupdDhn9hVfwTw"
-        //tileSize="512"
-        //zoomOffset="1"
-        textSize="40"
+          url={`https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`}
         />
         <GeoJSON key={this.state.dataLabel} data={WorldGeo} style={this.getStyle} onclick={this.onClickThing} weight={.5}>
           <Popup style={{ backgroundColor: "red" }}>
