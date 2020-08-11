@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from "prop-types";
 import { Map, TileLayer, Popup, GeoJSON } from 'react-leaflet';
+import ReactLeafletSearch from "react-leaflet-search";
 import LocateControl from './LocateControl';
 import WorldGeo from '../../../mapData/WorldGeo.json';
 import USGeo from '../../../mapData/USGeo.json';
@@ -131,19 +132,19 @@ class LeafletMap extends PureComponent {
     const breakpoint = this.props.breakpoint;
     let visualizationMetric = 0;
 
-    if(this.props.visualizationMode === "activePerCapita") {
+    if (this.props.visualizationMode === "activePerCapita") {
       visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[currentEntity.yActivePerCapita.length - 1] * 1000 : 0 //activePerCapita
     }
 
-    else if(this.props.visualizationMode === "mortalityRate") {
+    else if (this.props.visualizationMode === "mortalityRate") {
       visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1]) * 100 : 0; //mortalityRate
     }
 
-    else if(this.props.visualizationMode === "total") {
+    else if (this.props.visualizationMode === "total") {
       visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.state.selectedEntity.yDeaths.length - 1]) : 0; //total
     }
 
-    
+
     //const activePerCapita = currentEntity && currentEntity.yConfirmed ? currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1] / parseInt(currentEntity.population) * 1000 : 0;
     let style = { fillColor: "blue", fillOpacity: "0" };
 
@@ -187,31 +188,31 @@ class LeafletMap extends PureComponent {
         style = { fillColor: "#0000B0", fillOpacity: ".9" }
       }
       else if (visualizationMetric < breakpoint * 11) {
-        style = { fillColor: "#B00000", fillOpacity: ".5" }
+        style = { fillColor: "#B00000", fillOpacity: ".45" }
       }
       else if (visualizationMetric < breakpoint * 12) {
-        style = { fillColor: "#B00000", fillOpacity: ".55" }
+        style = { fillColor: "#B00000", fillOpacity: ".5" }
       }
       else if (visualizationMetric < breakpoint * 13) {
-        style = { fillColor: "#B00000", fillOpacity: ".6" }
+        style = { fillColor: "#B00000", fillOpacity: ".55" }
       }
       else if (visualizationMetric < breakpoint * 14) {
-        style = { fillColor: "#B00000", fillOpacity: ".65" }
+        style = { fillColor: "#B00000", fillOpacity: ".6" }
       }
       else if (visualizationMetric < breakpoint * 15) {
-        style = { fillColor: "#B00000", fillOpacity: ".7" }
+        style = { fillColor: "#B00000", fillOpacity: ".65" }
       }
       else if (visualizationMetric < breakpoint * 16) {
-        style = { fillColor: "#B00000", fillOpacity: ".75" }
+        style = { fillColor: "#B00000", fillOpacity: ".7" }
       }
       else if (visualizationMetric < breakpoint * 17) {
-        style = { fillColor: "#B00000", fillOpacity: ".8" }
+        style = { fillColor: "#B00000", fillOpacity: ".75" }
       }
       else if (visualizationMetric < breakpoint * 18) {
-        style = { fillColor: "#B00000", fillOpacity: ".85" }
+        style = { fillColor: "#B00000", fillOpacity: ".8" }
       }
       else {
-        style = { fillColor: "#B00000", fillOpacity: ".9" }
+        style = { fillColor: "#B00000", fillOpacity: ".85" }
       }
     }
 
@@ -274,61 +275,61 @@ class LeafletMap extends PureComponent {
   render() {
     let tooltipContent = "No data available";
     if (this.state.selectedEntity && this.state.selectedEntity.yActive) {
-        tooltipContent = (
-          <table className={styles.popupTable}>
-            <tbody>
-              <tr>
-                <td colSpan="2" className={styles.popupTitle}>{this.state.selectedEntity.title}{this.state.selectedEntity.parent && this.state.selectedEntity.parent.title !== "World" ? `, ${this.state.selectedEntity.parent.title}` : ""}</td>
-              </tr>
-              <tr>
-                <td>
-                  Active Cases
+      tooltipContent = (
+        <table className={styles.popupTable}>
+          <tbody>
+            <tr>
+              <td colSpan="2" className={styles.popupTitle}>{this.state.selectedEntity.title}{this.state.selectedEntity.parent && this.state.selectedEntity.parent.title !== "World" ? `, ${this.state.selectedEntity.parent.title}` : ""}</td>
+            </tr>
+            <tr>
+              <td>
+                Active Cases
                 </td>
-                <td className={styles.popupValue}>
-                  {this.addThousandSeparators(this.state.selectedEntity.yActive[this.state.selectedEntity.yActive.length - 1], false)}
+              <td className={styles.popupValue}>
+                {this.addThousandSeparators(this.state.selectedEntity.yActive[this.state.selectedEntity.yActive.length - 1], false)}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Active Cases Per 1,000
                 </td>
-              </tr>
-              <tr>
-                <td>
-                  Active Cases Per 1,000
+              <td className={styles.popupValue}>
+                {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.state.selectedEntity.yActive.length - 1] * 1000, false)}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Total Cases
                 </td>
-                <td className={styles.popupValue}>
-                  {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.state.selectedEntity.yActive.length - 1] * 1000, false)}
+              <td className={styles.popupValue}>
+                {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1], true)}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Deaths
                 </td>
-              </tr>
-              <tr>
-                <td>
-                  Total Cases
+              <td className={styles.popupValue}>
+                {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1])}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mortality Rate
                 </td>
-                <td className={styles.popupValue}>
-                  {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1], true)}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Deaths
-                </td>
-                <td className={styles.popupValue}>
-                  {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1])}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Mortality Rate
-                </td>
-                <td className={styles.popupValue}>
-                  {this.formatPercentage((this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1]) * 100)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        )
+              <td className={styles.popupValue}>
+                {this.formatPercentage((this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1]) * 100)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      )
     }
 
     let zoom = 3;
     let lat = 20;
     let long = 0;
- 
+
     const locateOptions = {
       position: 'topleft',
       flyTo: false,
@@ -390,8 +391,12 @@ class LeafletMap extends PureComponent {
       >
         <TileLayer
           attribution='&amp;copy <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/#/-74.5/40/10">Improve this map</a>'
-          url={`https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`}
+          //url={`https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`}
+          url={`https://api.mapbox.com/styles/v1/dprenshaw/ckdozligj063s1ipgxn71uizr/tiles/256/{z}/{x}/{y}?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`}
+        //mapbox://styles/dprenshaw/ckdozligj063s1ipgxn71uizr
+
         />
+
         <GeoJSON key={this.state.dataLabel} data={WorldGeo} style={this.getStyle} onclick={this.onClickThing} weight={.5}>
           <Popup style={{ backgroundColor: "red" }}>
             {tooltipContent}
@@ -399,6 +404,15 @@ class LeafletMap extends PureComponent {
         </GeoJSON>
         {stateProvince}
         <LocateControl options={locateOptions} />
+        <ReactLeafletSearch
+          position="topleft"
+          inputPlaceholder="Search for a place"
+          showMarker={true}
+          zoom={7}
+          showPopup={false}
+          closeResultsOnClick={true}
+          openSearchOnLoad={false}
+        />
       </Map>
     )
   }

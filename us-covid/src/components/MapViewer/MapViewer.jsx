@@ -71,7 +71,7 @@ class MapViewer extends Component {
 
         switch(event.target.value) {
             case "activePerCapita":
-                breakpoint = .4;
+                breakpoint = .5;
                 visualizationTitle = "Active Cases Per 1,000";
                 break;
             case "mortalityRate":
@@ -123,7 +123,7 @@ class MapViewer extends Component {
     renderMapContent() {
         if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
             return (
-                <div style={{ marginTop: "100px", marginLeft: "16px" }}>Loading...</div>
+                <div style={{ marginTop: "88px", marginLeft: "16px" }}>Loading...</div>
             );
         }
 
@@ -171,10 +171,10 @@ class MapViewer extends Component {
                                 <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
                                 <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
                                 <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .55)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .65)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .75)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .85)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
                             </tr>
                         </tbody>
                     </table>

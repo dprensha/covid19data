@@ -21,3 +21,8 @@ html {
   width: 100%;
   height: 100vh;
 }
+
+.leaflet-marker-icon {
+  height: 30px !important;
+  width: 20px !important;
+}
