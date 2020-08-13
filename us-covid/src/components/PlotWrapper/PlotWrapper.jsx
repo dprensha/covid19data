@@ -74,10 +74,10 @@ class PlotWrapper extends Component {
     }
 
     componentDidMount() {
-        if(this.props.match.params.mode === "Global") {
+        if(this.props.match.params.mode === "Global" && !this.props.globalCases.children) {
             this.props.requestGlobalCases();
         }
-        else {
+        else if(this.props.match.params.mode === "US" && !this.props.usCases.children) {
             this.props.requestUSCases();
         }
     }
@@ -94,7 +94,7 @@ class PlotWrapper extends Component {
             navigableTitle = "US"
         }
 
-        if (prevState.navigableTitle !== nextProps.match.params.title && cases.children && nextProps.match.params.title) {
+        if ((prevState.navigableTitle !== nextProps.match.params.title || !prevState.currentEntity) && cases.children && nextProps.match.params.title) {
             const newEntity = Object.keys(cases.children).map((key) => { return cases.children[key]; }).filter((val) => val.navigableTitle === nextProps.match.params.title)[0];
             return {
                 navigableTitle: nextProps.match.params.title,

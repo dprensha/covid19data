@@ -127,10 +127,10 @@ class MapViewer extends Component {
     }
 
     componentDidMount() {
-        if (this.props.globalCases.length === 0) {
+        if (!this.props.globalCases.children) {
             this.props.requestGlobalCases();
         }
-        if (this.props.usCases.length === 0) {
+        if (!this.props.usCases.children) {
             this.props.requestUSCases();
         }
     }
