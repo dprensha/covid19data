@@ -3,8 +3,6 @@ import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import { constants } from './Utilities';
 import PlotWrapper from './PlotWrapper/PlotWrapper';
 import MapViewer from './MapViewer/MapViewer';
-//import GoogleMap from './PlotWrapper/EntityPlotter/GoogleMap/GoogleMap';
-//import LeafletMap from './PlotWrapper/EntityPlotter/LeafletMap/LeafletMap';
 
 // The Main component renders one of the three provided
 // Routes (provided that one matches). Both the /roster
