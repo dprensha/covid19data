@@ -127,7 +127,7 @@ class LeafletMap extends PureComponent {
     return entity;
   }
 
-  getStyle = (property, FIPSLookup) => {
+  getStyle = (property) => {
     const currentEntity = this.getEntity(property);
     const breakpoint = this.props.breakpoint;
     let visualizationMetric = 0;
@@ -144,6 +144,18 @@ class LeafletMap extends PureComponent {
       visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.state.selectedEntity.yDeaths.length - 1]) : 0; //total
     }
 
+    else if(this.props.visualizationMode === "activeChangeSevenDay") {
+      const keyValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1] : 0;
+      const baselineValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1 - 7] : 1;
+      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
+    }
+
+    else if (this.props.visualizationMode === "activeChangeFourteenDay") {
+      const keyValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1] : 0;
+      const baselineValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1 - 14] : 1;
+      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
+    }
+
 
     //const activePerCapita = currentEntity && currentEntity.yConfirmed ? currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1] / parseInt(currentEntity.population) * 1000 : 0;
     let style = { fillColor: "blue", fillOpacity: "0" };
@@ -151,68 +163,130 @@ class LeafletMap extends PureComponent {
     const stateProvinceCountries = ["US", "Canada", "Australia", "China"]
 
     if ((this.state.dataLabel === "StateProvince" || this.state.dataLabel === "County") && stateProvinceCountries.includes(property.properties.DISPLAY_NAME)) {
-
+      style = { strokeWidth: "3px" }
     }
 
     else {
-
-
-      if (visualizationMetric < breakpoint * 1) { //0-.4
-        style = { fillColor: "#0000B0", fillOpacity: ".05" }
-      }
-      else if (visualizationMetric < breakpoint * 2) { //.4-.8
-        style = { fillColor: "#0000B0", fillOpacity: ".1" }
-      }
-      else if (visualizationMetric < breakpoint * 3) { //.8-1.2
-        style = { fillColor: "#0000B0", fillOpacity: ".2" }
-      }
-      else if (visualizationMetric < breakpoint * 4) { //1.2-1.6
-        style = { fillColor: "#0000B0", fillOpacity: ".3" }
-      }
-      else if (visualizationMetric < breakpoint * 5) {
-        style = { fillColor: "#0000B0", fillOpacity: ".4" }
-      }
-      else if (visualizationMetric < breakpoint * 6) {
-        style = { fillColor: "#0000B0", fillOpacity: ".5" }
-      }
-      else if (visualizationMetric < breakpoint * 7) {
-        style = { fillColor: "#0000B0", fillOpacity: ".6" }
-      }
-      else if (visualizationMetric < breakpoint * 8) {
-        style = { fillColor: "#0000B0", fillOpacity: ".7" }
-      }
-      else if (visualizationMetric < breakpoint * 9) {
-        style = { fillColor: "#0000B0", fillOpacity: ".8" }
-      }
-      else if (visualizationMetric < breakpoint * 10) {
-        style = { fillColor: "#0000B0", fillOpacity: ".9" }
-      }
-      else if (visualizationMetric < breakpoint * 11) {
-        style = { fillColor: "#B00000", fillOpacity: ".45" }
-      }
-      else if (visualizationMetric < breakpoint * 12) {
-        style = { fillColor: "#B00000", fillOpacity: ".5" }
-      }
-      else if (visualizationMetric < breakpoint * 13) {
-        style = { fillColor: "#B00000", fillOpacity: ".55" }
-      }
-      else if (visualizationMetric < breakpoint * 14) {
-        style = { fillColor: "#B00000", fillOpacity: ".6" }
-      }
-      else if (visualizationMetric < breakpoint * 15) {
-        style = { fillColor: "#B00000", fillOpacity: ".65" }
-      }
-      else if (visualizationMetric < breakpoint * 16) {
-        style = { fillColor: "#B00000", fillOpacity: ".7" }
-      }
-      else if (visualizationMetric < breakpoint * 17) {
-        style = { fillColor: "#B00000", fillOpacity: ".75" }
-      }
-      else if (visualizationMetric < breakpoint * 18) {
-        style = { fillColor: "#B00000", fillOpacity: ".8" }
+      if(this.props.scaleIncludesNegatives === false) {
+        if (visualizationMetric < breakpoint * 1) { //0-.4
+          style = { fillColor: "#0000B0", fillOpacity: ".05" }
+        }
+        else if (visualizationMetric < breakpoint * 2) { //.4-.8
+          style = { fillColor: "#0000B0", fillOpacity: ".1" }
+        }
+        else if (visualizationMetric < breakpoint * 3) { //.8-1.2
+          style = { fillColor: "#0000B0", fillOpacity: ".2" }
+        }
+        else if (visualizationMetric < breakpoint * 4) { //1.2-1.6
+          style = { fillColor: "#0000B0", fillOpacity: ".3" }
+        }
+        else if (visualizationMetric < breakpoint * 5) {
+          style = { fillColor: "#0000B0", fillOpacity: ".4" }
+        }
+        else if (visualizationMetric < breakpoint * 6) {
+          style = { fillColor: "#0000B0", fillOpacity: ".5" }
+        }
+        else if (visualizationMetric < breakpoint * 7) {
+          style = { fillColor: "#0000B0", fillOpacity: ".6" }
+        }
+        else if (visualizationMetric < breakpoint * 8) {
+          style = { fillColor: "#0000B0", fillOpacity: ".7" }
+        }
+        else if (visualizationMetric < breakpoint * 9) {
+          style = { fillColor: "#0000B0", fillOpacity: ".8" }
+        }
+        else if (visualizationMetric < breakpoint * 10) {
+          style = { fillColor: "#0000B0", fillOpacity: ".9" }
+        }
+        else if (visualizationMetric < breakpoint * 11) {
+          style = { fillColor: "#B00000", fillOpacity: ".45" }
+        }
+        else if (visualizationMetric < breakpoint * 12) {
+          style = { fillColor: "#B00000", fillOpacity: ".5" }
+        }
+        else if (visualizationMetric < breakpoint * 13) {
+          style = { fillColor: "#B00000", fillOpacity: ".55" }
+        }
+        else if (visualizationMetric < breakpoint * 14) {
+          style = { fillColor: "#B00000", fillOpacity: ".6" }
+        }
+        else if (visualizationMetric < breakpoint * 15) {
+          style = { fillColor: "#B00000", fillOpacity: ".65" }
+        }
+        else if (visualizationMetric < breakpoint * 16) {
+          style = { fillColor: "#B00000", fillOpacity: ".7" }
+        }
+        else if (visualizationMetric < breakpoint * 17) {
+          style = { fillColor: "#B00000", fillOpacity: ".75" }
+        }
+        else if (visualizationMetric < breakpoint * 18) {
+          style = { fillColor: "#B00000", fillOpacity: ".8" }
+        }
+        else if (visualizationMetric >= breakpoint * 18) {
+          style = { fillColor: "#B00000", fillOpacity: ".85" }
+        }
       }
       else {
-        style = { fillColor: "#B00000", fillOpacity: ".85" }
+        if (visualizationMetric < -breakpoint * 9) { //-112.5
+          style = { fillColor: "#00B000", fillOpacity: ".95" }
+        }
+        else if (visualizationMetric < -breakpoint * 8) { //-100
+          style = { fillColor: "#00B000", fillOpacity: ".85" }
+        }
+        else if (visualizationMetric < -breakpoint * 7) { //-87.5
+          style = { fillColor: "#00B000", fillOpacity: ".75" }
+        }
+        else if (visualizationMetric < -breakpoint * 6) { //-75
+          style = { fillColor: "#00B000", fillOpacity: ".65" }
+        }
+        else if (visualizationMetric < -breakpoint * 5) {
+          style = { fillColor: "#00B000", fillOpacity: ".55" }
+        }
+        else if (visualizationMetric < -breakpoint * 4) {
+          style = { fillColor: "#00B000", fillOpacity: ".45" }
+        }
+        else if (visualizationMetric < -breakpoint * 3) {
+          style = { fillColor: "#00B000", fillOpacity: ".35" }
+        }
+        else if (visualizationMetric < -breakpoint * 2) {
+          style = { fillColor: "#00B000", fillOpacity: ".25" }
+        }
+        else if (visualizationMetric <  -breakpoint * 1) {
+          style = { fillColor: "#00B000", fillOpacity: ".15" }
+        }
+        else if (visualizationMetric === 0 ){
+          style = { fillColor: "#00B000", fillOpacity: "0"}
+        }
+        else if (visualizationMetric <  0) {
+          style = { fillColor: "#00B000", fillOpacity: ".1" }
+        }
+        else if (visualizationMetric < breakpoint * 1) {
+          style = { fillColor: "#B00000", fillOpacity: ".2" }
+        }
+        else if (visualizationMetric < breakpoint * 2) {
+          style = { fillColor: "#B00000", fillOpacity: ".3" }
+        }
+        else if (visualizationMetric < breakpoint * 3) {
+          style = { fillColor: "#B00000", fillOpacity: ".4" }
+        }
+        else if (visualizationMetric < breakpoint * 4) {
+          style = { fillColor: "#B00000", fillOpacity: ".5" }
+        }
+        else if (visualizationMetric < breakpoint * 5) {
+          style = { fillColor: "#B00000", fillOpacity: ".6" }
+        }
+        else if (visualizationMetric < breakpoint * 6) {
+          style = { fillColor: "#B00000", fillOpacity: ".7" }
+        }
+        else if (visualizationMetric < breakpoint * 7) {
+          style = { fillColor: "#B00000", fillOpacity: ".8" }
+        }
+        else if (visualizationMetric < breakpoint * 8) {
+          style = { fillColor: "#B00000", fillOpacity: ".9" }
+        }
+        else if (visualizationMetric >= breakpoint * 8) {
+          style = { fillColor: "#B00000", fillOpacity: ".98" }
+        }
       }
     }
 
@@ -275,6 +349,10 @@ class LeafletMap extends PureComponent {
   render() {
     let tooltipContent = "No data available";
     if (this.state.selectedEntity && this.state.selectedEntity.yActive) {
+      const keyValue = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1];
+      const baselineValueSeven = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1 - 7];
+      const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1 - 14];
+
       tooltipContent = (
         <table className={styles.popupTable}>
           <tbody>
@@ -282,15 +360,31 @@ class LeafletMap extends PureComponent {
               <td colSpan="2" className={styles.popupTitle}>{this.state.selectedEntity.title}{this.state.selectedEntity.parent && this.state.selectedEntity.parent.title !== "World" ? `, ${this.state.selectedEntity.parent.title}` : ""}</td>
             </tr>
             <tr>
-              <td>
+            <td>
                 Active Cases
                 </td>
               <td className={styles.popupValue}>
                 {this.addThousandSeparators(this.state.selectedEntity.yActive[this.state.selectedEntity.yActive.length - 1], false)}
               </td>
             </tr>
-            <tr>
+            <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? {fontWeight: "bold"} : {}}>
               <td>
+                Active Cases 7-Day Change
+                </td>
+              <td className={styles.popupValue}>
+                {this.formatPercentage((keyValue - baselineValueSeven) / baselineValueSeven * 100)}
+              </td>
+            </tr>
+            <tr style={this.props.visualizationMode === "activeChangeFourteenDay" ? {fontWeight: "bold"} : {}}>
+            <td>
+                Active Cases 14-Day Change
+                </td>
+              <td className={styles.popupValue}>
+                {this.formatPercentage((keyValue - baselineValueFourteen) / baselineValueFourteen * 100)}
+              </td>
+            </tr>
+            <tr style={this.props.visualizationMode === "activePerCapita" ? {fontWeight: "bold"} : {}}>
+            <td>
                 Active Cases Per 1,000
                 </td>
               <td className={styles.popupValue}>
@@ -313,8 +407,8 @@ class LeafletMap extends PureComponent {
                 {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1])}
               </td>
             </tr>
-            <tr>
-              <td>
+            <tr style={this.props.visualizationMode === "mortalityRate" ? {fontWeight: "bold"} : {}}>
+            <td>
                 Mortality Rate
                 </td>
               <td className={styles.popupValue}>

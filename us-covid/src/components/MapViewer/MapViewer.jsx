@@ -32,6 +32,7 @@ class MapViewer extends Component {
             isSettingsExpanded: false,
             visualizationMode: "activePerCapita",
             breakpoint: .4,
+            scaleIncludesNegatives: false,
             visualizationTitle: "Active Cases Per 1,000"
         }
 
@@ -68,23 +69,37 @@ class MapViewer extends Component {
     handleVisualizationModeChange(event) {
         let breakpoint = 0;
         let visualizationTitle = 0;
+        let scaleIncludesNegatives = false;
 
-        switch(event.target.value) {
+        switch (event.target.value) {
             case "activePerCapita":
-                breakpoint = .5;
+                breakpoint = .4;
                 visualizationTitle = "Active Cases Per 1,000";
+                scaleIncludesNegatives = false;
                 break;
             case "mortalityRate":
                 breakpoint = .5;
                 visualizationTitle = "Mortality Rate";
+                scaleIncludesNegatives = false;
+                break;
+            case "activeChangeSevenDay":
+                breakpoint = 12.5;
+                visualizationTitle = "Active Cases % Change (7-Day)";
+                scaleIncludesNegatives = true;
+                break;
+            case "activeChangeFourteenDay":
+                breakpoint = 12.5;
+                visualizationTitle = "Active Cases % Change (14-Day)";
+                scaleIncludesNegatives = true;
                 break;
             default: break;
         }
-        
+
         this.setState({
             visualizationMode: event.target.value,
             breakpoint: breakpoint,
             visualizationTitle: visualizationTitle,
+            scaleIncludesNegatives: scaleIncludesNegatives,
             isSettingsExpanded: false
         });
     }
@@ -138,6 +153,7 @@ class MapViewer extends Component {
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
                         visualizationMode={this.state.visualizationMode}
                         breakpoint={this.state.breakpoint}
+                        scaleIncludesNegatives={this.state.scaleIncludesNegatives}
                     />
                 </div>
             );
@@ -152,30 +168,88 @@ class MapViewer extends Component {
         }
 
         else {
-            const breakpointColumns = [];
-            for(var i = 2; i <= 18; i += 2) {
-                breakpointColumns.push(<td key={i} className={styles.legendLabel}>{Math.round((this.state.breakpoint * i + Number.EPSILON) * 10) / 10}{this.state.visualizationMode === "mortalityRate" ? "%" : ""}{i === 18 ? "+" : ""}</td>)
+            let breakpointColumns = null;
+            let breakpointColors = null;
+            if(this.state.scaleIncludesNegatives) {
+                const label = (num) => {
+                    return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}%`
+                }
+                breakpointColumns = (
+                    <tr>
+                        <td className={styles.legendLabelLeft}>{label(-8)}</td>
+                        <td className={styles.legendLabelLeft}>{label(-6)}</td>
+                        <td className={styles.legendLabelLeft}>{label(-4)}</td>
+                        <td className={styles.legendLabelLeft}>{label(-2)}</td>
+                        <td className={styles.legendLabelCenter}>0%</td>
+                        <td className={styles.legendLabel}>{label(2)}</td>
+                        <td className={styles.legendLabel}>{label(4)}</td>
+                        <td className={styles.legendLabel}>{label(6)}</td>
+                        <td className={styles.legendLabel}>{label(8)}</td>
+                    </tr>
+                );
             }
+            else {
+                // for (var i = 2; i <= 18; i += 2) {
+                //     breakpointColumns.push(<td key={i} className={styles.legendLabel}>{Math.round((this.state.breakpoint * i + Number.EPSILON) * 10) / 10}{this.state.visualizationMode === "mortalityRate" ? "%" : ""}{i === 18 ? "+" : ""}</td>)
+                // }
+                const label = (num) => {
+                    return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" ? "%" : ""}`
+                }
+                
+                breakpointColumns = (
+                    <tr>
+                        <td className={styles.legendLabel}>{label(2)}</td>
+                        <td className={styles.legendLabel}>{label(4)}</td>
+                        <td className={styles.legendLabel}>{label(6)}</td>
+                        <td className={styles.legendLabel}>{label(8)}</td>
+                        <td className={styles.legendLabel}>{label(10)}</td>
+                        <td className={styles.legendLabel}>{label(12)}</td>
+                        <td className={styles.legendLabel}>{label(14)}</td>
+                        <td className={styles.legendLabel}>{label(16)}</td>
+                        <td className={styles.legendLabel}>{label(18)}</td>
+                    </tr>
+                )
+            }
+            
+            if (this.state.scaleIncludesNegatives) {
+                breakpointColors = (
+                    <tr>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .85)" }}></td>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .65)" }}></td>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .45)" }}></td>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .25)" }}></td>
+                        <td></td>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .3)" }}></td>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
+                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .9)" }}></td>
+                    </tr>
+                );
+            }
+            else {
+                breakpointColors = (
+                <tr>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
+                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
+                </tr>
+                );
+            }
+
             return (
                 <div className={styles.legend} style={{}}>
                     <div>{this.state.visualizationTitle}</div>
                     <div className={styles.legendSubtitle}>{`as of ${this.props.globalCases.x[this.props.globalCases.x.length - 1]}`}</div>
                     <table style={{ borderCollapse: "collapse" }}>
                         <tbody>
-                            <tr>
-                                {breakpointColumns}
-                            </tr>
-                            <tr>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
-                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
-                            </tr>
+                            {breakpointColumns}
+                            {breakpointColors}
                         </tbody>
                     </table>
                 </div>
@@ -209,18 +283,18 @@ class MapViewer extends Component {
                                 label="Mortality Rate"
                                 labelPlacement="end"
                             />
-                            {/* <FormControlLabel
+                            <FormControlLabel
                                 value="activeChangeSevenDay"
                                 control={<Radio color="primary" />}
-                                label="Active Cases % Change (7 Days)"
+                                label="Active % Change (7 Days)"
                                 labelPlacement="end"
                             />
                             <FormControlLabel
-                                value="activeIncreaseFourteenDay"
+                                value="activeChangeFourteenDay"
                                 control={<Radio color="primary" />}
-                                label="Active Cases % Change (14 Days)"
+                                label="Active % Change (14 Days)"
                                 labelPlacement="end"
-                            /> */}
+                            />
                         </RadioGroup>
                     </FormControl>
                 </div>
