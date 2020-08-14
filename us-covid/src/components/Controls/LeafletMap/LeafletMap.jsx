@@ -163,7 +163,7 @@ class LeafletMap extends PureComponent {
     const stateProvinceCountries = ["US", "Canada", "Australia", "China"]
 
     if ((this.state.dataLabel === "StateProvince" || this.state.dataLabel === "County") && stateProvinceCountries.includes(property.properties.DISPLAY_NAME)) {
-      style = { strokeWidth: "3px" }
+
     }
 
     else {
