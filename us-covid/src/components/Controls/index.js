@@ -1,6 +1,7 @@
 //MaterialUI Controls
 import AppBar from '@material-ui/core/AppBar';
-import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -26,14 +27,24 @@ import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import SvgIcon from '@material-ui/core/SvgIcon';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+
 
 import D3Plot from './D3Plot';
 
 import KPI from './KPI';
+
+import Map from './Map'
+
+import LeafletMap from './LeafletMap/LeafletMap'
 
 //import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 //import ErrorIcon from '@material-ui/icons/Error';
@@ -50,9 +61,11 @@ import KPI from './KPI';
 export {
     AppBar,
     Button,
+    ButtonGroup,
     Card,
     CardContent,
     Checkbox,
+    Collapse,
     Dialog,
     DialogActions,
     DialogContent,
@@ -72,12 +85,18 @@ export {
     Slide,
     Snackbar,
     SnackbarContent,
+    SvgIcon,
     TextField,
     Toolbar,
+    Tooltip,
     Typography,
     List,
     ListItem,
+    ListItemIcon,
+    ListItemText,
     Divider,
     D3Plot,
-    KPI
+    KPI,
+    Map,
+    LeafletMap
 };

@@ -1,0 +1,62 @@
+.map {
+    margin-top: 72px;
+}
+
+.legend {
+    background: rgba(255, 255, 255, .9);
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    z-index: 999;
+    padding: 12px;
+}
+
+.legendSubtitle {
+    margin-bottom: 4px;
+    font-size: 11px;
+}
+
+.legendLabel {
+    font-size: 11px;
+    text-align: right;
+    transform: translateX(8px);
+}
+
+.legendLabelLeft {
+    font-size: 11px;
+    text-align: left;
+    transform: translateX(-8px);
+}
+
+.legendLabelCenter {
+    font-size: 11px;
+    text-align: center;
+}
+
+.legendItem {
+    width: 30px;
+    height: 10px;
+}
+
+.legendItemNegative {
+    width: 32px;
+    height: 10px;
+}
+
+.graphModeContainer {
+    width: 300px;
+}
+
+.graphModeTitle {
+    padding: 24px 24px 12px 36px;
+}
+
+.graphModeButtonContainer {
+    padding-left: 24px;
+    padding-bottom: 24px;
+
+}
+
+.radioButtonLabel {
+    font-size: 11px;
+}

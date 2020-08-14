@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { constants } from "../../../Utilities"
 import { Typography, Divider, Dialog, DialogActions, DialogContent, Button } from "../../../Controls";
@@ -10,7 +10,7 @@ const propTypes = {
   displayDetails: PropTypes.object
 }
 
-class InfoDialog extends Component {
+class InfoDialog extends PureComponent {
   // constructor(props) {
   //   super(props);
   // }
@@ -34,7 +34,7 @@ class InfoDialog extends Component {
           <span>Data Sources:</span>
           <ul>
             <li>
-              COVID-19 Data <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">Repository</a> at Johns Hopkins University
+              <a href="https://github.com/CSSEGISandData/COVID-19">COVID-19 Data Repository</a> by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University 
             </li>
             <li>
               US Census Bureau 2019 Population <a href="http://www2.census.gov/programs-surveys/popest/datasets/2010-2019/national/totals/nst-est2019-alldata.csv?#">Projections</a>

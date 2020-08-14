@@ -1,8 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+@import url(https://unpkg.com/leaflet@1.6.0/dist/leaflet.css);
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -14,4 +15,14 @@ code {
 
 html {
   scroll-behavior: smooth;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100vh;
+}
+
+.leaflet-marker-icon {
+  height: 30px !important;
+  width: 20px !important;
 }

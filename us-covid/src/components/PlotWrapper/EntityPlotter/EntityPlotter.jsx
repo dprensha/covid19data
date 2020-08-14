@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PlotContainer from './PlotContainer/PlotContainer'
@@ -8,7 +8,10 @@ import { constants } from "../../Utilities"
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import TuneIcon from '@material-ui/icons/Tune';
 import SearchIcon from '@material-ui/icons/Search';
+import MenuIcon from '@material-ui/icons/Menu';
+
 import InfoDialog from './InfoDialog/InfoDialog';
+import Navigation from '../../Navigation/Navigation';
 import { Typography, Toolbar, AppBar, IconButton, Divider, KPI, Radio, RadioGroup, FormControlLabel, FormControl, TextField, InputAdornment, Drawer } from "../../Controls";
 import styles from './EntityPlotter.module.scss'
 import './EntityPlotter.css';
@@ -22,7 +25,7 @@ const propTypes = {
     displayDetails: PropTypes.object
 }
 
-class EntityPlotter extends Component {
+class EntityPlotter extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -35,7 +38,9 @@ class EntityPlotter extends Component {
             comparisonKPI: "activePerCapita",
             kpiBaselineDays: "7",
             scaleMode: "linear",
-            filterTextDebounced: ""
+            filterTextDebounced: "",
+            childViewMode: "graphs",
+            isMenuExpanded: false
         }
 
         this.timer = null;
@@ -50,12 +55,28 @@ class EntityPlotter extends Component {
         this.handleKPIBaselineChange = this.handleKPIBaselineChange.bind(this);
         this.handleScaleModeChange = this.handleScaleModeChange.bind(this);
         this.handlePlotClick = this.handlePlotClick.bind(this);
+        this.handleChildViewModeChange = this.handleChildViewModeChange.bind(this);
+        this.handleMenuIconClick = this.handleMenuIconClick.bind(this);
+        this.handleCloseMenu = this.handleCloseMenu.bind(this);
+        this.handleNavigate = this.handleNavigate.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState) {
         if(prevState.filterText !== this.state.filterText) {
             this.handleCheck();
           }
+    }
+
+    handleMenuIconClick() {
+        this.setState({
+            isMenuExpanded: true
+        })
+    }
+
+    handleCloseMenu() {
+        this.setState({
+            isMenuExpanded: false
+        })
     }
 
     handleCheck = () => {
@@ -65,7 +86,6 @@ class EntityPlotter extends Component {
           this.setState({
               filterTextDebounced: this.state.filterText
           })
-        console.log(this.state.filterText);
         }, 500);
       }
 
@@ -114,6 +134,14 @@ class EntityPlotter extends Component {
         });
     }
 
+    handleChildViewModeChange(event) {
+        if(event.target) {
+            this.setState({
+                childViewMode: event.target.value
+            });
+        }
+    }
+
     handleKPIBaselineChange(event) {
         this.setState({
             kpiBaselineDays: event.target.value,
@@ -132,6 +160,13 @@ class EntityPlotter extends Component {
         this.setState({
             comparisonKPI: event.target.value
         });
+    }
+
+    handleNavigate(route) {
+        this.setState({
+            isMenuExpanded: false
+        })
+        this.props.navigate(route);
     }
 
     render() {
@@ -177,10 +212,10 @@ class EntityPlotter extends Component {
                         hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1] / this.props.entity.yActive[this.props.entity.yActive.length - 1] * 100;
                         break;
                     case "mortalityRate":
-                        hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.mortalityRate);
+                        hotSpotsValue = isNaN((this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100) ? 0 : (this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100;
                         break;
                     case "deaths":
-                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.deaths);
+                        hotSpotsValue = parseInt(this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]);
                         break;
                     case "hospitalizationRate":
                         hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate);
@@ -222,7 +257,34 @@ class EntityPlotter extends Component {
         );
 
         let backButtonContent = null;
-        if (this.props.entity.parent || this.props.entity.title === "United States") {
+        // if (this.props.entity.parent || this.props.entity.title === "United States") {
+        //     backButtonContent = (
+        //         <IconButton
+        //             style={{ color: "white" }}
+        //             onClick={() => { this.handlePlotClick(this.props.entity.parent ? this.props.entity.parent : "Global")}}
+        //         >
+        //             <ArrowBackIcon />
+        //         </IconButton>
+        //     )
+        // }
+        // else {
+        //     backButtonContent = (
+        //         <div style={{ paddingLeft: "12px" }}>
+
+        //         </div>
+        //     )
+        // }
+        if (this.props.entity.title === "World" || (this.props.entity.parent && this.props.entity.parent.title === "World") || this.props.entity.title === "United States") {
+            backButtonContent = (
+                <IconButton
+                    style={{ color: "white" }}
+                    onClick={this.handleMenuIconClick}
+                >
+                    <MenuIcon />
+                </IconButton>
+            )
+        }
+        else {
             backButtonContent = (
                 <IconButton
                     style={{ color: "white" }}
@@ -232,13 +294,7 @@ class EntityPlotter extends Component {
                 </IconButton>
             )
         }
-        else {
-            backButtonContent = (
-                <div style={{ paddingLeft: "12px" }}>
 
-                </div>
-            )
-        }
 
         const listKPITitleClasses = classNames(
             styles.listKPITitle,
@@ -411,25 +467,7 @@ class EntityPlotter extends Component {
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
                         size={"large"}
-                    />
-                </div>
-            );
-        }
-
-        let mortalityRateKPIContent = null;
-        if (this.props.entity.stats) {
-            mortalityRateKPIContent = (
-                <div className={kpiClasses}>
-                    <KPI
-                        keyValueTitle={"Mortality Rate"}
-                        keyValue={parseFloat(this.props.entity.stats.current.mortalityRate)}
-                        keyValueFormat={"Percentage"}
-                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseFloat(baselineStats.mortalityRate)}
-                        baselineValueFormat={"Decimal"}
-                        colorCodeBaselineValue={true}
-                        displayDetails={this.props.displayDetails}
-                        size={"large"}
+                        disclaimerSymbol={this.props.entity.stats.current.hospitalizedReporting ? "*" : ""}
                     />
                 </div>
             );
@@ -468,6 +506,7 @@ class EntityPlotter extends Component {
                         colorCodeBaselineValue={true}
                         displayDetails={this.props.displayDetails}
                         size={"large"}
+                        disclaimerSymbol={this.props.entity.stats.current.hospitalizedReporting ? "*" : ""}
                     />
                 </div>
             );
@@ -479,10 +518,10 @@ class EntityPlotter extends Component {
                 <div className={kpiClasses}>
                     <KPI
                         keyValueTitle={"New Cases per 1,000 Tests"}
-                        keyValue={parseInt(this.props.entity.stats.current.confirmed) / parseInt(this.props.entity.stats.current.peopleTested) * 1000}
+                        keyValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1] / parseInt(this.props.entity.stats.current.peopleTested) * 1000}
                         keyValueFormat={"Decimal"}
                         baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseInt(baselineStats.confirmed) / parseInt(baselineStats.peopleTested) * 1000}
+                        baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - parseInt(this.state.kpiBaselineDays)] / parseInt(baselineStats.peopleTested) * 1000}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
@@ -492,8 +531,45 @@ class EntityPlotter extends Component {
             );
         }
 
+        let disclaimerArea = null;
+        if (this.props.entity.stats && this.props.entity.stats.current.hospitalizedReporting) {
+            disclaimerArea = (
+                <div className={styles.disclaimerAreaContainer}>
+                    <div>
+                        {`* ${this.props.entity.stats.current.hospitalizedReporting} States and Territories Reporting`}
+                    </div>
+                </div>
+            )
+        }
+
+        let searchFieldContent = null;
+        if(this.props.entity.children && Object.keys(this.props.entity.children).length > 1) {
+            searchFieldContent = (
+                <div style={{width: "300px", margin: "32px auto 32px auto"}}>
+                    <TextField
+                        style={{width: "100%"}}
+                        label={"Search"}
+                        InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                        }}
+                        value={this.state.filterText}
+                        onChange={this.handleFilterTextChange}
+                    />
+                </div>
+            );
+        }
+
         return (
             <div>
+                <Navigation 
+                    isOpen={this.state.isMenuExpanded} 
+                    handleClose={this.handleCloseMenu} 
+                    handleNavigate={this.handleNavigate} 
+                />
                 <Drawer anchor={'right'} open={this.state.isDrawerOpen} onClose={this.handleCloseDrawer}>
                     <div className={styles.graphModeContainer}>
                         <Typography className={styles.graphModeTitle} variant="h6">Graph Mode:</Typography>
@@ -682,7 +758,6 @@ class EntityPlotter extends Component {
                         />
                     </div>
                     {percentageParentCasesKPIContent}
-                    {mortalityRateKPIContent}
                     <div className={kpiClasses}>
                         <KPI
                             keyValueTitle={"Deaths"}
@@ -695,30 +770,31 @@ class EntityPlotter extends Component {
                             size={"large"}
                         />
                     </div>
-                    {hospitalizationRateKPIContent}
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Mortality Rate"}
+                            keyValue={(this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100}
+                            keyValueFormat={"Percentage"}
+                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                            baselineValue={(this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1 - parseInt(this.state.kpiBaselineDays)]) / (this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - parseInt(this.state.kpiBaselineDays)]) * 100}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={true}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                        />
+                    </div>
                     {peopleHospitalizedKPIContent}
+                    {hospitalizationRateKPIContent}
                     {peopleTestedKPIContent}
                     {newCasesPerThousandTestedKPIContent}
                     {testingRateKPIContent}
                 </div>
+                {disclaimerArea}
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
                 </div>
                 <Divider />
-                <div style={{width: "300px", margin: "32px auto 32px auto"}}>
-                <TextField
-                    style={{width: "100%"}}
-                    InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    ),
-                    }}
-                    value={this.state.filterText}
-                    onChange={this.handleFilterTextChange}
-                />
-                </div>
+                {searchFieldContent}
                 <div className={styles.childPlotContainer}>
                     {childPlots}
                 </div>

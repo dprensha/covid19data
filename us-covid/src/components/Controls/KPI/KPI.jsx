@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
@@ -13,10 +13,11 @@ const propTypes = {
     baselineValueFormat: PropTypes.string,
     colorCodeBaselineValue: PropTypes.bool,
     size: PropTypes.string,
-    displayDetails: PropTypes.object
+    displayDetails: PropTypes.object,
+    disclaimerSymbol: PropTypes.string
 }
 
-class KPI extends Component {
+class KPI extends PureComponent {
     // constructor(props, context) {
     //     super(props, context);
     // }
@@ -43,7 +44,7 @@ class KPI extends Component {
     }
 
     render() {
-        const { keyValueTitle, keyValue, keyValueFormat, baselineValueTitle, baselineValue, baselineValueFormat, colorCodeBaselineValue } = this.props;
+        const { keyValueTitle, keyValue, keyValueFormat, baselineValueTitle, baselineValue, baselineValueFormat, colorCodeBaselineValue, disclaimerSymbol } = this.props;
 
         //const formattedKeyValue = this.addThousandSeparators(keyValue, true);
         const totalDelta = this.addThousandSeparators(keyValue - baselineValue, true);
@@ -130,7 +131,7 @@ class KPI extends Component {
         return (
             <div className={styles.kpi}>
                 <div className={kpiTitleStyles}>
-                    {keyValueTitle}
+                    {`${keyValueTitle}${disclaimerSymbol || ""}`}
                 </div>
                 <div className={kpiValueStyles}>
                     {displayKeyValue}

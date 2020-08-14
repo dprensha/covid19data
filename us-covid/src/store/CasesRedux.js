@@ -283,6 +283,37 @@ export const actionCreators = {
         };
         const deaths = [];
 
+        stats.current["United States"] = {
+            peopleTested: 0,
+            testedReporting: 0,
+            testedReportingPopulation: 0,
+            testedReportingTotalCases: 0,
+            peopleHospitalized: 0,
+            hospitalizedReporting: 0,
+            hospitalizedReportingPopulation: 0,
+            hospitalizedReportingTotalCases: 0
+        };
+        stats.sevenDay["United States"] = {
+            peopleTested: 0,
+            testedReporting: 0,
+            testedReportingPopulation: 0,
+            testedReportingTotalCases: 0,
+            peopleHospitalized: 0,
+            hospitalizedReporting: 0,
+            hospitalizedReportingPopulation: 0,
+            hospitalizedReportingTotalCases: 0
+        };
+        stats.fourteenDay["United States"] = {
+            peopleTested: 0,
+            testedReporting: 0,
+            testedReportingPopulation: 0,
+            testedReportingTotalCases: 0,
+            peopleHospitalized: 0,
+            hospitalizedReporting: 0,
+            hospitalizedReportingPopulation: 0,
+            hospitalizedReportingTotalCases: 0
+        }
+
         dispatch({
             type: requestUSCases
         });
@@ -301,7 +332,16 @@ export const actionCreators = {
                     mortalityRate: data["Mortality_Rate"],
                     testingRate: data["Testing_Rate"],
                     hospitalizationRate: data["Hospitalization_Rate"]
-                }
+                };
+                // if(!isNaN(parseInt(data["People_Tested"]))) {
+                //     stats.current["United States"].peopleTested += parseInt(data["People_Tested"]);
+                //     stats.current["United States"].testedReporting += 1;
+                // }
+
+                // if(!isNaN(parseInt(data["People_Hospitalized"]))) {
+                //     stats.current["United States"].peopleHospitalized += parseInt(data["People_Hospitalized"]);
+                //     stats.current["United States"].hospitalizedReporting += 1;
+                // }
             }),
             d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/${getDateString(7)}.csv`, (data) => {
                 stats.sevenDay[data.Province_State] = {
@@ -314,7 +354,16 @@ export const actionCreators = {
                     mortalityRate: data["Mortality_Rate"],
                     testingRate: data["Testing_Rate"],
                     hospitalizationRate: data["Hospitalization_Rate"]
-                }
+                };
+                // if(!isNaN(parseInt(data["People_Tested"]))) {
+                //     stats.sevenDay["United States"].peopleTested += parseInt(data["People_Tested"]);
+                //     stats.sevenDay["United States"].testedReporting += 1;
+                // }
+
+                // if(!isNaN(parseInt(data["People_Hospitalized"]))) {
+                //     stats.sevenDay["United States"].peopleHospitalized += parseInt(data["People_Hospitalized"]);
+                //     stats.sevenDay["United States"].hospitalizedReporting += 1;
+                // }
             }),
             d3.csv(`https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports_us/${getDateString(14)}.csv`, (data) => {
                 stats.fourteenDay[data.Province_State] = {
@@ -327,7 +376,16 @@ export const actionCreators = {
                     mortalityRate: data["Mortality_Rate"],
                     testingRate: data["Testing_Rate"],
                     hospitalizationRate: data["Hospitalization_Rate"]
-                }
+                };
+                // if(!isNaN(parseInt(data["People_Tested"]))) {
+                //     stats.fourteenDay["United States"].peopleTested += parseInt(data["People_Tested"]);
+                //     stats.fourteenDay["United States"].testedReporting += 1;
+                // }
+
+                // if(!isNaN(parseInt(data["People_Hospitalized"]))) {
+                //     stats.fourteenDay["United States"].peopleHospitalized += parseInt(data["People_Hospitalized"]);
+                //     stats.fourteenDay["United States"].hospitalizedReporting += 1;
+                // }
             }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv', (data) => {
                 const dates = Object.keys(data).filter(function(key) { return !isNaN(Date.parse(key)) });
@@ -455,10 +513,73 @@ export const actionCreators = {
                     allData.yActivePerCapita = allData.yActive.map(function (yActive) { return yActive / allData.population });
 
                     allData.x = allData.children[Object.keys(allData.children)[0]].x;
+                
+                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.current.peopleTested))) {
+                        stats.current["United States"].peopleTested += parseInt(allData.children[sortedKeys[i]].stats.current.peopleTested);
+                        stats.current["United States"].testedReporting += 1;
+                        stats.current["United States"].testedReportingPopulation += allData.children[sortedKeys[i]].population;
+                        stats.current["United States"].testedReportingTotalCases += parseInt(stats.current[sortedKeys[i]].confirmed);
+
+                    }
+    
+                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.current.peopleHospitalized))) {
+                        stats.current["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.current.peopleHospitalized);
+                        stats.current["United States"].hospitalizedReporting += 1;
+                        stats.current["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
+                        stats.current["United States"].hospitalizedReportingTotalCases += parseInt(stats.current[sortedKeys[i]].confirmed);
+
+                    }
+
+                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleTested))) {
+                        stats.sevenDay["United States"].peopleTested += parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleTested);
+                        stats.sevenDay["United States"].testedReporting += 1;
+                        stats.sevenDay["United States"].testedReportingPopulation += allData.children[sortedKeys[i]].population;
+                        stats.sevenDay["United States"].testedReportingTotalCases += parseInt(stats.sevenDay[sortedKeys[i]].confirmed);
+                    }
+    
+                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleHospitalized))) {
+                        stats.sevenDay["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleHospitalized);
+                        stats.sevenDay["United States"].hospitalizedReporting += 1;
+                        stats.sevenDay["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
+                        stats.sevenDay["United States"].hospitalizedReportingTotalCases += parseInt(stats.sevenDay[sortedKeys[i]].confirmed);
+                    }
+
+                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleTested))) {
+                        stats.fourteenDay["United States"].peopleTested += parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleTested);
+                        stats.fourteenDay["United States"].testedReporting += 1;
+                        stats.fourteenDay["United States"].testedReportingPopulation += allData.children[sortedKeys[i]].population;
+                        stats.fourteenDay["United States"].testedReportingTotalCases += parseInt(stats.fourteenDay[sortedKeys[i]].confirmed);
+                    }
+    
+                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleHospitalized))) {
+                        stats.fourteenDay["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleHospitalized);
+                        stats.fourteenDay["United States"].hospitalizedReporting += 1;
+                        stats.fourteenDay["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
+                        stats.fourteenDay["United States"].hospitalizedReportingTotalCases += parseInt(stats.fourteenDay[sortedKeys[i]].confirmed);
+                    }
+                
                 }
+
+
+                const current = stats.current["United States"];
+                current.hospitalizationRate = current.peopleHospitalized / current.hospitalizedReportingTotalCases * 100;
+                current.testingRate = current.peopleTested / current.testedReportingPopulation * 100000;
+
+                const sevenDay = stats.sevenDay["United States"];
+                sevenDay.hospitalizationRate = sevenDay.peopleHospitalized / sevenDay.hospitalizedReportingTotalCases * 100;
+                sevenDay.testingRate = sevenDay.peopleTested / sevenDay.testedReportingPopulation * 100000;
+
+                const fourteenDay = stats.fourteenDay["United States"];
+                fourteenDay.hospitalizationRate = fourteenDay.peopleHospitalized / fourteenDay.hospitalizedReportingTotalCases * 100;
+                fourteenDay.testingRate = fourteenDay.peopleTested / fourteenDay.testedReportingPopulation * 100000;
+
+                allData.stats = {
+                    current: current,
+                    sevenDay: sevenDay,
+                    fourteenDay: fourteenDay
+                };
             })
             .then(() => {
-                console.log(allData);
                 dispatch({
                     type: receiveUSCases, payload: allData
                 });
@@ -471,7 +592,6 @@ export const reducer = (state, action) => {
 
     switch (action.type) {
         case requestGlobalCases:
-            console.log("request global")
             return {
                 ...state,
                 isFetchingGlobalCaseData: true
@@ -491,7 +611,6 @@ export const reducer = (state, action) => {
                 isErrorSnackbarVisible: true
             };
         case requestUSCases:
-            console.log("request US")
             return {
                 ...state,
                 isFetchingUSCaseData: true

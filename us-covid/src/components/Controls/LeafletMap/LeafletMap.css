@@ -1,0 +1,74 @@
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+@import url("https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css");
+
+@media screen and (max-width: 500px) {
+    .search-control-icon-button {
+        height: 30px !important;
+        width: 30px;
+    }
+    
+    .search-control-wrap {
+        border: 2px solid rgba(0,0,0,0.2);
+        box-shadow: none;
+    }
+
+    .search-control-icon-button svg {
+        margin-top: 8px;
+    }
+}
+
+@media screen and (min-width: 501px) {
+    .search-control-icon-button svg {
+        margin-top: 6px;
+    }
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-map-marker:before {
+    content: "\f041";
+    font-size: 14px;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 0;
+}
+
+.search-control-icon-button svg {
+    height: 14px;
+}
+
+.search-control-info-list-item {
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+}
+
+.search-control-info-span {
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+}
+
+.search-control search-control-active {
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+}
+
+/* 
+.search-control-icon-button {
+    //height: 30px !important;
+    //width: 30px;
+}
+
+.search-control-wrap {
+    border: 2px solid rgba(0,0,0,0.2);
+    box-shadow: none;
+} */
+
+section.search-control.search-control-active > input {
+    height: 42px;
+}
+
