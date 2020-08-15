@@ -7,14 +7,18 @@
     align-items: center;
     position: absolute;
     background: rgba(255, 255, 255, .9);
-    bottom: 32px;
-    left: 32px;
+    bottom: 16px;
+    left: 16px;
     z-index: 999;
-    padding: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 300px;
+    //height: 48px;
 }
 
 .slider {
-    width: 156px;
+    width: 168px;
+    margin-top: 4px;
 }
 
 .animateButton {
@@ -22,16 +26,17 @@
 }
 
 .speedSelector {
-    margin-left: 12px;
+    margin-left: 4px;
 }
 
 .legend {
     background: rgba(255, 255, 255, .9);
     position: absolute;
-    bottom: 120px;
-    left: 32px;
+    bottom: 80px;
+    left: 16px;
     z-index: 999;
     padding: 12px;
+    width: 300px;
 }
 
 .legendSubtitle {

@@ -261,7 +261,6 @@ class MapViewer extends Component {
                     </div>
                     <div className={styles.speedSelector}>
                         <FormControl>
-                            <InputLabel >Speed</InputLabel>
                             <Select
                                 value={this.state.playbackSpeed}
                                 onChange={this.handlePlaybackSpeedChange}
