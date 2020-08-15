@@ -3,7 +3,6 @@
 }
 
 .sliderContainer {
-    display: flex;
     align-items: center;
     position: absolute;
     background: rgba(255, 255, 255, .9);
@@ -16,9 +15,20 @@
     //height: 48px;
 }
 
+.sliderAndControls {
+    display: flex;
+}
+
 .slider {
     width: 168px;
-    margin-top: 4px;
+    margin-top: 16px;
+}
+
+.dateLabel {
+    margin-top: 8px;
+    margin-bottom: -24px;
+    font-size: 14px;
+    margin-left: 64px;
 }
 
 .animateButton {
@@ -37,11 +47,6 @@
     z-index: 999;
     padding: 12px;
     width: 300px;
-}
-
-.legendSubtitle {
-    margin-bottom: 4px;
-    font-size: 11px;
 }
 
 .legendLabel {

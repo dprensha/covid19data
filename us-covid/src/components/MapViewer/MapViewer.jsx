@@ -241,37 +241,38 @@ class MapViewer extends Component {
 
             return (
                 <div className={styles.sliderContainer}>
-                    <div className={styles.slider}>
-                        <Slider
-                            value={this.state.sliderValue}
-                            valueLabelDisplay="auto"
-                            step={1}
-                            min={14}
-                            max={205}
-                            onChange={this.handleSliderChange}
-                        />
-                    </div>
-                    <div className={styles.animateButton}>
-                        <IconButton
+                    <div className={styles.dateLabel}>{this.props.globalCases.x[this.state.sliderValue]}</div>
+                    <div className={styles.sliderAndControls}>
+                        <div className={styles.slider}>
+                            <Slider
+                                value={this.state.sliderValue}
+                                step={1}
+                                min={14}
+                                max={205}
+                                onChange={this.handleSliderChange}
+                            />
+                        </div>
+                        <div className={styles.animateButton}>
+                            <IconButton
 
-                            onClick={this.handleToggleAnimation}
-                        >
-                            {this.state.isAnimating ? <PauseIcon /> : <PlayArrowIcon />}
-                        </IconButton>
-                    </div>
-                    <div className={styles.speedSelector}>
-                        <FormControl>
-                            <Select
-                                value={this.state.playbackSpeed}
-                                onChange={this.handlePlaybackSpeedChange}
+                                onClick={this.handleToggleAnimation}
                             >
-                                <MenuItem value={"1"}>1x</MenuItem>
-                                <MenuItem value={"2"}>2x</MenuItem>
-                                <MenuItem value={"3"}>3x</MenuItem>
-                            </Select>
-                        </FormControl>
+                                {this.state.isAnimating ? <PauseIcon /> : <PlayArrowIcon />}
+                            </IconButton>
+                        </div>
+                        <div className={styles.speedSelector}>
+                            <FormControl>
+                                <Select
+                                    value={this.state.playbackSpeed}
+                                    onChange={this.handlePlaybackSpeedChange}
+                                >
+                                    <MenuItem value={"1"}>1x</MenuItem>
+                                    <MenuItem value={"2"}>2x</MenuItem>
+                                    <MenuItem value={"3"}>3x</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
                     </div>
-
                 </div>
             )
         }
@@ -362,7 +363,6 @@ class MapViewer extends Component {
             return (
                 <div className={styles.legend} style={{}}>
                     <div>{this.state.visualizationTitle}</div>
-                    <div className={styles.legendSubtitle}>{`as of ${this.props.globalCases.x[this.state.sliderValue]}`}</div>
                     <table style={{ borderCollapse: "collapse" }}>
                         <tbody>
                             {breakpointColumns}
