@@ -7,9 +7,12 @@ import InfoDialog from '../PlotWrapper/EntityPlotter/InfoDialog/InfoDialog';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import MenuIcon from '@material-ui/icons/Menu';
 import TuneIcon from '@material-ui/icons/Tune';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import Slider from '@material-ui/core/Slider';
 import Navigation from '../Navigation/Navigation';
 import { constants } from "../Utilities";
-import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, Drawer } from "../Controls";
+import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, Drawer, MenuItem, InputLabel, Select } from "../Controls";
 import styles from './MapViewer.module.scss';
 
 const propTypes = {
@@ -30,11 +33,18 @@ class MapViewer extends Component {
             isInfoExpanded: false,
             isMenuExpanded: false,
             isSettingsExpanded: false,
+            sliderValue: 205,
+            isAnimating: false,
+            playbackSpeed: "1",
             visualizationMode: "activePerCapita",
             breakpoint: .4,
             scaleIncludesNegatives: false,
             visualizationTitle: "Active Cases Per 1,000"
         }
+
+        this.timer = null;
+        this.resetDelay = 0;
+        this.firstPlay = true;
 
         this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
         this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
@@ -46,6 +56,10 @@ class MapViewer extends Component {
         this.handleMenuIconClick = this.handleMenuIconClick.bind(this);
         this.handleCloseMenu = this.handleCloseMenu.bind(this);
         this.navigate = this.navigate.bind(this);
+
+        this.handleSliderChange = this.handleSliderChange.bind(this);
+        this.handleToggleAnimation = this.handleToggleAnimation.bind(this);
+        this.handlePlaybackSpeedChange = this.handlePlaybackSpeedChange.bind(this);
     }
 
     handleCloseInfoIcon() {
@@ -66,6 +80,56 @@ class MapViewer extends Component {
         })
     }
 
+    handleSliderChange(event, newValue) {
+        this.setState({
+            sliderValue: newValue
+        })
+    }
+
+    handlePlaybackSpeedChange(event) {
+        this.setState({
+            playbackSpeed: event.target.value
+        });
+
+        if (this.state.isAnimating) {
+            clearInterval(this.timer);
+            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(this.state.playbackSpeed) * 1)));
+        }
+    }
+
+    handleToggleAnimation() {
+        if (this.state.isAnimating) {
+            clearInterval(this.timer)
+        }
+        else {
+            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(this.state.playbackSpeed) * 1)));
+        }
+
+        this.setState({
+            isAnimating: !this.state.isAnimating
+        })
+    }
+
+    updateTimer() {
+        if (this.state.sliderValue === 205) {
+            if (this.resetDelay < 10 && this.firstPlay === false) {
+                this.resetDelay++;
+            }
+            else {
+                this.setState({
+                    sliderValue: 14
+                })
+                this.resetDelay = 0;
+                this.firstPlay = false;
+            }
+        }
+        else {
+            this.setState({
+                sliderValue: this.state.sliderValue + 1
+            })
+        }
+    }
+
     handleVisualizationModeChange(event) {
         let breakpoint = 0;
         let visualizationTitle = 0;
@@ -75,6 +139,11 @@ class MapViewer extends Component {
             case "activePerCapita":
                 breakpoint = .4;
                 visualizationTitle = "Active Cases Per 1,000";
+                scaleIncludesNegatives = false;
+                break;
+            case "active":
+                breakpoint = .5;
+                visualizationTitle = "Active Cases (Thousands)";
                 scaleIncludesNegatives = false;
                 break;
             case "mortalityRate":
@@ -154,9 +223,58 @@ class MapViewer extends Component {
                         visualizationMode={this.state.visualizationMode}
                         breakpoint={this.state.breakpoint}
                         scaleIncludesNegatives={this.state.scaleIncludesNegatives}
+                        dateIndex={this.state.sliderValue}
                     />
                 </div>
             );
+        }
+    }
+
+    renderSliderContent() {
+        if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
+            return (
+                <div></div>
+            );
+        }
+
+        else {
+
+            return (
+                <div className={styles.sliderContainer}>
+                    <div className={styles.slider}>
+                        <Slider
+                            value={this.state.sliderValue}
+                            valueLabelDisplay="auto"
+                            step={1}
+                            min={14}
+                            max={205}
+                            onChange={this.handleSliderChange}
+                        />
+                    </div>
+                    <div className={styles.animateButton}>
+                        <IconButton
+
+                            onClick={this.handleToggleAnimation}
+                        >
+                            {this.state.isAnimating ? <PauseIcon /> : <PlayArrowIcon />}
+                        </IconButton>
+                    </div>
+                    <div className={styles.speedSelector}>
+                        <FormControl>
+                            <InputLabel >Speed</InputLabel>
+                            <Select
+                                value={this.state.playbackSpeed}
+                                onChange={this.handlePlaybackSpeedChange}
+                            >
+                                <MenuItem value={"1"}>1x</MenuItem>
+                                <MenuItem value={"2"}>2x</MenuItem>
+                                <MenuItem value={"3"}>3x</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+
+                </div>
+            )
         }
     }
 
@@ -170,7 +288,7 @@ class MapViewer extends Component {
         else {
             let breakpointColumns = null;
             let breakpointColors = null;
-            if(this.state.scaleIncludesNegatives) {
+            if (this.state.scaleIncludesNegatives) {
                 const label = (num) => {
                     return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}%`
                 }
@@ -195,7 +313,7 @@ class MapViewer extends Component {
                 const label = (num) => {
                     return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" ? "%" : ""}`
                 }
-                
+
                 breakpointColumns = (
                     <tr>
                         <td className={styles.legendLabel}>{label(2)}</td>
@@ -210,7 +328,7 @@ class MapViewer extends Component {
                     </tr>
                 )
             }
-            
+
             if (this.state.scaleIncludesNegatives) {
                 breakpointColors = (
                     <tr>
@@ -228,24 +346,24 @@ class MapViewer extends Component {
             }
             else {
                 breakpointColors = (
-                <tr>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
-                    <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
-                </tr>
+                    <tr>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
+                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
+                    </tr>
                 );
             }
 
             return (
                 <div className={styles.legend} style={{}}>
                     <div>{this.state.visualizationTitle}</div>
-                    <div className={styles.legendSubtitle}>{`as of ${this.props.globalCases.x[this.props.globalCases.x.length - 1]}`}</div>
+                    <div className={styles.legendSubtitle}>{`as of ${this.props.globalCases.x[this.state.sliderValue]}`}</div>
                     <table style={{ borderCollapse: "collapse" }}>
                         <tbody>
                             {breakpointColumns}
@@ -277,6 +395,12 @@ class MapViewer extends Component {
                                 label="Active Cases Per 1,000"
                                 labelPlacement="end"
                             />
+                            {/* <FormControlLabel
+                                value="active"
+                                control={<Radio color="primary" />}
+                                label="Active Cases"
+                                labelPlacement="end"
+                            /> */}
                             <FormControlLabel
                                 value="mortalityRate"
                                 control={<Radio color="primary" />}
@@ -343,6 +467,7 @@ class MapViewer extends Component {
                 </AppBar>
                 <InfoDialog isOpen={this.state.isInfoExpanded} displayDetails={this.props.displayDetails} handleClose={this.handleCloseInfoIcon} />
                 <Navigation isOpen={this.state.isMenuExpanded} handleClose={this.handleCloseMenu} handleNavigate={this.navigate} />
+                {this.renderSliderContent()}
                 {this.renderMapContent()}
                 {this.renderLegendContent()}
                 {this.renderSettingsDrawer()}

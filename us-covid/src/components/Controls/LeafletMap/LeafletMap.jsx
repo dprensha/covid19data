@@ -18,7 +18,8 @@ const propTypes = {
   handlePlotClick: PropTypes.func,
   displayDetails: PropTypes.object,
   visualizationMode: PropTypes.string,
-  breakpoint: PropTypes.number
+  breakpoint: PropTypes.number,
+  dateIndex: PropTypes.number
 }
 
 class LeafletMap extends PureComponent {
@@ -133,26 +134,30 @@ class LeafletMap extends PureComponent {
     let visualizationMetric = 0;
 
     if (this.props.visualizationMode === "activePerCapita") {
-      visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[currentEntity.yActivePerCapita.length - 1] * 1000 : 0 //activePerCapita
+      visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[this.props.dateIndex] * 1000 : 0 //activePerCapita
+    }
+
+    else if (this.props.visualizationMode === "active") {
+      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]) / 1000 : 0; //active
     }
 
     else if (this.props.visualizationMode === "mortalityRate") {
-      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1]) * 100 : 0; //mortalityRate
+      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex]) / (currentEntity.yConfirmed[this.props.dateIndex]) * 100 : 0; //mortalityRate
     }
 
     else if (this.props.visualizationMode === "total") {
-      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.state.selectedEntity.yDeaths.length - 1]) : 0; //total
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex]) : 0; //total
     }
 
     else if(this.props.visualizationMode === "activeChangeSevenDay") {
-      const keyValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1] : 0;
-      const baselineValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1 - 7] : 1;
+      const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex] : 0;
+      const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 7] : 1;
       visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
     }
 
     else if (this.props.visualizationMode === "activeChangeFourteenDay") {
-      const keyValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1] : 0;
-      const baselineValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1 - 14] : 1;
+      const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex ] : 0;
+      const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 14] : 1;
       visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
     }
 
@@ -349,9 +354,9 @@ class LeafletMap extends PureComponent {
   render() {
     let tooltipContent = "No data available";
     if (this.state.selectedEntity && this.state.selectedEntity.yActive) {
-      const keyValue = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1];
-      const baselineValueSeven = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1 - 7];
-      const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1 - 14];
+      const keyValue = this.state.selectedEntity.yActive[this.props.dateIndex];
+      const baselineValueSeven = this.state.selectedEntity.yActive[this.props.dateIndex - 7];
+      const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.dateIndex - 14];
 
       tooltipContent = (
         <table className={styles.popupTable}>
@@ -364,7 +369,7 @@ class LeafletMap extends PureComponent {
                 Active Cases
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yActive[this.state.selectedEntity.yActive.length - 1], false)}
+                {this.addThousandSeparators(this.state.selectedEntity.yActive[this.props.dateIndex], false)}
               </td>
             </tr>
             <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? {fontWeight: "bold"} : {}}>
@@ -388,7 +393,7 @@ class LeafletMap extends PureComponent {
                 Active Cases Per 1,000
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.state.selectedEntity.yActive.length - 1] * 1000, false)}
+                {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000, false)}
               </td>
             </tr>
             <tr>
@@ -396,7 +401,7 @@ class LeafletMap extends PureComponent {
                 Total Cases
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1], true)}
+                {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex], true)}
               </td>
             </tr>
             <tr>
@@ -404,7 +409,7 @@ class LeafletMap extends PureComponent {
                 Deaths
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1])}
+                {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.props.dateIndex])}
               </td>
             </tr>
             <tr style={this.props.visualizationMode === "mortalityRate" ? {fontWeight: "bold"} : {}}>
@@ -412,7 +417,7 @@ class LeafletMap extends PureComponent {
                 Mortality Rate
                 </td>
               <td className={styles.popupValue}>
-                {this.formatPercentage((this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1]) * 100)}
+                {this.formatPercentage((this.state.selectedEntity.yDeaths[this.props.dateIndex]) / (this.state.selectedEntity.yConfirmed[this.props.dateIndex]) * 100)}
               </td>
             </tr>
           </tbody>

@@ -2,10 +2,33 @@
     margin-top: 72px;
 }
 
+.sliderContainer {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    background: rgba(255, 255, 255, .9);
+    bottom: 32px;
+    left: 32px;
+    z-index: 999;
+    padding: 12px;
+}
+
+.slider {
+    width: 156px;
+}
+
+.animateButton {
+    margin-left: 12px;
+}
+
+.speedSelector {
+    margin-left: 12px;
+}
+
 .legend {
     background: rgba(255, 255, 255, .9);
     position: absolute;
-    bottom: 32px;
+    bottom: 120px;
     left: 32px;
     z-index: 999;
     padding: 12px;
