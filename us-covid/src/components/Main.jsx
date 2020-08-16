@@ -79,7 +79,7 @@ class Main extends Component {
       <main>
         <BrowserRouter basename="">
           <Switch>
-            <Redirect from='/' to='/Global' exact />
+            <Redirect from='/' to='/Map' exact />
             <Route exact path='/Map' component={this.getMapViewer} />
             <Route exact path='/:mode?/:title?' component={this.getPlotWrapper} />
           </Switch>

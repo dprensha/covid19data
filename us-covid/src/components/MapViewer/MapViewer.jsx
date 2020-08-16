@@ -33,7 +33,7 @@ class MapViewer extends Component {
             isInfoExpanded: false,
             isMenuExpanded: false,
             isSettingsExpanded: false,
-            sliderValue: 205,
+            sliderValue: 150,
             isAnimating: false,
             playbackSpeed: "1",
             visualizationMode: "activePerCapita",
@@ -93,7 +93,7 @@ class MapViewer extends Component {
 
         if (this.state.isAnimating) {
             clearInterval(this.timer);
-            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(this.state.playbackSpeed) * 1)));
+            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(event.target.value) * 1.5)));
         }
     }
 
@@ -102,7 +102,7 @@ class MapViewer extends Component {
             clearInterval(this.timer)
         }
         else {
-            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(this.state.playbackSpeed) * 1)));
+            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(this.state.playbackSpeed) * 1.5)));
         }
 
         this.setState({
@@ -111,7 +111,7 @@ class MapViewer extends Component {
     }
 
     updateTimer() {
-        if (this.state.sliderValue === 205) {
+        if (this.state.sliderValue === this.props.globalCases.x.length) {
             if (this.resetDelay < 10 && this.firstPlay === false) {
                 this.resetDelay++;
             }
@@ -195,13 +195,42 @@ class MapViewer extends Component {
         this.props.history.push(route);
     }
 
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if(nextProps.globalCases.children) {
+    //         return {
+    //             sliderValue: 205,//.globalCases.x.length - 1,
+    //             ...prevState
+    //         }
+    //     }
+    //     else {
+    //         return {
+    //             ...prevState
+    //         }
+                
+    //     }
+    // }
+
     componentDidMount() {
         if (!this.props.globalCases.children) {
             this.props.requestGlobalCases();
+            
         }
         if (!this.props.usCases.children) {
             this.props.requestUSCases();
         }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log(this.props.globalCases);
+        if(!prevProps.globalCases.children && this.props.globalCases.children) {
+            this.setState({
+                sliderValue: this.props.globalCases.x.length - 1
+            })
+        }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer);
     }
 
     renderMapContent() {
@@ -248,7 +277,7 @@ class MapViewer extends Component {
                                 value={this.state.sliderValue}
                                 step={1}
                                 min={14}
-                                max={205}
+                                max={this.props.globalCases.x.length - 1}
                                 onChange={this.handleSliderChange}
                             />
                         </div>
