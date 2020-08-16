@@ -78,10 +78,7 @@ class PlotWrapper extends Component {
             this.props.requestGlobalCases();
         }
         else if(this.props.match.params.mode === "US" && !this.props.usCases.children) {
-            this.props.requestUSCases()
-            .then(a => {
-                console.log(a);
-            })        
+            this.props.requestUSCases();
         }
     }
 

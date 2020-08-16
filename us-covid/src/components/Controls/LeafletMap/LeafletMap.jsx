@@ -331,7 +331,11 @@ class LeafletMap extends PureComponent {
   }
 
   addThousandSeparators(value, formatMagnitude) {
-    if (formatMagnitude && Math.abs(Number(value)) >= 1.0e+6) {
+    if(!value) { value = 0 }
+    if (formatMagnitude && Math.abs(Number(value)) >= 1.0e+9) {
+      return `${((Math.round(value / 1000)) / 1000000).toFixed(2)} B`;
+    }
+    else if (formatMagnitude && Math.abs(Number(value)) >= 1.0e+6) {
       return `${((Math.round(value / 1000)) / 1000).toFixed(2)} M`;
     }
     // else if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+3) {
@@ -363,6 +367,14 @@ class LeafletMap extends PureComponent {
           <tbody>
             <tr>
               <td colSpan="2" className={styles.popupTitle}>{this.state.selectedEntity.title}{this.state.selectedEntity.parent && this.state.selectedEntity.parent.title !== "World" ? `, ${this.state.selectedEntity.parent.title}` : ""}</td>
+            </tr>
+            <tr>
+            <td>
+                Population
+                </td>
+              <td className={styles.popupValue}>
+                {this.addThousandSeparators(this.state.selectedEntity.population, true)}
+              </td>
             </tr>
             <tr>
             <td>
@@ -432,6 +444,7 @@ class LeafletMap extends PureComponent {
     const locateOptions = {
       position: 'topleft',
       flyTo: false,
+      drawCircle: false,
       //keepCurrentZoomLevel: false,
       initialZoomLevel: 9,
       strings: {

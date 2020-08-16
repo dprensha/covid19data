@@ -221,7 +221,6 @@ class MapViewer extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props.globalCases);
         if(!prevProps.globalCases.children && this.props.globalCases.children) {
             this.setState({
                 sliderValue: this.props.globalCases.x.length - 1
@@ -270,7 +269,7 @@ class MapViewer extends Component {
 
             return (
                 <div className={styles.sliderContainer}>
-                    <div className={styles.dateLabel}>{this.props.globalCases.x[this.state.sliderValue]}</div>
+                    <div className={styles.dateLabel}>{new Date(this.props.globalCases.x[this.state.sliderValue]).toLocaleString('default', { month: 'long', year: 'numeric', day: 'numeric' })}</div>
                     <div className={styles.sliderAndControls}>
                         <div className={styles.slider}>
                             <Slider
