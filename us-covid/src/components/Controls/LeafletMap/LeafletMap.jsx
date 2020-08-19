@@ -376,7 +376,7 @@ class LeafletMap extends PureComponent {
                 {this.addThousandSeparators(this.state.selectedEntity.population, true)}
               </td>
             </tr>
-            <tr>
+            <tr style={this.props.visualizationMode === "active" ? {fontWeight: "bold"} : {}}>
             <td>
                 Active Cases
                 </td>
