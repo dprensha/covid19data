@@ -1,18 +1,37 @@
+@media only screen and (max-width: 600px) {
+    .sliderContainer {
+        width: 300px !important;
+    }
+}
+
 .map {
     margin-top: 72px;
 }
 
+.overlayContainer {
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    position: absolute;
+    z-index: 999;
+    flex-direction: column;
+}
+
 .sliderContainer {
     align-items: center;
-    position: absolute;
     background: rgba(255, 255, 255, .9);
-    bottom: 16px;
-    left: 16px;
-    z-index: 999;
     padding-left: 8px;
     padding-right: 8px;
-    width: 300px;
+    width: 800px;
     //height: 48px;
+    margin: 8px;
+}
+
+.legend {
+    background: rgba(255, 255, 255, .9);
+    padding: 8px;
+    margin: 8px;
+    width: 300px;
 }
 
 .sliderAndControls {
@@ -20,36 +39,30 @@
 }
 
 .slider {
-    width: 176px;
-    margin-top: 20px;
+    flex-grow: 1;
+    padding-right: 16px;
+    padding-left: 16px;
 }
 
 .dateLabel {
-    margin-top: 8px;
-    margin-bottom: -28px;
     font-size: 14px;
-    width: 176px;
     text-align: center;
+    padding-top: 8px;
+    margin-bottom: -8px;
 }
 
-.animateButton {
-    margin-left: 12px;
-    margin-top: 4px;
+.speedLabel {
+    text-align: center;
+    font-size: 11px;
+    margin-top: -16px;
+    margin-bottom: 4px;
 }
 
-.speedSelector {
-    margin-left: 4px;
-    margin-top: 8px;
-}
-
-.legend {
-    background: rgba(255, 255, 255, .9);
-    position: absolute;
-    bottom: 88px;
-    left: 16px;
-    z-index: 999;
-    padding: 8px;
-    width: 300px;
+.animationControls {
+    display: flex;
+    margin-left: 8px;
+    border-left: 1px solid #DDD;
+    align-items: center;
 }
 
 .legendLabel {

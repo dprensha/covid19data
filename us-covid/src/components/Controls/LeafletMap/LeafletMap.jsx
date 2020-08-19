@@ -146,7 +146,7 @@ class LeafletMap extends PureComponent {
     }
 
     else if (this.props.visualizationMode === "total") {
-      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex]) : 0; //total
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex] / 1000) : 0; //total
     }
 
     else if(this.props.visualizationMode === "activeChangeSevenDay") {
@@ -313,12 +313,12 @@ class LeafletMap extends PureComponent {
   }
 
   onViewportChanged = (event) => {
-    if (event.zoom >= 6) {
+    if (event.zoom >= 5) {
       this.setState({
         dataLabel: "County"
       })
     }
-    if (event.zoom === 4 || event.zoom === 5) {
+    if (event.zoom === 4) {
       this.setState({
         dataLabel: "StateProvince"
       })
@@ -408,7 +408,7 @@ class LeafletMap extends PureComponent {
                 {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000, false)}
               </td>
             </tr>
-            <tr>
+            <tr style={this.props.visualizationMode === "total" ? {fontWeight: "bold"} : {}}>
               <td>
                 Total Cases
                 </td>

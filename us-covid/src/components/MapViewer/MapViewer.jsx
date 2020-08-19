@@ -9,10 +9,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import TuneIcon from '@material-ui/icons/Tune';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import FastForwardIcon from '@material-ui/icons/FastForward';
 import Slider from '@material-ui/core/Slider';
 import Navigation from '../Navigation/Navigation';
 import { constants } from "../Utilities";
-import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, Drawer, MenuItem, InputLabel, Select } from "../Controls";
+import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, Drawer, MenuItem, Divider, FormGroup, Switch } from "../Controls";
 import styles from './MapViewer.module.scss';
 
 const propTypes = {
@@ -35,11 +36,13 @@ class MapViewer extends Component {
             isSettingsExpanded: false,
             sliderValue: 150,
             isAnimating: false,
-            playbackSpeed: "1",
+            playbackSpeed: 1,
             visualizationMode: "activePerCapita",
             breakpoint: .4,
             scaleIncludesNegatives: false,
-            visualizationTitle: "Active Cases Per 1,000"
+            visualizationTitle: "Active Cases Per 1,000",
+            isLegendVisible: true,
+            isTimeSelectorVisible: true
         }
 
         this.timer = null;
@@ -52,6 +55,8 @@ class MapViewer extends Component {
         this.handleSettingsIconClick = this.handleSettingsIconClick.bind(this);
         this.handleCloseSettings = this.handleCloseSettings.bind(this);
         this.handleVisualizationModeChange = this.handleVisualizationModeChange.bind(this);
+        this.handleToggleLegend = this.handleToggleLegend.bind(this);
+        this.handleToggleTimeSelector = this.handleToggleTimeSelector.bind(this);
 
         this.handleMenuIconClick = this.handleMenuIconClick.bind(this);
         this.handleCloseMenu = this.handleCloseMenu.bind(this);
@@ -80,20 +85,42 @@ class MapViewer extends Component {
         })
     }
 
+    handleToggleLegend(event) {
+        console.log(event);
+        this.setState({
+            isLegendVisible: !this.state.isLegendVisible
+        })
+    }
+
+    handleToggleTimeSelector(event) {
+        console.log(event);
+        this.setState({
+            isTimeSelectorVisible: !this.state.isTimeSelectorVisible
+        })
+    }
+
     handleSliderChange(event, newValue) {
         this.setState({
             sliderValue: newValue
         })
     }
 
-    handlePlaybackSpeedChange(event) {
+    handlePlaybackSpeedChange() {
+        let newSpeed = this.state.playbackSpeed;
+        if (newSpeed !== 3) {
+            newSpeed++;
+        }
+        else {
+            newSpeed = 1;
+        }
+
         this.setState({
-            playbackSpeed: event.target.value
+            playbackSpeed: newSpeed
         });
 
         if (this.state.isAnimating) {
             clearInterval(this.timer);
-            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(event.target.value) * 1.5)));
+            this.timer = setInterval(() => this.updateTimer(), (250 / (newSpeed * 1.5)));
         }
     }
 
@@ -102,7 +129,7 @@ class MapViewer extends Component {
             clearInterval(this.timer)
         }
         else {
-            this.timer = setInterval(() => this.updateTimer(), (250 / (parseInt(this.state.playbackSpeed) * 1.5)));
+            this.timer = setInterval(() => this.updateTimer(), (250 / (this.state.playbackSpeed * 1.5)));
         }
 
         this.setState({
@@ -111,7 +138,7 @@ class MapViewer extends Component {
     }
 
     updateTimer() {
-        if (this.state.sliderValue === this.props.globalCases.x.length) {
+        if (this.state.sliderValue === this.props.globalCases.x.length - 1) {
             if (this.resetDelay < 10 && this.firstPlay === false) {
                 this.resetDelay++;
             }
@@ -144,6 +171,11 @@ class MapViewer extends Component {
             case "active":
                 breakpoint = .5;
                 visualizationTitle = "Active Cases (Thousands)";
+                scaleIncludesNegatives = false;
+                break;
+            case "total":
+                breakpoint = 3;
+                visualizationTitle = "Total Cases (Thousands)";
                 scaleIncludesNegatives = false;
                 break;
             case "mortalityRate":
@@ -206,14 +238,14 @@ class MapViewer extends Component {
     //         return {
     //             ...prevState
     //         }
-                
+
     //     }
     // }
 
     componentDidMount() {
         if (!this.props.globalCases.children) {
             this.props.requestGlobalCases();
-            
+
         }
         if (!this.props.usCases.children) {
             this.props.requestUSCases();
@@ -221,7 +253,7 @@ class MapViewer extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(!prevProps.globalCases.children && this.props.globalCases.children) {
+        if (!prevProps.globalCases.children && this.props.globalCases.children) {
             this.setState({
                 sliderValue: this.props.globalCases.x.length - 1
             })
@@ -259,146 +291,152 @@ class MapViewer extends Component {
     }
 
     renderSliderContent() {
-        if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
-            return (
-                <div></div>
-            );
-        }
+        if (this.state.isTimeSelectorVisible) {
+            if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
+                return (
+                    <div></div>
+                );
+            }
 
-        else {
+            else {
 
-            return (
-                <div className={styles.sliderContainer}>
-                    <div className={styles.dateLabel}>{new Date(this.props.globalCases.x[this.state.sliderValue]).toLocaleString('default', { month: 'long', year: 'numeric', day: 'numeric' })}</div>
-                    <div className={styles.sliderAndControls}>
-                        <div className={styles.slider}>
-                            <Slider
-                                value={this.state.sliderValue}
-                                step={1}
-                                min={14}
-                                max={this.props.globalCases.x.length - 1}
-                                onChange={this.handleSliderChange}
-                            />
-                        </div>
-                        <div className={styles.animateButton}>
-                            <IconButton
+                return (
+                    <div className={styles.sliderContainer}>
+                        <div className={styles.sliderAndControls}>
+                            <div className={styles.slider}>
+                                <div className={styles.dateLabel}>{new Date(this.props.globalCases.x[this.state.sliderValue]).toLocaleString('default', { month: 'long', year: 'numeric', day: 'numeric' })}</div>
+                                <Slider
+                                    value={this.state.sliderValue}
+                                    step={1}
+                                    min={14}
+                                    max={this.props.globalCases.x.length - 1}
+                                    onChange={this.handleSliderChange}
+                                />
+                            </div>
+                            <div className={styles.animationControls}>
+                                <div className={styles.animateButton}>
+                                    <IconButton
 
-                                onClick={this.handleToggleAnimation}
-                            >
-                                {this.state.isAnimating ? <PauseIcon /> : <PlayArrowIcon />}
-                            </IconButton>
-                        </div>
-                        <div className={styles.speedSelector}>
-                            <FormControl>
-                                <Select
-                                    value={this.state.playbackSpeed}
-                                    onChange={this.handlePlaybackSpeedChange}
-                                >
-                                    <MenuItem value={"1"}>1x</MenuItem>
-                                    <MenuItem value={"2"}>2x</MenuItem>
-                                    <MenuItem value={"3"}>3x</MenuItem>
-                                </Select>
-                            </FormControl>
+                                        onClick={this.handleToggleAnimation}
+                                    >
+                                        {this.state.isAnimating ? <PauseIcon /> : <PlayArrowIcon />}
+                                    </IconButton>
+                                </div>
+                                <div>
+                                    <div className={styles.speedSelector}>
+                                        <IconButton
+                                            onClick={this.handlePlaybackSpeedChange}
+                                        >
+                                            <FastForwardIcon />
+                                        </IconButton>
+                                    </div>
+                                    <div className={styles.speedLabel}>
+                                        {`${this.state.playbackSpeed}x`}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )
+                )
+            }
         }
     }
 
     renderLegendContent() {
-        if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
-            return (
-                <div></div>
-            );
-        }
-
-        else {
-            let breakpointColumns = null;
-            let breakpointColors = null;
-            if (this.state.scaleIncludesNegatives) {
-                const label = (num) => {
-                    return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}%`
-                }
-                breakpointColumns = (
-                    <tr>
-                        <td className={styles.legendLabelLeft}>{label(-8)}</td>
-                        <td className={styles.legendLabelLeft}>{label(-6)}</td>
-                        <td className={styles.legendLabelLeft}>{label(-4)}</td>
-                        <td className={styles.legendLabelLeft}>{label(-2)}</td>
-                        <td className={styles.legendLabelCenter}>0%</td>
-                        <td className={styles.legendLabel}>{label(2)}</td>
-                        <td className={styles.legendLabel}>{label(4)}</td>
-                        <td className={styles.legendLabel}>{label(6)}</td>
-                        <td className={styles.legendLabel}>{label(8)}</td>
-                    </tr>
+        if (this.state.isLegendVisible) {
+            if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
+                return (
+                    <div></div>
                 );
             }
+
             else {
-                // for (var i = 2; i <= 18; i += 2) {
-                //     breakpointColumns.push(<td key={i} className={styles.legendLabel}>{Math.round((this.state.breakpoint * i + Number.EPSILON) * 10) / 10}{this.state.visualizationMode === "mortalityRate" ? "%" : ""}{i === 18 ? "+" : ""}</td>)
-                // }
-                const label = (num) => {
-                    return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" ? "%" : ""}`
+                let breakpointColumns = null;
+                let breakpointColors = null;
+                if (this.state.scaleIncludesNegatives) {
+                    const label = (num) => {
+                        return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}%`
+                    }
+                    breakpointColumns = (
+                        <tr>
+                            <td className={styles.legendLabelLeft}>{label(-8)}</td>
+                            <td className={styles.legendLabelLeft}>{label(-6)}</td>
+                            <td className={styles.legendLabelLeft}>{label(-4)}</td>
+                            <td className={styles.legendLabelLeft}>{label(-2)}</td>
+                            <td className={styles.legendLabelCenter}>0%</td>
+                            <td className={styles.legendLabel}>{label(2)}</td>
+                            <td className={styles.legendLabel}>{label(4)}</td>
+                            <td className={styles.legendLabel}>{label(6)}</td>
+                            <td className={styles.legendLabel}>{label(8)}</td>
+                        </tr>
+                    );
+                }
+                else {
+                    // for (var i = 2; i <= 18; i += 2) {
+                    //     breakpointColumns.push(<td key={i} className={styles.legendLabel}>{Math.round((this.state.breakpoint * i + Number.EPSILON) * 10) / 10}{this.state.visualizationMode === "mortalityRate" ? "%" : ""}{i === 18 ? "+" : ""}</td>)
+                    // }
+                    const label = (num) => {
+                        return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" ? "%" : ""}`
+                    }
+
+                    breakpointColumns = (
+                        <tr>
+                            <td className={styles.legendLabel}>{label(2)}</td>
+                            <td className={styles.legendLabel}>{label(4)}</td>
+                            <td className={styles.legendLabel}>{label(6)}</td>
+                            <td className={styles.legendLabel}>{label(8)}</td>
+                            <td className={styles.legendLabel}>{label(10)}</td>
+                            <td className={styles.legendLabel}>{label(12)}</td>
+                            <td className={styles.legendLabel}>{label(14)}</td>
+                            <td className={styles.legendLabel}>{label(16)}</td>
+                            <td className={styles.legendLabel}>{label(18)}</td>
+                        </tr>
+                    )
                 }
 
-                breakpointColumns = (
-                    <tr>
-                        <td className={styles.legendLabel}>{label(2)}</td>
-                        <td className={styles.legendLabel}>{label(4)}</td>
-                        <td className={styles.legendLabel}>{label(6)}</td>
-                        <td className={styles.legendLabel}>{label(8)}</td>
-                        <td className={styles.legendLabel}>{label(10)}</td>
-                        <td className={styles.legendLabel}>{label(12)}</td>
-                        <td className={styles.legendLabel}>{label(14)}</td>
-                        <td className={styles.legendLabel}>{label(16)}</td>
-                        <td className={styles.legendLabel}>{label(18)}</td>
-                    </tr>
-                )
-            }
+                if (this.state.scaleIncludesNegatives) {
+                    breakpointColors = (
+                        <tr>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .85)" }}></td>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .65)" }}></td>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .45)" }}></td>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .25)" }}></td>
+                            <td></td>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .3)" }}></td>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
+                            <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .9)" }}></td>
+                        </tr>
+                    );
+                }
+                else {
+                    breakpointColors = (
+                        <tr>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
+                        </tr>
+                    );
+                }
 
-            if (this.state.scaleIncludesNegatives) {
-                breakpointColors = (
-                    <tr>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .85)" }}></td>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .65)" }}></td>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .45)" }}></td>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(0, 176, 0, .25)" }}></td>
-                        <td></td>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .3)" }}></td>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
-                        <td className={styles.legendItemNegative} style={{ backgroundColor: "rgba(176, 0, 0, .9)" }}></td>
-                    </tr>
+                return (
+                    <div className={styles.legend} style={{}}>
+                        <div>{this.state.visualizationTitle}</div>
+                        <table style={{ borderCollapse: "collapse" }}>
+                            <tbody>
+                                {breakpointColumns}
+                                {breakpointColors}
+                            </tbody>
+                        </table>
+                    </div>
                 );
             }
-            else {
-                breakpointColors = (
-                    <tr>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
-                        <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
-                    </tr>
-                );
-            }
-
-            return (
-                <div className={styles.legend} style={{}}>
-                    <div>{this.state.visualizationTitle}</div>
-                    <table style={{ borderCollapse: "collapse" }}>
-                        <tbody>
-                            {breakpointColumns}
-                            {breakpointColors}
-                        </tbody>
-                    </table>
-                </div>
-            );
         }
     }
 
@@ -422,12 +460,18 @@ class MapViewer extends Component {
                                 label="Active Cases Per 1,000"
                                 labelPlacement="end"
                             />
-                            {/* <FormControlLabel
+                            <FormControlLabel
                                 value="active"
                                 control={<Radio color="primary" />}
                                 label="Active Cases"
                                 labelPlacement="end"
-                            /> */}
+                            />
+                            <FormControlLabel
+                                value="total"
+                                control={<Radio color="primary" />}
+                                label="Total Cases"
+                                labelPlacement="end"
+                            />
                             <FormControlLabel
                                 value="mortalityRate"
                                 control={<Radio color="primary" />}
@@ -448,6 +492,38 @@ class MapViewer extends Component {
                             />
                         </RadioGroup>
                     </FormControl>
+                    <Divider />
+                    <div className={styles.graphModeContainer}>
+                        <Typography className={styles.graphModeTitle} variant="h6">View Settings:</Typography>
+                        <FormControl component="fieldset">
+                            <FormGroup
+                                className={styles.graphModeButtonContainer}
+                            >
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={this.state.isLegendVisible}
+                                            onChange={this.handleToggleLegend}
+                                            name="legend"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Legend"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={this.state.isTimeSelectorVisible}
+                                            onChange={this.handleToggleTimeSelector}
+                                            name="timeSelector"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Time Selector"
+                                />
+                            </FormGroup>
+                        </FormControl>
+                    </div>
                 </div>
             </Drawer>
         )
@@ -494,10 +570,12 @@ class MapViewer extends Component {
                 </AppBar>
                 <InfoDialog isOpen={this.state.isInfoExpanded} displayDetails={this.props.displayDetails} handleClose={this.handleCloseInfoIcon} />
                 <Navigation isOpen={this.state.isMenuExpanded} handleClose={this.handleCloseMenu} handleNavigate={this.navigate} />
-                {this.renderSliderContent()}
                 {this.renderMapContent()}
-                {this.renderLegendContent()}
                 {this.renderSettingsDrawer()}
+                <div className={styles.overlayContainer}>
+                    {this.renderLegendContent()}
+                    {this.renderSliderContent()}
+                </div>
             </div>
         );
 

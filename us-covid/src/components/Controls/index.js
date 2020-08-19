@@ -13,6 +13,7 @@ import Drawer from '@material-ui/core/Drawer';
 import EditIcon from '@material-ui/icons/Edit';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
@@ -25,6 +26,7 @@ import Select from '@material-ui/core/Select';
 import Slide from "@material-ui/core/Slide";
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
+import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -73,6 +75,7 @@ export {
     EditIcon,
     FormControl,
     FormControlLabel,
+    FormGroup,
     FormLabel,
     Icon,
     IconButton,
@@ -86,6 +89,7 @@ export {
     Snackbar,
     SnackbarContent,
     SvgIcon,
+    Switch,
     TextField,
     Toolbar,
     Tooltip,
