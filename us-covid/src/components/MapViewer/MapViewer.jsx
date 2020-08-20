@@ -40,6 +40,7 @@ class MapViewer extends Component {
             visualizationMode: "activePerCapita",
             breakpoint: .4,
             scaleIncludesNegatives: false,
+            scaleIsExponential: false,
             visualizationTitle: "Active Cases Per 1,000",
             isLegendVisible: true,
             isTimeSelectorVisible: true
@@ -161,37 +162,50 @@ class MapViewer extends Component {
         let breakpoint = 0;
         let visualizationTitle = 0;
         let scaleIncludesNegatives = false;
+        let scaleIsExponential = false;
 
         switch (event.target.value) {
             case "activePerCapita":
                 breakpoint = .4;
                 visualizationTitle = "Active Cases Per 1,000";
                 scaleIncludesNegatives = false;
+                scaleIsExponential = false;
                 break;
             case "active":
-                breakpoint = .5;
-                visualizationTitle = "Active Cases (Thousands)";
+                breakpoint = 2;
+                visualizationTitle = "Active Cases";
                 scaleIncludesNegatives = false;
+                scaleIsExponential = true;
                 break;
             case "total":
-                breakpoint = 3;
-                visualizationTitle = "Total Cases (Thousands)";
+                breakpoint = 6;
+                visualizationTitle = "Total Cases";
                 scaleIncludesNegatives = false;
+                scaleIsExponential = true;
+                break;
+            case "deaths":
+                breakpoint = 1.5;
+                visualizationTitle = "Total Deaths";
+                scaleIncludesNegatives = false;
+                scaleIsExponential = true;
                 break;
             case "mortalityRate":
                 breakpoint = .5;
                 visualizationTitle = "Mortality Rate";
                 scaleIncludesNegatives = false;
+                scaleIsExponential = false;
                 break;
             case "activeChangeSevenDay":
                 breakpoint = 12.5;
                 visualizationTitle = "Active Cases % Change (7-Day)";
                 scaleIncludesNegatives = true;
+                scaleIsExponential = false;
                 break;
             case "activeChangeFourteenDay":
                 breakpoint = 12.5;
                 visualizationTitle = "Active Cases % Change (14-Day)";
                 scaleIncludesNegatives = true;
+                scaleIsExponential = false;
                 break;
             default: break;
         }
@@ -201,6 +215,7 @@ class MapViewer extends Component {
             breakpoint: breakpoint,
             visualizationTitle: visualizationTitle,
             scaleIncludesNegatives: scaleIncludesNegatives,
+            scaleIsExponential: scaleIsExponential,
             isSettingsExpanded: false
         });
     }
@@ -283,6 +298,7 @@ class MapViewer extends Component {
                         visualizationMode={this.state.visualizationMode}
                         breakpoint={this.state.breakpoint}
                         scaleIncludesNegatives={this.state.scaleIncludesNegatives}
+                        scaleIsExponential={this.state.scaleIsExponential}
                         dateIndex={this.state.sliderValue}
                     />
                 </div>
@@ -370,6 +386,33 @@ class MapViewer extends Component {
                             <td className={styles.legendLabel}>{label(8)}</td>
                         </tr>
                     );
+                }
+                else if (this.state.scaleIsExponential) {
+                    const label = (value) => {
+                        if (Math.abs(Number(value)) >= 1.0e+6) {
+                            return `${((Math.round(value / 1000)) / 1000).toFixed(1)}M`;
+                          }
+                          else if(Math.abs(Number(value)) >= 1.0e+3) {
+                              return `${(Math.round(value / 1.0e+3))}k`;
+                          }
+                          else if (Math.abs(Number(value)) < 1000) {
+                            return Math.round((value + Number.EPSILON) * 100) / 100;
+                          }
+                    }
+
+                    breakpointColumns = (
+                        <tr>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 2, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 4, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 6, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 8, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 10, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 12, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 14, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 16, 3))}</td>
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 18, 3))}</td>
+                        </tr>
+                    )
                 }
                 else {
                     // for (var i = 2; i <= 18; i += 2) {
@@ -467,18 +510,6 @@ class MapViewer extends Component {
                                 labelPlacement="end"
                             />
                             <FormControlLabel
-                                value="total"
-                                control={<Radio color="primary" />}
-                                label="Total Cases"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="mortalityRate"
-                                control={<Radio color="primary" />}
-                                label="Mortality Rate"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
                                 value="activeChangeSevenDay"
                                 control={<Radio color="primary" />}
                                 label="Active % Change (7 Days)"
@@ -488,6 +519,24 @@ class MapViewer extends Component {
                                 value="activeChangeFourteenDay"
                                 control={<Radio color="primary" />}
                                 label="Active % Change (14 Days)"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="total"
+                                control={<Radio color="primary" />}
+                                label="Total Cases"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="deaths"
+                                control={<Radio color="primary" />}
+                                label="Total Deaths"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="mortalityRate"
+                                control={<Radio color="primary" />}
+                                label="Mortality Rate"
                                 labelPlacement="end"
                             />
                         </RadioGroup>

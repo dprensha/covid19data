@@ -19,6 +19,8 @@ const propTypes = {
   displayDetails: PropTypes.object,
   visualizationMode: PropTypes.string,
   breakpoint: PropTypes.number,
+  scaleIncludesNegatives: PropTypes.bool,
+  scaleIsExponential: PropTypes.bool,
   dateIndex: PropTypes.number
 }
 
@@ -138,7 +140,7 @@ class LeafletMap extends PureComponent {
     }
 
     else if (this.props.visualizationMode === "active") {
-      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]) / 1000 : 0; //active
+      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]): 0; //active
     }
 
     else if (this.props.visualizationMode === "mortalityRate") {
@@ -146,7 +148,11 @@ class LeafletMap extends PureComponent {
     }
 
     else if (this.props.visualizationMode === "total") {
-      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex] / 1000) : 0; //total
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex]) : 0; //total
+    }
+
+    else if (this.props.visualizationMode === "deaths") {
+      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex]) : 0; //deaths
     }
 
     else if(this.props.visualizationMode === "activeChangeSevenDay") {
@@ -165,7 +171,10 @@ class LeafletMap extends PureComponent {
     //const activePerCapita = currentEntity && currentEntity.yConfirmed ? currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1] / parseInt(currentEntity.population) * 1000 : 0;
     let style = { fillColor: "blue", fillOpacity: "0" };
 
-    const stateProvinceCountries = ["US", "Canada", "Australia", "China"]
+    const positiveScaleCompareValue = (num) => {
+      return this.props.scaleIsExponential ? Math.pow(breakpoint * num, 3) : breakpoint * num;
+    };
+    const stateProvinceCountries = ["US", "Canada", "Australia", "China"];
 
     if ((this.state.dataLabel === "StateProvince" || this.state.dataLabel === "County") && stateProvinceCountries.includes(property.properties.DISPLAY_NAME)) {
 
@@ -173,58 +182,58 @@ class LeafletMap extends PureComponent {
 
     else {
       if(this.props.scaleIncludesNegatives === false) {
-        if (visualizationMetric < breakpoint * 1) { //0-.4
+        if (visualizationMetric < positiveScaleCompareValue(1)) { //0-.4
           style = { fillColor: "#0000B0", fillOpacity: ".05" }
         }
-        else if (visualizationMetric < breakpoint * 2) { //.4-.8
+        else if (visualizationMetric < positiveScaleCompareValue(2)) { //.4-.8
           style = { fillColor: "#0000B0", fillOpacity: ".1" }
         }
-        else if (visualizationMetric < breakpoint * 3) { //.8-1.2
+        else if (visualizationMetric < positiveScaleCompareValue(3)) { //.8-1.2
           style = { fillColor: "#0000B0", fillOpacity: ".2" }
         }
-        else if (visualizationMetric < breakpoint * 4) { //1.2-1.6
+        else if (visualizationMetric < positiveScaleCompareValue(4)) { //1.2-1.6
           style = { fillColor: "#0000B0", fillOpacity: ".3" }
         }
-        else if (visualizationMetric < breakpoint * 5) {
+        else if (visualizationMetric < positiveScaleCompareValue(5)) {
           style = { fillColor: "#0000B0", fillOpacity: ".4" }
         }
-        else if (visualizationMetric < breakpoint * 6) {
+        else if (visualizationMetric < positiveScaleCompareValue(6)) {
           style = { fillColor: "#0000B0", fillOpacity: ".5" }
         }
-        else if (visualizationMetric < breakpoint * 7) {
+        else if (visualizationMetric < positiveScaleCompareValue(7)) {
           style = { fillColor: "#0000B0", fillOpacity: ".6" }
         }
-        else if (visualizationMetric < breakpoint * 8) {
+        else if (visualizationMetric < positiveScaleCompareValue(8)) {
           style = { fillColor: "#0000B0", fillOpacity: ".7" }
         }
-        else if (visualizationMetric < breakpoint * 9) {
+        else if (visualizationMetric < positiveScaleCompareValue(9)) {
           style = { fillColor: "#0000B0", fillOpacity: ".8" }
         }
-        else if (visualizationMetric < breakpoint * 10) {
+        else if (visualizationMetric < positiveScaleCompareValue(10)) {
           style = { fillColor: "#0000B0", fillOpacity: ".9" }
         }
-        else if (visualizationMetric < breakpoint * 11) {
+        else if (visualizationMetric < positiveScaleCompareValue(11)) {
           style = { fillColor: "#B00000", fillOpacity: ".45" }
         }
-        else if (visualizationMetric < breakpoint * 12) {
+        else if (visualizationMetric < positiveScaleCompareValue(12)) {
           style = { fillColor: "#B00000", fillOpacity: ".5" }
         }
-        else if (visualizationMetric < breakpoint * 13) {
+        else if (visualizationMetric < positiveScaleCompareValue(13)) {
           style = { fillColor: "#B00000", fillOpacity: ".55" }
         }
-        else if (visualizationMetric < breakpoint * 14) {
+        else if (visualizationMetric < positiveScaleCompareValue(14)) {
           style = { fillColor: "#B00000", fillOpacity: ".6" }
         }
-        else if (visualizationMetric < breakpoint * 15) {
+        else if (visualizationMetric < positiveScaleCompareValue(15)) {
           style = { fillColor: "#B00000", fillOpacity: ".65" }
         }
-        else if (visualizationMetric < breakpoint * 16) {
+        else if (visualizationMetric < positiveScaleCompareValue(16)) {
           style = { fillColor: "#B00000", fillOpacity: ".7" }
         }
-        else if (visualizationMetric < breakpoint * 17) {
+        else if (visualizationMetric < positiveScaleCompareValue(17)) {
           style = { fillColor: "#B00000", fillOpacity: ".75" }
         }
-        else if (visualizationMetric < breakpoint * 18) {
+        else if (visualizationMetric < positiveScaleCompareValue(18)) {
           style = { fillColor: "#B00000", fillOpacity: ".8" }
         }
         else if (visualizationMetric >= breakpoint * 18) {
@@ -416,7 +425,7 @@ class LeafletMap extends PureComponent {
                 {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex], true)}
               </td>
             </tr>
-            <tr>
+            <tr style={this.props.visualizationMode === "deaths" ? {fontWeight: "bold"} : {}}>
               <td>
                 Deaths
                 </td>
