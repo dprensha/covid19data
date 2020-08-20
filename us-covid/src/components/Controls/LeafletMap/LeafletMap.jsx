@@ -147,8 +147,16 @@ class LeafletMap extends PureComponent {
       visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex]) / (currentEntity.yConfirmed[this.props.dateIndex]) * 100 : 0; //mortalityRate
     }
 
+    else if (this.props.visualizationMode === "totalPerCapita") {
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex] / currentEntity.population * 1000) : 0; //total
+    }
+
     else if (this.props.visualizationMode === "total") {
       visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex]) : 0; //total
+    }
+
+    else if (this.props.visualizationMode === "deathsPerCapita") {
+      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex] / currentEntity.population * 100000) : 0; //deaths
     }
 
     else if (this.props.visualizationMode === "deaths") {

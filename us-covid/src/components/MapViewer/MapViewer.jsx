@@ -177,11 +177,23 @@ class MapViewer extends Component {
                 scaleIncludesNegatives = false;
                 scaleIsExponential = true;
                 break;
+            case "totalPerCapita":
+                breakpoint = 3;
+                visualizationTitle = "Total Cases Per 1,000";
+                scaleIncludesNegatives = false;
+                scaleIsExponential = false;
+                break;
             case "total":
                 breakpoint = 6;
                 visualizationTitle = "Total Cases";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = true;
+                break;
+            case "deathsPerCapita":
+                breakpoint = 10;
+                visualizationTitle = "Total Deaths Per 100,000";
+                scaleIncludesNegatives = false;
+                scaleIsExponential = false;
                 break;
             case "deaths":
                 breakpoint = 1.5;
@@ -522,9 +534,21 @@ class MapViewer extends Component {
                                 labelPlacement="end"
                             />
                             <FormControlLabel
+                                value="totalPerCapita"
+                                control={<Radio color="primary" />}
+                                label="Total Cases Per 1,000"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
                                 value="total"
                                 control={<Radio color="primary" />}
                                 label="Total Cases"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="deathsPerCapita"
+                                control={<Radio color="primary" />}
+                                label="Total Deaths Per 100,000"
                                 labelPlacement="end"
                             />
                             <FormControlLabel
