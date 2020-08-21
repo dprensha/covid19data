@@ -23,7 +23,7 @@
     padding-left: 8px;
     padding-right: 8px;
     width: 800px;
-    //height: 48px;
+    height: 56px;
     margin: 8px;
 }
 
@@ -61,6 +61,7 @@
 .animationControls {
     display: flex;
     margin-left: 8px;
+    margin-bottom: 8px;
     border-left: 1px solid #DDD;
     align-items: center;
 }
