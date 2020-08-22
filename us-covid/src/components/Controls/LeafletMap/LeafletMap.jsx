@@ -166,7 +166,7 @@ class LeafletMap extends PureComponent {
     else if(this.props.visualizationMode === "activeChangeSevenDay") {
       const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex] : 0;
       const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 7] : 1;
-      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
+      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0; 
     }
 
     else if (this.props.visualizationMode === "activeChangeFourteenDay") {

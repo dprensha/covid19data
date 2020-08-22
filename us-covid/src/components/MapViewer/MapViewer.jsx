@@ -13,7 +13,7 @@ import FastForwardIcon from '@material-ui/icons/FastForward';
 import Slider from '@material-ui/core/Slider';
 import Navigation from '../Navigation/Navigation';
 import { constants } from "../Utilities";
-import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, Drawer, MenuItem, Divider, FormGroup, Switch } from "../Controls";
+import { LeafletMap, Typography, Toolbar, AppBar, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, Drawer, Divider, FormGroup, Switch } from "../Controls";
 import styles from './MapViewer.module.scss';
 
 const propTypes = {
