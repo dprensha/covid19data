@@ -4,7 +4,7 @@
 @media screen and (max-width: 500px) {
     .search-control-icon-button {
         height: 30px !important;
-        width: 30px;
+        width: 30px !important;
     }
     
     .search-control-wrap {
