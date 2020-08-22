@@ -1,19 +1,69 @@
+@media only screen and (max-width: 800px) {
+    .sliderContainer {
+        width: 300px !important;
+    }
+}
+
 .map {
     margin-top: 72px;
 }
 
-.legend {
-    background: rgba(255, 255, 255, .9);
+.overlayContainer {
+    bottom: 8px;
+    left: 8px;
+    display: flex;
     position: absolute;
-    bottom: 32px;
-    left: 32px;
     z-index: 999;
-    padding: 12px;
+    flex-direction: column;
 }
 
-.legendSubtitle {
-    margin-bottom: 4px;
+.sliderContainer {
+    align-items: center;
+    background: rgba(255, 255, 255, .9);
+    padding-left: 8px;
+    padding-right: 8px;
+    width: 800px;
+    height: 56px;
+    margin: 8px;
+}
+
+.legend {
+    background: rgba(255, 255, 255, .9);
+    padding: 8px;
+    margin: 8px;
+    width: 300px;
+}
+
+.sliderAndControls {
+    display: flex;
+}
+
+.slider {
+    flex-grow: 1;
+    padding-right: 16px;
+    padding-left: 16px;
+}
+
+.dateLabel {
+    font-size: 14px;
+    text-align: center;
+    padding-top: 8px;
+    margin-bottom: -8px;
+}
+
+.speedLabel {
+    text-align: center;
     font-size: 11px;
+    margin-top: -16px;
+    margin-bottom: 4px;
+}
+
+.animationControls {
+    display: flex;
+    margin-left: 8px;
+    margin-bottom: 8px;
+    border-left: 1px solid #DDD;
+    align-items: center;
 }
 
 .legendLabel {

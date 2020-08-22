@@ -53,7 +53,7 @@ class InfoDialog extends PureComponent {
           <div className={styles.divider}>
             <Divider />
           </div>
-          <b>Note:</b> An "active" case is considered to be recovered (or, but hopefully not, a death) after 14 days of the originally reported date.
+          <b>Note:</b> An "active" case is considered to be recovered (or, but hopefully not, a death) after 14 days of the originally reported date. <a href="https://www.cdc.gov/coronavirus/2019-ncov/hcp/disposition-in-home-patients.html">According to the CDC</a>, researchers have reported that people with mild to moderate COVID-19 remain infectious no longer than 10 days after their symptoms began, and those with more severe illness or those who are severely immunocompromised remain infectious no longer than 20 days after their symptoms began.
               </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={this.props.handleClose} color="primary">

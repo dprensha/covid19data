@@ -60,6 +60,8 @@ const Map = ({ displayDetails, width, height, entityName, long, lat, parentEntit
           <ZoomableGroup
             center={center}
             zoom={displayDetails.formFactor === constants.display.formFactors.MOBILE ? zoom * .82 : zoom}
+            minZoom={displayDetails.formFactor === constants.display.formFactors.MOBILE ? zoom * .82 : zoom}
+            maxZoom={displayDetails.formFactor === constants.display.formFactors.MOBILE ? zoom * .82 : zoom}
           >
             <Geographies geography={geoURL}>
               {({ geographies, projection }) =>

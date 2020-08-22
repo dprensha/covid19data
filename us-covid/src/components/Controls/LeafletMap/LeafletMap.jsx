@@ -18,7 +18,10 @@ const propTypes = {
   handlePlotClick: PropTypes.func,
   displayDetails: PropTypes.object,
   visualizationMode: PropTypes.string,
-  breakpoint: PropTypes.number
+  breakpoint: PropTypes.number,
+  scaleIncludesNegatives: PropTypes.bool,
+  scaleIsExponential: PropTypes.bool,
+  dateIndex: PropTypes.number
 }
 
 class LeafletMap extends PureComponent {
@@ -133,26 +136,42 @@ class LeafletMap extends PureComponent {
     let visualizationMetric = 0;
 
     if (this.props.visualizationMode === "activePerCapita") {
-      visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[currentEntity.yActivePerCapita.length - 1] * 1000 : 0 //activePerCapita
+      visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[this.props.dateIndex] * 1000 : 0 //activePerCapita
+    }
+
+    else if (this.props.visualizationMode === "active") {
+      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]): 0; //active
     }
 
     else if (this.props.visualizationMode === "mortalityRate") {
-      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1]) * 100 : 0; //mortalityRate
+      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex]) / (currentEntity.yConfirmed[this.props.dateIndex]) * 100 : 0; //mortalityRate
+    }
+
+    else if (this.props.visualizationMode === "totalPerCapita") {
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex] / currentEntity.population * 1000) : 0; //total
     }
 
     else if (this.props.visualizationMode === "total") {
-      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.state.selectedEntity.yDeaths.length - 1]) : 0; //total
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex]) : 0; //total
+    }
+
+    else if (this.props.visualizationMode === "deathsPerCapita") {
+      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex] / currentEntity.population * 100000) : 0; //deaths
+    }
+
+    else if (this.props.visualizationMode === "deaths") {
+      visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex]) : 0; //deaths
     }
 
     else if(this.props.visualizationMode === "activeChangeSevenDay") {
-      const keyValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1] : 0;
-      const baselineValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1 - 7] : 1;
-      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
+      const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex] : 0;
+      const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 7] : 1;
+      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0; 
     }
 
     else if (this.props.visualizationMode === "activeChangeFourteenDay") {
-      const keyValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1] : 0;
-      const baselineValue = currentEntity ? currentEntity.yActive[this.props.entity.yActive.length - 1 - 14] : 1;
+      const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex ] : 0;
+      const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 14] : 1;
       visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
     }
 
@@ -160,7 +179,10 @@ class LeafletMap extends PureComponent {
     //const activePerCapita = currentEntity && currentEntity.yConfirmed ? currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1] / parseInt(currentEntity.population) * 1000 : 0;
     let style = { fillColor: "blue", fillOpacity: "0" };
 
-    const stateProvinceCountries = ["US", "Canada", "Australia", "China"]
+    const positiveScaleCompareValue = (num) => {
+      return this.props.scaleIsExponential ? Math.pow(breakpoint * num, 3) : breakpoint * num;
+    };
+    const stateProvinceCountries = ["US", "Canada", "Australia", "China"];
 
     if ((this.state.dataLabel === "StateProvince" || this.state.dataLabel === "County") && stateProvinceCountries.includes(property.properties.DISPLAY_NAME)) {
 
@@ -168,58 +190,58 @@ class LeafletMap extends PureComponent {
 
     else {
       if(this.props.scaleIncludesNegatives === false) {
-        if (visualizationMetric < breakpoint * 1) { //0-.4
+        if (visualizationMetric < positiveScaleCompareValue(1)) { //0-.4
           style = { fillColor: "#0000B0", fillOpacity: ".05" }
         }
-        else if (visualizationMetric < breakpoint * 2) { //.4-.8
+        else if (visualizationMetric < positiveScaleCompareValue(2)) { //.4-.8
           style = { fillColor: "#0000B0", fillOpacity: ".1" }
         }
-        else if (visualizationMetric < breakpoint * 3) { //.8-1.2
+        else if (visualizationMetric < positiveScaleCompareValue(3)) { //.8-1.2
           style = { fillColor: "#0000B0", fillOpacity: ".2" }
         }
-        else if (visualizationMetric < breakpoint * 4) { //1.2-1.6
+        else if (visualizationMetric < positiveScaleCompareValue(4)) { //1.2-1.6
           style = { fillColor: "#0000B0", fillOpacity: ".3" }
         }
-        else if (visualizationMetric < breakpoint * 5) {
+        else if (visualizationMetric < positiveScaleCompareValue(5)) {
           style = { fillColor: "#0000B0", fillOpacity: ".4" }
         }
-        else if (visualizationMetric < breakpoint * 6) {
+        else if (visualizationMetric < positiveScaleCompareValue(6)) {
           style = { fillColor: "#0000B0", fillOpacity: ".5" }
         }
-        else if (visualizationMetric < breakpoint * 7) {
+        else if (visualizationMetric < positiveScaleCompareValue(7)) {
           style = { fillColor: "#0000B0", fillOpacity: ".6" }
         }
-        else if (visualizationMetric < breakpoint * 8) {
+        else if (visualizationMetric < positiveScaleCompareValue(8)) {
           style = { fillColor: "#0000B0", fillOpacity: ".7" }
         }
-        else if (visualizationMetric < breakpoint * 9) {
+        else if (visualizationMetric < positiveScaleCompareValue(9)) {
           style = { fillColor: "#0000B0", fillOpacity: ".8" }
         }
-        else if (visualizationMetric < breakpoint * 10) {
+        else if (visualizationMetric < positiveScaleCompareValue(10)) {
           style = { fillColor: "#0000B0", fillOpacity: ".9" }
         }
-        else if (visualizationMetric < breakpoint * 11) {
+        else if (visualizationMetric < positiveScaleCompareValue(11)) {
           style = { fillColor: "#B00000", fillOpacity: ".45" }
         }
-        else if (visualizationMetric < breakpoint * 12) {
+        else if (visualizationMetric < positiveScaleCompareValue(12)) {
           style = { fillColor: "#B00000", fillOpacity: ".5" }
         }
-        else if (visualizationMetric < breakpoint * 13) {
+        else if (visualizationMetric < positiveScaleCompareValue(13)) {
           style = { fillColor: "#B00000", fillOpacity: ".55" }
         }
-        else if (visualizationMetric < breakpoint * 14) {
+        else if (visualizationMetric < positiveScaleCompareValue(14)) {
           style = { fillColor: "#B00000", fillOpacity: ".6" }
         }
-        else if (visualizationMetric < breakpoint * 15) {
+        else if (visualizationMetric < positiveScaleCompareValue(15)) {
           style = { fillColor: "#B00000", fillOpacity: ".65" }
         }
-        else if (visualizationMetric < breakpoint * 16) {
+        else if (visualizationMetric < positiveScaleCompareValue(16)) {
           style = { fillColor: "#B00000", fillOpacity: ".7" }
         }
-        else if (visualizationMetric < breakpoint * 17) {
+        else if (visualizationMetric < positiveScaleCompareValue(17)) {
           style = { fillColor: "#B00000", fillOpacity: ".75" }
         }
-        else if (visualizationMetric < breakpoint * 18) {
+        else if (visualizationMetric < positiveScaleCompareValue(18)) {
           style = { fillColor: "#B00000", fillOpacity: ".8" }
         }
         else if (visualizationMetric >= breakpoint * 18) {
@@ -308,12 +330,12 @@ class LeafletMap extends PureComponent {
   }
 
   onViewportChanged = (event) => {
-    if (event.zoom >= 6) {
+    if (event.zoom >= 5) {
       this.setState({
         dataLabel: "County"
       })
     }
-    if (event.zoom === 4 || event.zoom === 5) {
+    if (event.zoom === 4) {
       this.setState({
         dataLabel: "StateProvince"
       })
@@ -326,7 +348,11 @@ class LeafletMap extends PureComponent {
   }
 
   addThousandSeparators(value, formatMagnitude) {
-    if (formatMagnitude && Math.abs(Number(value)) >= 1.0e+6) {
+    if(!value) { value = 0 }
+    if (formatMagnitude && Math.abs(Number(value)) >= 1.0e+9) {
+      return `${((Math.round(value / 1000)) / 1000000).toFixed(2)} B`;
+    }
+    else if (formatMagnitude && Math.abs(Number(value)) >= 1.0e+6) {
       return `${((Math.round(value / 1000)) / 1000).toFixed(2)} M`;
     }
     // else if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+3) {
@@ -349,9 +375,9 @@ class LeafletMap extends PureComponent {
   render() {
     let tooltipContent = "No data available";
     if (this.state.selectedEntity && this.state.selectedEntity.yActive) {
-      const keyValue = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1];
-      const baselineValueSeven = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1 - 7];
-      const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.entity.yActive.length - 1 - 14];
+      const keyValue = this.state.selectedEntity.yActive[this.props.dateIndex];
+      const baselineValueSeven = this.state.selectedEntity.yActive[this.props.dateIndex - 7];
+      const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.dateIndex - 14];
 
       tooltipContent = (
         <table className={styles.popupTable}>
@@ -361,10 +387,18 @@ class LeafletMap extends PureComponent {
             </tr>
             <tr>
             <td>
+                Population
+                </td>
+              <td className={styles.popupValue}>
+                {this.addThousandSeparators(this.state.selectedEntity.population, true)}
+              </td>
+            </tr>
+            <tr style={this.props.visualizationMode === "active" ? {fontWeight: "bold"} : {}}>
+            <td>
                 Active Cases
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yActive[this.state.selectedEntity.yActive.length - 1], false)}
+                {this.addThousandSeparators(this.state.selectedEntity.yActive[this.props.dateIndex], false)}
               </td>
             </tr>
             <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? {fontWeight: "bold"} : {}}>
@@ -388,23 +422,23 @@ class LeafletMap extends PureComponent {
                 Active Cases Per 1,000
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.state.selectedEntity.yActive.length - 1] * 1000, false)}
+                {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000, false)}
               </td>
             </tr>
-            <tr>
+            <tr style={this.props.visualizationMode === "total" ? {fontWeight: "bold"} : {}}>
               <td>
                 Total Cases
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1], true)}
+                {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex], true)}
               </td>
             </tr>
-            <tr>
+            <tr style={this.props.visualizationMode === "deaths" ? {fontWeight: "bold"} : {}}>
               <td>
                 Deaths
                 </td>
               <td className={styles.popupValue}>
-                {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1])}
+                {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.props.dateIndex])}
               </td>
             </tr>
             <tr style={this.props.visualizationMode === "mortalityRate" ? {fontWeight: "bold"} : {}}>
@@ -412,7 +446,7 @@ class LeafletMap extends PureComponent {
                 Mortality Rate
                 </td>
               <td className={styles.popupValue}>
-                {this.formatPercentage((this.state.selectedEntity.yDeaths[this.state.selectedEntity.yDeaths.length - 1]) / (this.state.selectedEntity.yConfirmed[this.state.selectedEntity.yConfirmed.length - 1]) * 100)}
+                {this.formatPercentage((this.state.selectedEntity.yDeaths[this.props.dateIndex]) / (this.state.selectedEntity.yConfirmed[this.props.dateIndex]) * 100)}
               </td>
             </tr>
           </tbody>
@@ -427,6 +461,7 @@ class LeafletMap extends PureComponent {
     const locateOptions = {
       position: 'topleft',
       flyTo: false,
+      drawCircle: false,
       //keepCurrentZoomLevel: false,
       initialZoomLevel: 9,
       strings: {

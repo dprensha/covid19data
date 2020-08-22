@@ -4,7 +4,7 @@
 @media screen and (max-width: 500px) {
     .search-control-icon-button {
         height: 30px !important;
-        width: 30px;
+        width: 30px !important;
     }
     
     .search-control-wrap {
@@ -72,3 +72,8 @@ section.search-control.search-control-active > input {
     height: 42px;
 }
 
+.leaflet-popup-close-button {
+    top: 12px !important;
+    right: 12px !important;
+    font: 18px/16px Tahoma, Verdana, sans-serif !important;
+}

@@ -190,6 +190,10 @@ class EntityPlotter extends PureComponent {
                         scaleMode={this.state.scaleMode}
                     />
                 );
+
+                if(this.props.entity.children[childKey].title !== "Unassigned" && this.props.entity.children[childKey].title !== "Out of TN") {
+                    console.log(/*this.props.entity.children[childKey].title,*/ this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]);
+                }
                 }
                 let hotSpotsValue = null;
                 switch (this.state.comparisonKPI) {
