@@ -308,6 +308,7 @@ class MapViewer extends Component {
                         usCases={this.props.usCases}
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
                         visualizationMode={this.state.visualizationMode}
+                        visualizationTitle={this.state.visualizationTitle}
                         breakpoint={this.state.breakpoint}
                         scaleIncludesNegatives={this.state.scaleIncludesNegatives}
                         scaleIsExponential={this.state.scaleIsExponential}
