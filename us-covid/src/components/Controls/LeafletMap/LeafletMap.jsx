@@ -23,7 +23,8 @@ const propTypes = {
   breakpoint: PropTypes.number,
   scaleIncludesNegatives: PropTypes.bool,
   scaleIsExponential: PropTypes.bool,
-  dateIndex: PropTypes.number
+  dateIndex: PropTypes.number,
+  tooltipMode: PropTypes.string
 }
 
 class LeafletMap extends PureComponent {
@@ -380,144 +381,144 @@ class LeafletMap extends PureComponent {
       const keyValue = this.state.selectedEntity.yActive[this.props.dateIndex];
       const baselineValueSeven = this.state.selectedEntity.yActive[this.props.dateIndex - 7];
       const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.dateIndex - 14];
-      let yValue = this.state.selectedEntity.yActive;
-      let title = this.props.visualizationTitle;
+      
+      if(this.props.tooltipMode === "graph") {
+        let yValue = this.state.selectedEntity.yActive;
+        let title = this.props.visualizationTitle;
 
-      if (this.props.visualizationMode === "activePerCapita") {
-        yValue = this.state.selectedEntity ? this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000): []; //activePerCapita
-      }
-  
-      else if (this.props.visualizationMode === "active") {
-        yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): []; //active
-        title = "Active Cases";
-      }
-  
-      else if (this.props.visualizationMode === "mortalityRate") {
-        yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths : []; //deaths
-        title = "Deaths";
-      }
-  
-      else if (this.props.visualizationMode === "totalPerCapita") {
-        yValue = this.state.selectedEntity ? this.state.selectedEntity.yConfirmed.map((val) => val/this.state.selectedEntity.population * 1000): []; //totalPerCapita
-        title = "Total Cases";
-      }
-  
-      else if (this.props.visualizationMode === "total") {
-        yValue = this.state.selectedEntity ? this.state.selectedEntity.yConfirmed : []; //total
-        title = "Total Cases";
-      }
-  
-      else if (this.props.visualizationMode === "deathsPerCapita") {
-        yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths.map((val) => val/this.state.selectedEntity.population * 100000): []; //deathsPerCapita
-      }
-  
-      else if (this.props.visualizationMode === "deaths") {
-        yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths : []; //deaths
-        title = "Deaths";
-      }
-  
-      else if(this.props.visualizationMode === "activeChangeSevenDay") {
-        yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): []; //active
-        title = "Active Cases";
-      }
-  
-      else if (this.props.visualizationMode === "activeChangeFourteenDay") {
-        yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): []; //active
-        title = "Active Cases";
-      }
+        if (this.props.visualizationMode === "activePerCapita") {
+          yValue = this.state.selectedEntity ? this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000): []; //activePerCapita
+        }
+    
+        else if (this.props.visualizationMode === "active") {
+          yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): [0]; //active
+        }
+    
+        else if (this.props.visualizationMode === "mortalityRate") {
+          yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths.map((val, index) => val/(this.state.selectedEntity.yConfirmed[index] || 1)): []; //deaths
+        }
+    
+        else if (this.props.visualizationMode === "totalPerCapita") {
+          yValue = this.state.selectedEntity ? this.state.selectedEntity.yConfirmed.map((val) => val/this.state.selectedEntity.population * 1000): []; //totalPerCapita
+        }
+    
+        else if (this.props.visualizationMode === "total") {
+          yValue = this.state.selectedEntity ? this.state.selectedEntity.yConfirmed : []; //total
+        }
+    
+        else if (this.props.visualizationMode === "deathsPerCapita") {
+          yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths.map((val) => val/this.state.selectedEntity.population * 100000): []; //deathsPerCapita
+        }
+    
+        else if (this.props.visualizationMode === "deaths") {
+          yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths : []; //deaths
+        }
+    
+        else if(this.props.visualizationMode === "activeChangeSevenDay") {
+          yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): []; //active
+          title = "Active Cases";
+        }
+    
+        else if (this.props.visualizationMode === "activeChangeFourteenDay") {
+          yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): []; //active
+          title = "Active Cases";
+        }
 
-      tooltipContent = (
-        <div>
-          <div className={styles.plotTitle}>
-            {this.state.selectedEntity.title}
+        tooltipContent = (
+          <div>
+            <div className={styles.plotTitle}>
+              {this.state.selectedEntity.title}
+            </div>
+            <div className={styles.plotLabel}>{title}</div>
+            <D3Plot
+                id={this.state.selectedEntity.navigableTitle}
+                data={this.state.selectedEntity}
+                x={this.state.selectedEntity.x}
+                y={yValue}
+                width={200}
+                height={100}
+                tickInterval={4}
+                scaleMode={"linear"}
+            />
           </div>
-          <div className={styles.plotLabel}>{title}</div>
-          <D3Plot
-              id={this.state.selectedEntity.navigableTitle}
-              data={this.state.selectedEntity}
-              x={this.state.selectedEntity.x}
-              y={yValue}
-              width={200}
-              height={100}
-              tickInterval={4}
-              scaleMode={"linear"}
-          />
-        </div>
-      );
+        );
+      }
 
-      // tooltipContent = (
-      //   <table className={styles.popupTable}>
-      //     <tbody>
-      //       <tr>
-      //         <td colSpan="2" className={styles.popupTitle}>{this.state.selectedEntity.title}{this.state.selectedEntity.parent && this.state.selectedEntity.parent.title !== "World" ? `, ${this.state.selectedEntity.parent.title}` : ""}</td>
-      //       </tr>
-      //       <tr>
-      //       <td>
-      //           Population
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.addThousandSeparators(this.state.selectedEntity.population, true)}
-      //         </td>
-      //       </tr>
-      //       <tr style={this.props.visualizationMode === "active" ? {fontWeight: "bold"} : {}}>
-      //       <td>
-      //           Active Cases
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.addThousandSeparators(this.state.selectedEntity.yActive[this.props.dateIndex], false)}
-      //         </td>
-      //       </tr>
-      //       <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? {fontWeight: "bold"} : {}}>
-      //         <td>
-      //           Active Cases 7-Day Change
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.formatPercentage((keyValue - baselineValueSeven) / baselineValueSeven * 100)}
-      //         </td>
-      //       </tr>
-      //       <tr style={this.props.visualizationMode === "activeChangeFourteenDay" ? {fontWeight: "bold"} : {}}>
-      //       <td>
-      //           Active Cases 14-Day Change
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.formatPercentage((keyValue - baselineValueFourteen) / baselineValueFourteen * 100)}
-      //         </td>
-      //       </tr>
-      //       <tr style={this.props.visualizationMode === "activePerCapita" ? {fontWeight: "bold"} : {}}>
-      //       <td>
-      //           Active Cases Per 1,000
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000, false)}
-      //         </td>
-      //       </tr>
-      //       <tr style={this.props.visualizationMode === "total" ? {fontWeight: "bold"} : {}}>
-      //         <td>
-      //           Total Cases
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex], true)}
-      //         </td>
-      //       </tr>
-      //       <tr style={this.props.visualizationMode === "deaths" ? {fontWeight: "bold"} : {}}>
-      //         <td>
-      //           Deaths
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.props.dateIndex])}
-      //         </td>
-      //       </tr>
-      //       <tr style={this.props.visualizationMode === "mortalityRate" ? {fontWeight: "bold"} : {}}>
-      //       <td>
-      //           Mortality Rate
-      //           </td>
-      //         <td className={styles.popupValue}>
-      //           {this.formatPercentage((this.state.selectedEntity.yDeaths[this.props.dateIndex]) / (this.state.selectedEntity.yConfirmed[this.props.dateIndex]) * 100)}
-      //         </td>
-      //       </tr>
-      //     </tbody>
-      //   </table>
-      // )
+      else if(this.props.tooltipMode === "list") {
+        tooltipContent = (
+          <table className={styles.popupTable}>
+            <tbody>
+              <tr>
+                <td colSpan="2" className={styles.popupTitle}>{this.state.selectedEntity.title}{this.state.selectedEntity.parent && this.state.selectedEntity.parent.title !== "World" ? `, ${this.state.selectedEntity.parent.title}` : ""}</td>
+              </tr>
+              <tr>
+              <td>
+                  Population
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.addThousandSeparators(this.state.selectedEntity.population, true)}
+                </td>
+              </tr>
+              <tr style={this.props.visualizationMode === "active" ? {fontWeight: "bold"} : {}}>
+              <td>
+                  Active Cases
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.addThousandSeparators(this.state.selectedEntity.yActive[this.props.dateIndex], false)}
+                </td>
+              </tr>
+              <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? {fontWeight: "bold"} : {}}>
+                <td>
+                  Active Cases 7-Day Change
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.formatPercentage((keyValue - baselineValueSeven) / baselineValueSeven * 100)}
+                </td>
+              </tr>
+              <tr style={this.props.visualizationMode === "activeChangeFourteenDay" ? {fontWeight: "bold"} : {}}>
+              <td>
+                  Active Cases 14-Day Change
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.formatPercentage((keyValue - baselineValueFourteen) / baselineValueFourteen * 100)}
+                </td>
+              </tr>
+              <tr style={this.props.visualizationMode === "activePerCapita" ? {fontWeight: "bold"} : {}}>
+              <td>
+                  Active Cases Per 1,000
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000, false)}
+                </td>
+              </tr>
+              <tr style={this.props.visualizationMode === "total" ? {fontWeight: "bold"} : {}}>
+                <td>
+                  Total Cases
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex], true)}
+                </td>
+              </tr>
+              <tr style={this.props.visualizationMode === "deaths" ? {fontWeight: "bold"} : {}}>
+                <td>
+                  Deaths
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.props.dateIndex])}
+                </td>
+              </tr>
+              <tr style={this.props.visualizationMode === "mortalityRate" ? {fontWeight: "bold"} : {}}>
+              <td>
+                  Mortality Rate
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.formatPercentage((this.state.selectedEntity.yDeaths[this.props.dateIndex]) / (this.state.selectedEntity.yConfirmed[this.props.dateIndex]) * 100)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        )
+      }
     }
 
     let zoom = 3;

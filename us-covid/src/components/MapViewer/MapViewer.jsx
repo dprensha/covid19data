@@ -43,7 +43,8 @@ class MapViewer extends Component {
             scaleIsExponential: false,
             visualizationTitle: "Active Cases Per 1,000",
             isLegendVisible: true,
-            isTimeSelectorVisible: true
+            isTimeSelectorVisible: true,
+            tooltipMode: "graph"
         }
 
         this.timer = null;
@@ -66,6 +67,8 @@ class MapViewer extends Component {
         this.handleSliderChange = this.handleSliderChange.bind(this);
         this.handleToggleAnimation = this.handleToggleAnimation.bind(this);
         this.handlePlaybackSpeedChange = this.handlePlaybackSpeedChange.bind(this);
+
+        this.handleTooltipModeChange = this.handleTooltipModeChange.bind(this);
     }
 
     handleCloseInfoIcon() {
@@ -232,6 +235,12 @@ class MapViewer extends Component {
         });
     }
 
+    handleTooltipModeChange(event) {
+        this.setState({
+            tooltipMode: event.target.value
+        })
+    }
+
     handleCloseSettings() {
         this.setState({
             isSettingsExpanded: false
@@ -308,11 +317,12 @@ class MapViewer extends Component {
                         usCases={this.props.usCases}
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? "calc(100vh - 64px)" : "calc(100vh - 72px)"}
                         visualizationMode={this.state.visualizationMode}
-                        visualizationTitle={this.state.visualizationTitle}
                         breakpoint={this.state.breakpoint}
                         scaleIncludesNegatives={this.state.scaleIncludesNegatives}
                         scaleIsExponential={this.state.scaleIsExponential}
                         dateIndex={this.state.sliderValue}
+                        visualizationTitle={this.state.visualizationTitle}
+                        tooltipMode={this.state.tooltipMode}
                     />
                 </div>
             );
@@ -562,6 +572,31 @@ class MapViewer extends Component {
                                 value="mortalityRate"
                                 control={<Radio color="primary" />}
                                 label="Mortality Rate"
+                                labelPlacement="end"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                    <Divider />
+                    <Typography className={styles.graphModeTitle} variant="h6">Tooltip Mode:</Typography>
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            row={false}
+                            name="position"
+                            defaultValue="top"
+                            onChange={this.handleTooltipModeChange}
+                            value={this.state.tooltipMode}
+                            className={styles.graphModeButtonContainer}
+                        >
+                            <FormControlLabel
+                                value="graph"
+                                control={<Radio color="primary" />}
+                                label="Graph"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="list"
+                                control={<Radio color="primary" />}
+                                label="List"
                                 labelPlacement="end"
                             />
                         </RadioGroup>
