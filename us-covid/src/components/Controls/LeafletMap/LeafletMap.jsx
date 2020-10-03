@@ -10,6 +10,7 @@ import AustraliaGeo from '../../../mapData/AustraliaGeo.json';
 import CanadaGeo from '../../../mapData/CanadaGeo.json';
 import ChinaGeo from '../../../mapData/ChinaGeo.json';
 import USCountyGeo from '../../../mapData/USCountyGeo.json';
+import { constants } from "../../Utilities";
 import styles from './LeafletMap.module.scss';
 import './LeafletMap.css';
 
@@ -33,7 +34,7 @@ class LeafletMap extends PureComponent {
 
     this.state = {
       lat: 20,
-      lng: 0,
+      lng: -95,
       zoom: 2,
       popupText: "",
       selectedEntity: this.props.entity,
@@ -382,45 +383,45 @@ class LeafletMap extends PureComponent {
       const baselineValueSeven = this.state.selectedEntity.yActive[this.props.dateIndex - 7];
       const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.dateIndex - 14];
       
-      if(this.props.tooltipMode === "graph") {
+      if(this.props.tooltipMode === "graph" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
         let yValue = this.state.selectedEntity.yActive;
         let title = this.props.visualizationTitle;
 
         if (this.props.visualizationMode === "activePerCapita") {
-          yValue = this.state.selectedEntity ? this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000): []; //activePerCapita
+          yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000); //activePerCapita
         }
     
         else if (this.props.visualizationMode === "active") {
-          yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): [0]; //active
+          yValue = (this.state.selectedEntity.yActive); //active
         }
     
         else if (this.props.visualizationMode === "mortalityRate") {
-          yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths.map((val, index) => val/(this.state.selectedEntity.yConfirmed[index] || 1)): []; //deaths
+          yValue = this.state.selectedEntity.yDeaths.map((val, index) => val/(this.state.selectedEntity.yConfirmed[index] || 1)); //deaths
         }
     
         else if (this.props.visualizationMode === "totalPerCapita") {
-          yValue = this.state.selectedEntity ? this.state.selectedEntity.yConfirmed.map((val) => val/this.state.selectedEntity.population * 1000): []; //totalPerCapita
+          yValue = this.state.selectedEntity.yConfirmed.map((val) => val/this.state.selectedEntity.population * 1000); //totalPerCapita
         }
     
         else if (this.props.visualizationMode === "total") {
-          yValue = this.state.selectedEntity ? this.state.selectedEntity.yConfirmed : []; //total
+          yValue = this.state.selectedEntity.yConfirmed; //total
         }
     
         else if (this.props.visualizationMode === "deathsPerCapita") {
-          yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths.map((val) => val/this.state.selectedEntity.population * 100000): []; //deathsPerCapita
+          yValue = this.state.selectedEntity.yDeaths.map((val) => val/this.state.selectedEntity.population * 100000); //deathsPerCapita
         }
     
         else if (this.props.visualizationMode === "deaths") {
-          yValue = this.state.selectedEntity ? this.state.selectedEntity.yDeaths : []; //deaths
+          yValue = this.state.selectedEntity.yDeaths; //deaths
         }
     
         else if(this.props.visualizationMode === "activeChangeSevenDay") {
-          yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): []; //active
+          yValue = (this.state.selectedEntity.yActive); //active
           title = "Active Cases";
         }
     
         else if (this.props.visualizationMode === "activeChangeFourteenDay") {
-          yValue = this.state.selectedEntity ? (this.state.selectedEntity.yActive): []; //active
+          yValue = (this.state.selectedEntity.yActive); //active
           title = "Active Cases";
         }
 
@@ -444,7 +445,7 @@ class LeafletMap extends PureComponent {
         );
       }
 
-      else if(this.props.tooltipMode === "list") {
+      else if(this.props.tooltipMode === "list" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
         tooltipContent = (
           <table className={styles.popupTable}>
             <tbody>
@@ -523,7 +524,7 @@ class LeafletMap extends PureComponent {
 
     let zoom = 3;
     let lat = 20;
-    let long = 0;
+    let long = this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? -90 : 0;
 
     const locateOptions = {
       position: 'topleft',

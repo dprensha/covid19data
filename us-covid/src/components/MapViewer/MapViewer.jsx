@@ -323,6 +323,7 @@ class MapViewer extends Component {
                         dateIndex={this.state.sliderValue}
                         visualizationTitle={this.state.visualizationTitle}
                         tooltipMode={this.state.tooltipMode}
+                        displayDetails={this.props.displayDetails}
                     />
                 </div>
             );

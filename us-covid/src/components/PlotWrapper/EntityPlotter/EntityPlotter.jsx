@@ -9,6 +9,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import TuneIcon from '@material-ui/icons/Tune';
 import SearchIcon from '@material-ui/icons/Search';
 import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close';
 
 import InfoDialog from './InfoDialog/InfoDialog';
 import Navigation from '../../Navigation/Navigation';
@@ -51,6 +52,7 @@ class EntityPlotter extends PureComponent {
         this.handleInfoIconClick = this.handleInfoIconClick.bind(this);
         this.handleGraphModeChange = this.handleGraphModeChange.bind(this);
         this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+        this.handleClearFilterText = this.handleClearFilterText.bind(this);
         this.handleCompareDropDownListChange = this.handleCompareDropDownListChange.bind(this);
         this.handleKPIBaselineChange = this.handleKPIBaselineChange.bind(this);
         this.handleScaleModeChange = this.handleScaleModeChange.bind(this);
@@ -93,6 +95,13 @@ class EntityPlotter extends PureComponent {
         this.setState({
             filterText: e.target.value
         })
+    }
+
+    handleClearFilterText() {
+        this.setState({
+            filterText: "",
+            filterTextDebounced: ""
+        });
     }
 
     handlePlotClick(e) {
@@ -192,7 +201,7 @@ class EntityPlotter extends PureComponent {
                 );
 
                 if(this.props.entity.children[childKey].title !== "Unassigned" && this.props.entity.children[childKey].title !== "Out of TN") {
-                    console.log(/*this.props.entity.children[childKey].title,*/ this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]);
+                    //console.log(/*this.props.entity.children[childKey].title,*/ this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]);
                 }
                 }
                 let hotSpotsValue = null;
@@ -510,21 +519,29 @@ class EntityPlotter extends PureComponent {
         let searchFieldContent = null;
         if(this.props.entity.children && Object.keys(this.props.entity.children).length > 1) {
             searchFieldContent = (
-                <div style={{width: "300px", margin: "32px auto 32px auto"}}>
-                    <TextField
-                        style={{width: "100%"}}
-                        label={"Search"}
-                        InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                        }}
-                        value={this.state.filterText}
-                        onChange={this.handleFilterTextChange}
-                    />
-                </div>
+                    <div style={{width: "300px", margin: "32px auto 32px auto", display: "flex", alignItems: "center"}}>
+                        <TextField
+                            style={{width: "100%"}}
+                            label={"Search"}
+                            InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                            }}
+                            value={this.state.filterText}
+                            onChange={this.handleFilterTextChange}
+                        />
+                        <div style={{marginLeft: "-48px"}}>
+                            <IconButton
+                                //style={{ color: "white" }}
+                                onClick={this.handleClearFilterText}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
+                    </div>
             );
         }
 
