@@ -288,30 +288,30 @@ export const actionCreators = {
             testedReporting: 0,
             testedReportingPopulation: 0,
             testedReportingTotalCases: 0,
-            peopleHospitalized: 0,
-            hospitalizedReporting: 0,
-            hospitalizedReportingPopulation: 0,
-            hospitalizedReportingTotalCases: 0
+            // peopleHospitalized: 0,
+            // hospitalizedReporting: 0,
+            // hospitalizedReportingPopulation: 0,
+            // hospitalizedReportingTotalCases: 0
         };
         stats.sevenDay["United States"] = {
             peopleTested: 0,
             testedReporting: 0,
             testedReportingPopulation: 0,
             testedReportingTotalCases: 0,
-            peopleHospitalized: 0,
-            hospitalizedReporting: 0,
-            hospitalizedReportingPopulation: 0,
-            hospitalizedReportingTotalCases: 0
+            // peopleHospitalized: 0,
+            // hospitalizedReporting: 0,
+            // hospitalizedReportingPopulation: 0,
+            // hospitalizedReportingTotalCases: 0
         };
         stats.fourteenDay["United States"] = {
             peopleTested: 0,
             testedReporting: 0,
             testedReportingPopulation: 0,
             testedReportingTotalCases: 0,
-            peopleHospitalized: 0,
-            hospitalizedReporting: 0,
-            hospitalizedReportingPopulation: 0,
-            hospitalizedReportingTotalCases: 0
+            // peopleHospitalized: 0,
+            // hospitalizedReporting: 0,
+            // hospitalizedReportingPopulation: 0,
+            // hospitalizedReportingTotalCases: 0
         }
 
         dispatch({
@@ -328,10 +328,10 @@ export const actionCreators = {
                     recovered: data.Recovered,
                     active: data.Active,
                     peopleTested: data["People_Tested"],
-                    peopleHospitalized: data["People_Hospitalized"],
+                    //peopleHospitalized: data["People_Hospitalized"],
                     mortalityRate: data["Mortality_Rate"],
                     testingRate: data["Testing_Rate"],
-                    hospitalizationRate: data["Hospitalization_Rate"]
+                    //hospitalizationRate: data["Hospitalization_Rate"]
                 };
                 // if(!isNaN(parseInt(data["People_Tested"]))) {
                 //     stats.current["United States"].peopleTested += parseInt(data["People_Tested"]);
@@ -350,10 +350,10 @@ export const actionCreators = {
                     recovered: data.Recovered,
                     active: data.Active,
                     peopleTested: data["People_Tested"],
-                    peopleHospitalized: data["People_Hospitalized"],
+                    //peopleHospitalized: data["People_Hospitalized"],
                     mortalityRate: data["Mortality_Rate"],
                     testingRate: data["Testing_Rate"],
-                    hospitalizationRate: data["Hospitalization_Rate"]
+                    //hospitalizationRate: data["Hospitalization_Rate"]
                 };
                 // if(!isNaN(parseInt(data["People_Tested"]))) {
                 //     stats.sevenDay["United States"].peopleTested += parseInt(data["People_Tested"]);
@@ -372,10 +372,10 @@ export const actionCreators = {
                     recovered: data.Recovered,
                     active: data.Active,
                     peopleTested: data["People_Tested"],
-                    peopleHospitalized: data["People_Hospitalized"],
+                    //peopleHospitalized: data["People_Hospitalized"],
                     mortalityRate: data["Mortality_Rate"],
                     testingRate: data["Testing_Rate"],
-                    hospitalizationRate: data["Hospitalization_Rate"]
+                    //hospitalizationRate: data["Hospitalization_Rate"]
                 };
                 // if(!isNaN(parseInt(data["People_Tested"]))) {
                 //     stats.fourteenDay["United States"].peopleTested += parseInt(data["People_Tested"]);
@@ -522,13 +522,13 @@ export const actionCreators = {
 
                     }
     
-                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.current.peopleHospitalized))) {
-                        stats.current["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.current.peopleHospitalized);
-                        stats.current["United States"].hospitalizedReporting += 1;
-                        stats.current["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
-                        stats.current["United States"].hospitalizedReportingTotalCases += parseInt(stats.current[sortedKeys[i]].confirmed);
+                    // if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.current.peopleHospitalized))) {
+                    //     stats.current["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.current.peopleHospitalized);
+                    //     stats.current["United States"].hospitalizedReporting += 1;
+                    //     stats.current["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
+                    //     stats.current["United States"].hospitalizedReportingTotalCases += parseInt(stats.current[sortedKeys[i]].confirmed);
 
-                    }
+                    // }
 
                     if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleTested))) {
                         stats.sevenDay["United States"].peopleTested += parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleTested);
@@ -537,12 +537,12 @@ export const actionCreators = {
                         stats.sevenDay["United States"].testedReportingTotalCases += parseInt(stats.sevenDay[sortedKeys[i]].confirmed);
                     }
     
-                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleHospitalized))) {
-                        stats.sevenDay["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleHospitalized);
-                        stats.sevenDay["United States"].hospitalizedReporting += 1;
-                        stats.sevenDay["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
-                        stats.sevenDay["United States"].hospitalizedReportingTotalCases += parseInt(stats.sevenDay[sortedKeys[i]].confirmed);
-                    }
+                    // if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleHospitalized))) {
+                    //     stats.sevenDay["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.sevenDay.peopleHospitalized);
+                    //     stats.sevenDay["United States"].hospitalizedReporting += 1;
+                    //     stats.sevenDay["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
+                    //     stats.sevenDay["United States"].hospitalizedReportingTotalCases += parseInt(stats.sevenDay[sortedKeys[i]].confirmed);
+                    // }
 
                     if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleTested))) {
                         stats.fourteenDay["United States"].peopleTested += parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleTested);
@@ -551,26 +551,26 @@ export const actionCreators = {
                         stats.fourteenDay["United States"].testedReportingTotalCases += parseInt(stats.fourteenDay[sortedKeys[i]].confirmed);
                     }
     
-                    if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleHospitalized))) {
-                        stats.fourteenDay["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleHospitalized);
-                        stats.fourteenDay["United States"].hospitalizedReporting += 1;
-                        stats.fourteenDay["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
-                        stats.fourteenDay["United States"].hospitalizedReportingTotalCases += parseInt(stats.fourteenDay[sortedKeys[i]].confirmed);
-                    }
+                    // if(!isNaN(parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleHospitalized))) {
+                    //     stats.fourteenDay["United States"].peopleHospitalized += parseInt(allData.children[sortedKeys[i]].stats.fourteenDay.peopleHospitalized);
+                    //     stats.fourteenDay["United States"].hospitalizedReporting += 1;
+                    //     stats.fourteenDay["United States"].hospitalizedReportingPopulation += allData.children[sortedKeys[i]].population;
+                    //     stats.fourteenDay["United States"].hospitalizedReportingTotalCases += parseInt(stats.fourteenDay[sortedKeys[i]].confirmed);
+                    // }
                 
                 }
 
 
                 const current = stats.current["United States"];
-                current.hospitalizationRate = current.peopleHospitalized / current.hospitalizedReportingTotalCases * 100;
+                //current.hospitalizationRate = current.peopleHospitalized / current.hospitalizedReportingTotalCases * 100;
                 current.testingRate = current.peopleTested / current.testedReportingPopulation * 100000;
 
                 const sevenDay = stats.sevenDay["United States"];
-                sevenDay.hospitalizationRate = sevenDay.peopleHospitalized / sevenDay.hospitalizedReportingTotalCases * 100;
+                //sevenDay.hospitalizationRate = sevenDay.peopleHospitalized / sevenDay.hospitalizedReportingTotalCases * 100;
                 sevenDay.testingRate = sevenDay.peopleTested / sevenDay.testedReportingPopulation * 100000;
 
                 const fourteenDay = stats.fourteenDay["United States"];
-                fourteenDay.hospitalizationRate = fourteenDay.peopleHospitalized / fourteenDay.hospitalizedReportingTotalCases * 100;
+                //fourteenDay.hospitalizationRate = fourteenDay.peopleHospitalized / fourteenDay.hospitalizedReportingTotalCases * 100;
                 fourteenDay.testingRate = fourteenDay.peopleTested / fourteenDay.testedReportingPopulation * 100000;
 
                 allData.stats = {

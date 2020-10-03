@@ -71,8 +71,6 @@ function EnhancedTableHead(props) {
                 <option value={"percentOfParent"}>% of Parent Active Cases</option>
                 <option value={"mortalityRate"}>Mortality Rate</option>
                 <option value={"deaths"}>Deaths</option>
-                <option value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</option>
-                <option value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</option>
                 <option value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</option>
                 <option value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</option>
                 <option value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</option>
@@ -93,8 +91,6 @@ function EnhancedTableHead(props) {
                 <MenuItem value={"percentOfParent"}>% of Parent Active Cases</MenuItem>
                 <MenuItem value={"mortalityRate"}>Mortality Rate</MenuItem>
                 <MenuItem value={"deaths"}>Deaths</MenuItem>
-                <MenuItem value={"hospitalizationRate"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitilization Rate</MenuItem>
-                <MenuItem value={"hospitalizations"} style={childrenHaveStats ? {} : {display: "none"}}>Hospitalizations</MenuItem>
                 <MenuItem value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</MenuItem>
                 <MenuItem value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</MenuItem>
                 <MenuItem value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</MenuItem>

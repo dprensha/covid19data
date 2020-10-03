@@ -19,3 +19,20 @@
     font-size: 12px;
     width: 240px;
 }
+
+.plotTitle {
+    font-family: "Open Sans", verdana, arial, sans-serif;
+    font-size: 17px;
+    color: rgb(68, 68, 68);
+    text-align: center;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.plotLabel {
+    transform: translate(-125px) rotate(-90deg);
+    color: #444;
+    font-size: 12px;
+    font-family: "Open Sans", verdana, arial, sans-serif;
+}
