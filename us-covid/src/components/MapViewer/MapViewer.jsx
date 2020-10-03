@@ -90,14 +90,12 @@ class MapViewer extends Component {
     }
 
     handleToggleLegend(event) {
-        console.log(event);
         this.setState({
             isLegendVisible: !this.state.isLegendVisible
         })
     }
 
     handleToggleTimeSelector(event) {
-        console.log(event);
         this.setState({
             isTimeSelectorVisible: !this.state.isTimeSelectorVisible
         })
