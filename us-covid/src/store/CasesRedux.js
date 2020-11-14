@@ -65,9 +65,9 @@ export const actionCreators = {
             //         deaths: data.Deaths,
             //         recovered: data.Recovered,
             //         active: data.Active,
-            //         peopleTested: data["People_Tested"],
+            //         peopleTested: data["Total_Test_Results"],
             //         peopleHospitalized: data["People_Hospitalized"],
-            //         mortalityRate: data["Mortality_Rate"],
+            //         mortalityRate: data["Case_Fatality_Ratio"],
             //         testingRate: data["Testing_Rate"],
             //         hospitalizationRate: data["Hospitalization_Rate"]
             //     }
@@ -78,9 +78,9 @@ export const actionCreators = {
             //         deaths: data.Deaths,
             //         recovered: data.Recovered,
             //         active: data.Active,
-            //         peopleTested: data["People_Tested"],
+            //         peopleTested: data["Total_Test_Results"],
             //         peopleHospitalized: data["People_Hospitalized"],
-            //         mortalityRate: data["Mortality_Rate"],
+            //         mortalityRate: data["Case_Fatality_Ratio"],
             //         testingRate: data["Testing_Rate"],
             //         hospitalizationRate: data["Hospitalization_Rate"]
             //     }
@@ -91,9 +91,9 @@ export const actionCreators = {
             //         deaths: data.Deaths,
             //         recovered: data.Recovered,
             //         active: data.Active,
-            //         peopleTested: data["People_Tested"],
+            //         peopleTested: data["Total_Test_Results"],
             //         peopleHospitalized: data["People_Hospitalized"],
-            //         mortalityRate: data["Mortality_Rate"],
+            //         mortalityRate: data["Case_Fatality_Ratio"],
             //         testingRate: data["Testing_Rate"],
             //         hospitalizationRate: data["Hospitalization_Rate"]
             //     }
@@ -327,14 +327,14 @@ export const actionCreators = {
                     deaths: data.Deaths,
                     recovered: data.Recovered,
                     active: data.Active,
-                    peopleTested: data["People_Tested"],
+                    peopleTested: data["Total_Test_Results"],
                     //peopleHospitalized: data["People_Hospitalized"],
-                    mortalityRate: data["Mortality_Rate"],
+                    mortalityRate: data["Case_Fatality_Ratio"],
                     testingRate: data["Testing_Rate"],
                     //hospitalizationRate: data["Hospitalization_Rate"]
                 };
-                // if(!isNaN(parseInt(data["People_Tested"]))) {
-                //     stats.current["United States"].peopleTested += parseInt(data["People_Tested"]);
+                // if(!isNaN(parseInt(data["Total_Test_Results"]))) {
+                //     stats.current["United States"].peopleTested += parseInt(data["Total_Test_Results"]);
                 //     stats.current["United States"].testedReporting += 1;
                 // }
 
@@ -349,14 +349,14 @@ export const actionCreators = {
                     deaths: data.Deaths,
                     recovered: data.Recovered,
                     active: data.Active,
-                    peopleTested: data["People_Tested"],
+                    peopleTested: data["Total_Test_Results"],
                     //peopleHospitalized: data["People_Hospitalized"],
-                    mortalityRate: data["Mortality_Rate"],
+                    mortalityRate: data["Case_Fatality_Ratio"],
                     testingRate: data["Testing_Rate"],
                     //hospitalizationRate: data["Hospitalization_Rate"]
                 };
-                // if(!isNaN(parseInt(data["People_Tested"]))) {
-                //     stats.sevenDay["United States"].peopleTested += parseInt(data["People_Tested"]);
+                // if(!isNaN(parseInt(data["Total_Test_Results"]))) {
+                //     stats.sevenDay["United States"].peopleTested += parseInt(data["Total_Test_Results"]);
                 //     stats.sevenDay["United States"].testedReporting += 1;
                 // }
 
@@ -371,14 +371,14 @@ export const actionCreators = {
                     deaths: data.Deaths,
                     recovered: data.Recovered,
                     active: data.Active,
-                    peopleTested: data["People_Tested"],
+                    peopleTested: data["Total_Test_Results"],
                     //peopleHospitalized: data["People_Hospitalized"],
-                    mortalityRate: data["Mortality_Rate"],
+                    mortalityRate: data["Case_Fatality_Ratio"],
                     testingRate: data["Testing_Rate"],
                     //hospitalizationRate: data["Hospitalization_Rate"]
                 };
-                // if(!isNaN(parseInt(data["People_Tested"]))) {
-                //     stats.fourteenDay["United States"].peopleTested += parseInt(data["People_Tested"]);
+                // if(!isNaN(parseInt(data["Total_Test_Results"]))) {
+                //     stats.fourteenDay["United States"].peopleTested += parseInt(data["Total_Test_Results"]);
                 //     stats.fourteenDay["United States"].testedReporting += 1;
                 // }
 

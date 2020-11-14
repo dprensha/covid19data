@@ -284,6 +284,13 @@ class MapViewer extends Component {
         if (!this.props.usCases.children) {
             this.props.requestUSCases();
         }
+
+        //if we already have the data we need, componentDidUpdate will not fire, so set the slider here also
+        if(this.props.usCases.children && this.props.globalCases.children) {
+            this.setState({
+                sliderValue: this.props.globalCases.x.length - 1
+            })
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
