@@ -169,7 +169,8 @@ class PlotContainer extends PureComponent {
         }
 
         let mapButtonContent = null;
-        if(!this.state.isMapExpanded && !this.state.isInfoExpanded) {
+        const hideMapIcon = ["United Kingdom", "Netherlands", "France", "Denmark"];
+        if(!this.state.isMapExpanded && !this.state.isInfoExpanded && !hideMapIcon.includes(this.props.entity.parent.title)) {
             mapButtonContent = (
                 <div className={styles.closeIcon}>
                     <Tooltip title="Show on map">

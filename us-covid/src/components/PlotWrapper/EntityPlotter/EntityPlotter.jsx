@@ -33,7 +33,7 @@ class EntityPlotter extends PureComponent {
         this.state = {
             isInfoExpanded: false,
             isDrawerOpen: false,
-            graphMode: "active",
+            graphMode: "activePerCapita",
             popoverAnchorElement: null,
             filterText: "",
             comparisonKPI: "activePerCapita",
@@ -565,15 +565,15 @@ class EntityPlotter extends PureComponent {
                                 className={styles.graphModeButtonContainer}
                             >
                                 <FormControlLabel
-                                    value="active"
-                                    control={<Radio color="primary" />}
-                                    label="Active Cases"
-                                    labelPlacement="end"
-                                />
-                                <FormControlLabel
                                     value="activePerCapita"
                                     control={<Radio color="primary" />}
                                     label="Active Cases Per 1,000"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="active"
+                                    control={<Radio color="primary" />}
+                                    label="Active Cases"
                                     labelPlacement="end"
                                 />
                                 <FormControlLabel
