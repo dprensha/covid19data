@@ -239,11 +239,11 @@ class EntityPlotter extends PureComponent {
                     case "tests":
                         hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.peopleTested);
                         break;
-                    case "newCasesPerThousandTests":
-                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.confirmed) / parseInt(this.props.entity.children[childKey].stats.current.peopleTested) * 1000;
+                    case "newCasesPerHundredTests":
+                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.confirmed) / parseInt(this.props.entity.children[childKey].stats.current.peopleTested) * 100;
                         break;
                     case "testsPerCapita":
-                        hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.testingRate).toFixed(0) / 100;
+                        hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.testingRate).toFixed(0) / 1000;
                         break;
                     default:
                         hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
@@ -472,11 +472,11 @@ class EntityPlotter extends PureComponent {
             testingRateKPIContent = (
                 <div className={kpiClasses}>
                     <KPI
-                        keyValueTitle={"Number Tested per 1,000"}
-                        keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0) / 100}
+                        keyValueTitle={"Tests per 100 People"}
+                        keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0) / 1000}
                         keyValueFormat={"Decimal"}
                         baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseFloat(baselineStats.testingRate).toFixed(0) / 100}
+                        baselineValue={parseFloat(baselineStats.testingRate).toFixed(0) / 1000}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
@@ -486,16 +486,16 @@ class EntityPlotter extends PureComponent {
             );
         }
 
-        let newCasesPerThousandTestedKPIContent = null;
+        let newCasesPerHundredTestedKPIContent = null;
         if (this.props.entity.stats) {
-            newCasesPerThousandTestedKPIContent = (
+            newCasesPerHundredTestedKPIContent = (
                 <div className={kpiClasses}>
                     <KPI
-                        keyValueTitle={"New Cases per 1,000 Tests"}
-                        keyValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1] / parseInt(this.props.entity.stats.current.peopleTested) * 1000}
+                        keyValueTitle={"New Cases per 100 Tests"}
+                        keyValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1] / parseInt(this.props.entity.stats.current.peopleTested) * 100}
                         keyValueFormat={"Decimal"}
                         baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - parseInt(this.state.kpiBaselineDays)] / parseInt(baselineStats.peopleTested) * 1000}
+                        baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - parseInt(this.state.kpiBaselineDays)] / parseInt(baselineStats.peopleTested) * 100}
                         baselineValueFormat={"Percentage"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
@@ -766,7 +766,7 @@ class EntityPlotter extends PureComponent {
                         />
                     </div>
                     {peopleTestedKPIContent}
-                    {newCasesPerThousandTestedKPIContent}
+                    {newCasesPerHundredTestedKPIContent}
                     {testingRateKPIContent}
                 </div>
                 {/* {disclaimerArea} */}

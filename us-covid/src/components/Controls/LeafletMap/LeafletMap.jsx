@@ -25,7 +25,8 @@ const propTypes = {
   scaleIncludesNegatives: PropTypes.bool,
   scaleIsExponential: PropTypes.bool,
   dateIndex: PropTypes.number,
-  tooltipMode: PropTypes.string
+  tooltipMode: PropTypes.string,
+  ascertainmentBias: PropTypes.number
 }
 
 class LeafletMap extends PureComponent {
@@ -137,14 +138,15 @@ class LeafletMap extends PureComponent {
   getStyle = (property) => {
     const currentEntity = this.getEntity(property);
     const breakpoint = this.props.breakpoint;
+    const ascertainmentBias = this.props.ascertainmentBias;
     let visualizationMetric = 0;
 
     if (this.props.visualizationMode === "activePerCapita") {
-      visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[this.props.dateIndex] * 1000 : 0 //activePerCapita
+      visualizationMetric = currentEntity && currentEntity.yActivePerCapita ? currentEntity.yActivePerCapita[this.props.dateIndex] * 1000 * ascertainmentBias : 0 //activePerCapita
     }
 
     else if (this.props.visualizationMode === "active") {
-      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]): 0; //active
+      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]): 0 * ascertainmentBias; //active
     }
 
     else if (this.props.visualizationMode === "mortalityRate") {
@@ -152,11 +154,11 @@ class LeafletMap extends PureComponent {
     }
 
     else if (this.props.visualizationMode === "totalPerCapita") {
-      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex] / currentEntity.population * 1000) : 0; //total
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex] / currentEntity.population * 1000) * ascertainmentBias : 0; //total
     }
 
     else if (this.props.visualizationMode === "total") {
-      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex]) : 0; //total
+      visualizationMetric = currentEntity ? (currentEntity.yConfirmed[this.props.dateIndex]) * ascertainmentBias : 0; //total
     }
 
     else if (this.props.visualizationMode === "deathsPerCapita") {
@@ -248,8 +250,32 @@ class LeafletMap extends PureComponent {
         else if (visualizationMetric < positiveScaleCompareValue(18)) {
           style = { fillColor: "#B00000", fillOpacity: ".8" }
         }
-        else if (visualizationMetric >= breakpoint * 18) {
-          style = { fillColor: "#B00000", fillOpacity: ".85" }
+        else if (visualizationMetric < positiveScaleCompareValue(19)) {
+          style = { fillColor: "#000000", fillOpacity: ".6" }
+        }
+        else if (visualizationMetric < positiveScaleCompareValue(20)) {
+          style = { fillColor: "#000000", fillOpacity: ".65" }
+        }
+        else if (visualizationMetric < positiveScaleCompareValue(21)) {
+          style = { fillColor: "#000000", fillOpacity: ".7" }
+        }
+        else if (visualizationMetric < positiveScaleCompareValue(22)) {
+          style = { fillColor: "#000000", fillOpacity: ".75" }
+        }
+        else if (visualizationMetric < positiveScaleCompareValue(23)) {
+          style = { fillColor: "#000000", fillOpacity: ".8" }
+        }
+        else if (visualizationMetric < positiveScaleCompareValue(24)) {
+          style = { fillColor: "#000000", fillOpacity: ".85" }
+        }
+        else if (visualizationMetric < positiveScaleCompareValue(25)) {
+          style = { fillColor: "#000000", fillOpacity: ".9" }
+        }
+        else if (visualizationMetric < positiveScaleCompareValue(26)) {
+          style = { fillColor: "#000000", fillOpacity: ".95" }
+        }
+        else if (visualizationMetric >= breakpoint * 26) {
+          style = { fillColor: "#000000", fillOpacity: "1" }
         }
       }
       else {
@@ -382,17 +408,18 @@ class LeafletMap extends PureComponent {
       const keyValue = this.state.selectedEntity.yActive[this.props.dateIndex];
       const baselineValueSeven = this.state.selectedEntity.yActive[this.props.dateIndex - 7];
       const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.dateIndex - 14];
+      const ascertainmentBias = this.props.ascertainmentBias;
       
       if(this.props.tooltipMode === "graph" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
         let yValue = this.state.selectedEntity.yActive;
         let title = this.props.visualizationTitle;
 
         if (this.props.visualizationMode === "activePerCapita") {
-          yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000); //activePerCapita
+          yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000 * ascertainmentBias); //activePerCapita
         }
     
         else if (this.props.visualizationMode === "active") {
-          yValue = (this.state.selectedEntity.yActive); //active
+          yValue = (this.state.selectedEntity.yActive * ascertainmentBias); //active
         }
     
         else if (this.props.visualizationMode === "mortalityRate") {
@@ -400,11 +427,11 @@ class LeafletMap extends PureComponent {
         }
     
         else if (this.props.visualizationMode === "totalPerCapita") {
-          yValue = this.state.selectedEntity.yConfirmed.map((val) => val/this.state.selectedEntity.population * 1000); //totalPerCapita
+          yValue = this.state.selectedEntity.yConfirmed.map((val) => val/this.state.selectedEntity.population * 1000 * ascertainmentBias); //totalPerCapita
         }
     
         else if (this.props.visualizationMode === "total") {
-          yValue = this.state.selectedEntity.yConfirmed; //total
+          yValue = this.state.selectedEntity.yConfirmed * ascertainmentBias; //total
         }
     
         else if (this.props.visualizationMode === "deathsPerCapita") {
@@ -465,7 +492,7 @@ class LeafletMap extends PureComponent {
                   Active Cases
                   </td>
                 <td className={styles.popupValue}>
-                  {this.addThousandSeparators(this.state.selectedEntity.yActive[this.props.dateIndex], false)}
+                  {this.addThousandSeparators(this.state.selectedEntity.yActive[this.props.dateIndex] * ascertainmentBias, false)}
                 </td>
               </tr>
               <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? {fontWeight: "bold"} : {}}>
@@ -489,7 +516,7 @@ class LeafletMap extends PureComponent {
                   Active Cases Per 1,000
                   </td>
                 <td className={styles.popupValue}>
-                  {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000, false)}
+                  {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000 * ascertainmentBias, false)}
                 </td>
               </tr>
               <tr style={this.props.visualizationMode === "total" ? {fontWeight: "bold"} : {}}>
@@ -497,7 +524,7 @@ class LeafletMap extends PureComponent {
                   Total Cases
                   </td>
                 <td className={styles.popupValue}>
-                  {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex], true)}
+                  {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex] * ascertainmentBias, true)}
                 </td>
               </tr>
               <tr style={this.props.visualizationMode === "deaths" ? {fontWeight: "bold"} : {}}>
