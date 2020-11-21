@@ -467,6 +467,7 @@ class LeafletMap extends PureComponent {
                 height={100}
                 tickInterval={4}
                 scaleMode={"linear"}
+                showTooltip={false}
             />
           </div>
         );

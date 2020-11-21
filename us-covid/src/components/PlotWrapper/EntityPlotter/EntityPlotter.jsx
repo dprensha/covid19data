@@ -700,6 +700,7 @@ class EntityPlotter extends PureComponent {
                         y={yValue}
                         tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 2 : 1}
                         scaleMode={this.state.scaleMode}
+                        showTooltip={true}
                     />
                 </div>
                 <div className={styles.kpiContainer}>
