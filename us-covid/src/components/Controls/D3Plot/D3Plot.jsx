@@ -136,14 +136,14 @@ class D3Plot extends Component {
         focus.append("circle")
             .attr("r", 5);
 
-        var tooltipDate = tooltip.append("div")
+        tooltip.append("div")
             .attr("class", "tooltip-date");
 
         var tooltipNumber = tooltip.append("div");
         tooltipNumber.append("span")
             .attr("class", "tooltip-title");
 
-        var tooltipNumberValue = tooltipNumber.append("span")
+        tooltipNumber.append("span")
             .attr("class", "tooltip-number");
 
         var mousemove = function() {
