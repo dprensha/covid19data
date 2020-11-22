@@ -138,6 +138,7 @@ class PlotContainer extends PureComponent {
                     height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 135 : 135}
                     tickInterval={2}
                     scaleMode={this.props.scaleMode}
+                    showTooltip={true}
                 />
             )
         }

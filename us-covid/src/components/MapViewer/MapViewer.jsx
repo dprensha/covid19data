@@ -38,13 +38,14 @@ class MapViewer extends Component {
             isAnimating: false,
             playbackSpeed: 1,
             visualizationMode: "activePerCapita",
-            breakpoint: .4,
+            breakpoint: 1,
             scaleIncludesNegatives: false,
             scaleIsExponential: false,
             visualizationTitle: "Active Cases Per 1,000",
             isLegendVisible: true,
             isTimeSelectorVisible: true,
-            tooltipMode: "graph"
+            tooltipMode: "graph",
+            ascertainmentBias: "1"
         }
 
         this.timer = null;
@@ -69,6 +70,8 @@ class MapViewer extends Component {
         this.handlePlaybackSpeedChange = this.handlePlaybackSpeedChange.bind(this);
 
         this.handleTooltipModeChange = this.handleTooltipModeChange.bind(this);
+
+        this.handleAscertainmentBiasChange = this.handleAscertainmentBiasChange.bind(this);
     }
 
     handleCloseInfoIcon() {
@@ -167,25 +170,25 @@ class MapViewer extends Component {
 
         switch (event.target.value) {
             case "activePerCapita":
-                breakpoint = .4;
+                breakpoint = 1;
                 visualizationTitle = "Active Cases Per 1,000";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = false;
                 break;
             case "active":
-                breakpoint = 2;
+                breakpoint = 4;
                 visualizationTitle = "Active Cases";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = true;
                 break;
             case "totalPerCapita":
-                breakpoint = 3;
+                breakpoint = 4;
                 visualizationTitle = "Total Cases Per 1,000";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = false;
                 break;
             case "total":
-                breakpoint = 6;
+                breakpoint = 8;
                 visualizationTitle = "Total Cases";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = true;
@@ -197,7 +200,7 @@ class MapViewer extends Component {
                 scaleIsExponential = false;
                 break;
             case "deaths":
-                breakpoint = 1.5;
+                breakpoint = 3;
                 visualizationTitle = "Total Deaths";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = true;
@@ -236,6 +239,12 @@ class MapViewer extends Component {
     handleTooltipModeChange(event) {
         this.setState({
             tooltipMode: event.target.value
+        })
+    }
+
+    handleAscertainmentBiasChange(event) {
+        this.setState({
+            ascertainmentBias: event.target.value
         })
     }
 
@@ -329,6 +338,7 @@ class MapViewer extends Component {
                         visualizationTitle={this.state.visualizationTitle}
                         tooltipMode={this.state.tooltipMode}
                         displayDetails={this.props.displayDetails}
+                        ascertainmentBias={parseInt(this.state.ascertainmentBias, 10)}
                     />
                 </div>
             );
@@ -431,15 +441,19 @@ class MapViewer extends Component {
 
                     breakpointColumns = (
                         <tr>
-                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 2, 3))}</td>
+                            <td></td>{/* <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 2, 3))}</td> */}
                             <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 4, 3))}</td>
-                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 6, 3))}</td>
+                            <td></td>{/* <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 6, 3))}</td> */}
                             <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 8, 3))}</td>
-                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 10, 3))}</td>
+                            <td></td>{/* <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 10, 3))}</td> */}
                             <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 12, 3))}</td>
-                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 14, 3))}</td>
+                            <td></td>{/* <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 14, 3))}</td> */}
                             <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 16, 3))}</td>
-                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 18, 3))}</td>
+                            <td></td>{/* <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 18, 3))}</td> */}
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 20, 3))}</td>
+                            <td></td>{/* <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 22, 3))}</td> */}
+                            <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 24, 3))}</td>
+                            <td></td>{/* <td className={styles.legendLabel}>{label(Math.pow(this.state.breakpoint * 26, 3))}</td> */}
                         </tr>
                     )
                 }
@@ -453,15 +467,19 @@ class MapViewer extends Component {
 
                     breakpointColumns = (
                         <tr>
-                            <td className={styles.legendLabel}>{label(2)}</td>
+                            <td> </td>{/* <td className={styles.legendLabel}>{label(2)}</td> */}
                             <td className={styles.legendLabel}>{label(4)}</td>
-                            <td className={styles.legendLabel}>{label(6)}</td>
+                            <td> </td>{/* <td className={styles.legendLabel}>{label(6)}</td> */}
                             <td className={styles.legendLabel}>{label(8)}</td>
-                            <td className={styles.legendLabel}>{label(10)}</td>
+                            <td> </td>{/* <td className={styles.legendLabel}>{label(10)}</td> */}
                             <td className={styles.legendLabel}>{label(12)}</td>
-                            <td className={styles.legendLabel}>{label(14)}</td>
+                            <td> </td>{/* <td className={styles.legendLabel}>{label(14)}</td> */}
                             <td className={styles.legendLabel}>{label(16)}</td>
-                            <td className={styles.legendLabel}>{label(18)}</td>
+                            <td> </td>{/* <td className={styles.legendLabel}>{label(18)}</td> */}
+                            <td className={styles.legendLabel}>{label(20)}</td>
+                            <td> </td>{/* <td className={styles.legendLabel}>{label(22)}</td> */}
+                            <td className={styles.legendLabel}>{label(24)}</td>
+                            <td> </td>{/* <td className={styles.legendLabel}>{label(26)}</td> */}
                         </tr>
                     )
                 }
@@ -493,6 +511,10 @@ class MapViewer extends Component {
                             <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
                             <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
                             <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .6)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .7)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .8)" }}></td>
+                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .9)" }}></td>
                         </tr>
                     );
                 }
@@ -578,6 +600,46 @@ class MapViewer extends Component {
                                 value="mortalityRate"
                                 control={<Radio color="primary" />}
                                 label="Mortality Rate"
+                                labelPlacement="end"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                    <Divider />
+                    <div>
+                    <Typography className={styles.graphModeTitle} variant="h6">Ascertainment Bias:</Typography>
+                    <div className={styles.graphModeSubTitle}>Accounts for unrepored cases. An ascertainment bias of 5 presumes that there are 5 times more cases than are being reported.</div>
+                    </div>
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            row={false}
+                            name="position"
+                            defaultValue="top"
+                            onChange={this.handleAscertainmentBiasChange}
+                            value={this.state.ascertainmentBias}
+                            className={styles.graphModeButtonContainer}
+                        >
+                            <FormControlLabel
+                                value="1"
+                                control={<Radio color="primary" />}
+                                label="1"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="2"
+                                control={<Radio color="primary" />}
+                                label="2"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="5"
+                                control={<Radio color="primary" />}
+                                label="5"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="10"
+                                control={<Radio color="primary" />}
+                                label="10"
                                 labelPlacement="end"
                             />
                         </RadioGroup>

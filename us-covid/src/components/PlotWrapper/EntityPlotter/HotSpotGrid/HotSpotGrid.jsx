@@ -72,8 +72,8 @@ function EnhancedTableHead(props) {
                 <option value={"mortalityRate"}>Mortality Rate</option>
                 <option value={"deaths"}>Deaths</option>
                 <option value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</option>
-                <option value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</option>
-                <option value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</option>
+                <option value={"newCasesPerHundredTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 100 Tests</option>
+                <option value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Tests Per 100 People</option>
             </Select>
         )
     }
@@ -92,8 +92,8 @@ function EnhancedTableHead(props) {
                 <MenuItem value={"mortalityRate"}>Mortality Rate</MenuItem>
                 <MenuItem value={"deaths"}>Deaths</MenuItem>
                 <MenuItem value={"tests"} style={childrenHaveStats ? {} : {display: "none"}}>Tests</MenuItem>
-                <MenuItem value={"newCasesPerThousandTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 1,000 Tests</MenuItem>
-                <MenuItem value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Number Tested Per 1,000</MenuItem>
+                <MenuItem value={"newCasesPerHundredTests"} style={childrenHaveStats ? {} : {display: "none"}}>New Cases per 100 Tests</MenuItem>
+                <MenuItem value={"testsPerCapita"} style={childrenHaveStats ? {} : {display: "none"}}>Tests Per 100 People</MenuItem>
             </Select>
         )
     }
