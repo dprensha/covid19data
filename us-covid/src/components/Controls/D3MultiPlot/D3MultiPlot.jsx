@@ -28,7 +28,7 @@ class D3MultiPlot extends Component {
     drawChart() {
         // set the dimensions and margins of the graph
         var legendWidth = 200;
-        var margin = { top: 24, right: 24, bottom: 30, left: 50 },
+        var margin = { top: 24, right: 24, bottom: 56, left: 50 },
             width = this.props.width - margin.left - margin.right - legendWidth,
             height = this.props.height - margin.top - margin.bottom;
 
@@ -74,13 +74,19 @@ class D3MultiPlot extends Component {
 
 
         svg.append("g")
+            .attr("class", "axis")
             .attr("transform", "translate(0," + height + ")")
             .call(
                 d3.axisBottom(x)
                     .ticks(10)
                     .tickFormat(d3.timeFormat("%-m/%-d/%y"))
                     .tickSizeInner(-height)
-            );
+            )
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)");
 
         // Add Y axis
         var y = d3.scaleLinear()
@@ -92,6 +98,7 @@ class D3MultiPlot extends Component {
         // .range([height, 0]); // output 
 
         svg.append("g")
+        .attr("class", "axis")
             .call(
                 d3.axisLeft(y)
                     .ticks(4)
@@ -114,9 +121,8 @@ class D3MultiPlot extends Component {
             .enter()
             .append("path")
             .attr("data-legend",function(d) { return d.key})
-            .attr("fill", "none")
+            .attr("class", "line")
             .attr("stroke", function (d) { return color(d.key) })
-            .attr("stroke-width", 2)
             .attr("d", function (d) {
                 return d3.line()
                     .x(function (d) { return x(parseTime(d.x)); })
@@ -125,7 +131,7 @@ class D3MultiPlot extends Component {
             })
 
             var size = 5
-            svg.selectAll("mydots")
+            svg.selectAll("legendDots")
               .data(sumstat)
               .enter()
               .append("circle")
@@ -135,7 +141,7 @@ class D3MultiPlot extends Component {
                 .style("fill", function(d){ return color(d.key)})
             
             // Add one dot in the legend for each name.
-            svg.selectAll("mylabels")
+            svg.selectAll("legendLabels")
               .data(sumstat)
               .enter()
               .append("text")

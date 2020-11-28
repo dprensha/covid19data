@@ -1,0 +1,15 @@
+.axis {
+    color: #EEE;
+    shape-rendering: crispedges;
+}
+
+.axis text{
+    color: #444;
+    font-size: 12px;
+    font-family: "Open Sans", verdana, arial, sans-serif;
+}
+
+.line {
+    fill: none;
+    stroke-width: 2;
+}
