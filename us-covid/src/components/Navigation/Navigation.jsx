@@ -6,6 +6,7 @@ import MapIcon from '@material-ui/icons/Map';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PublicIcon from '@material-ui/icons/Public';
+import CompareIcon from '@material-ui/icons/Compare';
 import styles from './Navigation.module.scss'
 
 
@@ -175,6 +176,12 @@ class Navigation extends PureComponent {
                             </ListItem>
                         </List>
                     </Collapse>
+                    <ListItem button onClick={() => this.props.handleNavigate("/Compare")}>
+                        <ListItemIcon>
+                            <CompareIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Graph Comparison Tool" />
+                    </ListItem>
                 </List>
             </Drawer>
         )

@@ -40,7 +40,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 
 
-import D3Plot from './D3Plot';
+import D3Plot from './D3Plot/D3Plot';
+
+import D3MultiPlot from './D3MultiPlot';
 
 import KPI from './KPI';
 
@@ -100,6 +102,7 @@ export {
     ListItemText,
     Divider,
     D3Plot,
+    D3MultiPlot,
     KPI,
     Map,
     LeafletMap

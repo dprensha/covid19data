@@ -29,12 +29,12 @@ class D3Plot extends Component {
         const { width, height } = this.props;
         var dataset = null;
 
-        if (this.props.scaleMode === "linear") {
-            dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] } });
-        }
-
-        else if (this.props.scaleMode === "logarithmic") {
+        if (this.props.scaleMode === "logarithmic") {
             dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] <= 0 ? 1 : this.props.y[index] } });
+        }
+        
+        else {
+            dataset = this.props.x.map((item, index) => { return { "x": item, "y": this.props.y[index] } });
         }
 
         var getDataset = function() {
@@ -65,15 +65,16 @@ class D3Plot extends Component {
 
         var yScale = null;
         // 6. Y scale will use the randomly generate number 
-        if (this.props.scaleMode === "linear") {
-            yScale = d3.scaleLinear()
-                .domain([0, Math.max(...this.props.y)]) // input 
-                .range([height, 0]); // output 
-        }
-        else if (this.props.scaleMode === "logarithmic") {
+        if (this.props.scaleMode === "logarithmic") {
             yScale = d3.scaleLog()
                 .base(10)
                 .domain([1, Math.max(...this.props.y)]) // input 
+                .range([height, 0]); // output 
+        }
+
+        else {
+            yScale = d3.scaleLinear()
+                .domain([0, Math.max(...this.props.y)]) // input 
                 .range([height, 0]); // output 
         }
 
