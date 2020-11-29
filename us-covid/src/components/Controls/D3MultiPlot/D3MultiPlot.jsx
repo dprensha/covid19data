@@ -32,6 +32,8 @@ class D3MultiPlot extends Component {
             width = this.props.width - margin.left - margin.right - legendWidth,
             height = this.props.height - margin.top - margin.bottom;
 
+        const { data }= this.props;
+
 
         d3.select(`#${this.props.id} > svg`).remove()
 
@@ -43,29 +45,16 @@ class D3MultiPlot extends Component {
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
-        var masterList = [];
-
-        for (var i = 0; i < this.props.data.length; i++) {
-            for (var j = 0; j < this.props.data[i].x.length; j++) {
-                masterList.push({
-                    title: this.props.data[i].title,
-                    x: this.props.data[i].x[j],
-                    //y: this.props.data[i].yActivePerCapita[j] * 1000
-                    y:this.props.data[i].yDeaths[j]
-                })
-            }
-        }
-
         // group the data: I want to draw one line per group
         var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
             .key(function (d) { return d.title; })
-            .entries(masterList);
+            .entries(data);
 
         // Add X axis --> it is a date format
         var parseTime = d3.timeParse("%-m/%-d/%y");
 
         var x = d3.scaleLinear()
-            .domain(d3.extent(masterList, function (d) { return parseTime(d.x); }))
+            .domain(d3.extent(data, function (d) { return parseTime(d.x); }))
             .range([0, width]);
 
 
@@ -91,7 +80,7 @@ class D3MultiPlot extends Component {
 
         // Add Y axis
         var y = d3.scaleLinear()
-            .domain([0, d3.max(masterList, function (d) { return +d.y; })])
+            .domain([0, d3.max(data, function (d) { return +d.y; })])
             .range([height, 0]);
 
         // yScale = d3.scaleLinear()
@@ -105,7 +94,7 @@ class D3MultiPlot extends Component {
                     .ticks(4)
                     .tickSizeInner(-width)
                     //.tickFormat(d3.format(this.props.format))); // Create an axis component with d3.axisLeft
-                    .tickFormat(d3.format(d3.max(masterList, function (d) { return +d.y; }) < 1000 ? "~f" : "~s"))
+                    .tickFormat(d3.format(d3.max(data, function (d) { return +d.y; }) < 1000 ? "~f" : "~s"))
 
             );
 
@@ -200,7 +189,7 @@ class D3MultiPlot extends Component {
                 .attr('y1', 0)
                 .attr('y2', height)
                 .style("stroke-width", 2);
-console.log(d3.event.pageX + 20);
+                
             tooltip.html(dateString)
                 .style('display', 'block')
                 .attr('left', d3.event.pageX + 20)
