@@ -50,7 +50,8 @@ class D3MultiPlot extends Component {
                 masterList.push({
                     title: this.props.data[i].title,
                     x: this.props.data[i].x[j],
-                    y: this.props.data[i].yActivePerCapita[j] * 1000
+                    //y: this.props.data[i].yActivePerCapita[j] * 1000
+                    y:this.props.data[i].yDeaths[j]
                 })
             }
         }
@@ -78,7 +79,7 @@ class D3MultiPlot extends Component {
             .attr("transform", "translate(0," + height + ")")
             .call(
                 d3.axisBottom(x)
-                    .ticks(10)
+                    //.ticks(10)
                     .tickFormat(d3.timeFormat("%-m/%-d/%y"))
                     .tickSizeInner(-height)
             )
@@ -98,7 +99,7 @@ class D3MultiPlot extends Component {
         // .range([height, 0]); // output 
 
         svg.append("g")
-        .attr("class", "axis")
+            .attr("class", "axis")
             .call(
                 d3.axisLeft(y)
                     .ticks(4)
@@ -120,8 +121,9 @@ class D3MultiPlot extends Component {
             .data(sumstat)
             .enter()
             .append("path")
-            .attr("data-legend",function(d) { return d.key})
-            .attr("class", "line")
+            .attr("data-legend", function (d) { return d.key })
+            .attr("stroke-width", 2)
+            .attr("fill", "none")
             .attr("stroke", function (d) { return color(d.key) })
             .attr("d", function (d) {
                 return d3.line()
@@ -130,27 +132,85 @@ class D3MultiPlot extends Component {
                     (d.values)
             })
 
-            var size = 5
-            svg.selectAll("legendDots")
-              .data(sumstat)
-              .enter()
-              .append("circle")
-                .attr("cx", width + 20)
-                .attr("cy", function(d,i){ return 100 + i*(size+15)}) // 100 is where the first dot appears. 25 is the distance between dots
-                .attr("r", size)
-                .style("fill", function(d){ return color(d.key)})
+        var size = 5
+
+        const tooltip = d3.select('#tooltip');
+        const tooltipLine = svg.append('line');
+        svg.selectAll("legendDots")
+            .data(sumstat)
+            .enter()
+            .append("circle")
+            .attr("cx", width + 20)
+            .attr("cy", function (d, i) { return 100 + i * (size + 15) }) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("r", size)
+            .style("fill", function (d) { return color(d.key) })
+
+        // Add one dot in the legend for each name.
+        svg.selectAll("legendLabels")
+            .data(sumstat)
+            .enter()
+            .append("text")
+            .attr("x", width + 20 + size * 1.4)
+            .attr("y", function (d, i) { return 100 + i * (size + 15) + (size) }) // 100 is where the first dot appears. 25 is the distance between dots
+            .text(function (d) { return d.key })
+            .attr("class", "legendLabel");
+
+        var tipBox = svg.append('rect')
+            .attr('width', width)
+            .attr('height', height)
+            .attr('opacity', 0)
+            .on('mousemove', drawTooltip)
+            .on('mouseout', removeTooltip);
+
+        function removeTooltip() {
+            if (tooltip) tooltip.style('display', 'none');
+            if (tooltipLine) tooltipLine.attr('stroke', 'none');
+        }
+
+        var addThousandSeparators = function(value, formatMagnitude) {
+            if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+6) {
+                return `${((Math.round(value / 1000)) / 1000).toFixed(2)} M`;
+            }
+            else if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+3) {
+                return `${(Math.round(value / 1.0e+3))}k`;
+            }
+            else if(Math.abs(Number(value)) < 1000) {
+                return Math.round((value + Number.EPSILON) * 100) / 100;
+            }
+            else {
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
             
-            // Add one dot in the legend for each name.
-            svg.selectAll("legendLabels")
-              .data(sumstat)
-              .enter()
-              .append("text")
-                .attr("x", width + 20 + size*1.2)
-                .attr("y", function(d,i){ return 100 + i*(size+15) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-                .style("fill", function(d){ return color(d.key)})
-                .text(function(d){ return d.key})
-                .attr("text-anchor", "left")
-                .style("alignment-baseline", "middle")
+        }
+
+        function drawTooltip() {
+            const date = new Date(Math.floor((x.invert(d3.mouse(tipBox.node())[0]))));
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            const dateString = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear().toString().substr(2, 2)}`
+
+            // sumstat.sort((a, b) => {
+            //   return b.history.find(h => h.date == date).population - a.history.find(h => h.date == date).population;
+            // })  
+
+            tooltipLine.attr('stroke', '#999999')
+                .attr('x1', x(date))
+                .attr('x2', x(date))
+                .attr('y1', 0)
+                .attr('y2', height)
+                .style("stroke-width", 2);
+console.log(d3.event.pageX + 20);
+            tooltip.html(dateString)
+                .style('display', 'block')
+                .attr('left', d3.event.pageX + 20)
+                .attr('top', d3.event.pageY - 20)
+                .selectAll()
+                .data(sumstat).enter()
+                .append('div')
+                .style('color', d => d.color)
+                .html(d => d.key + ': ' + addThousandSeparators(d.values.filter(value => value.x === dateString)[0].y, true));
+        }
 
     }
 
@@ -168,7 +228,10 @@ class D3MultiPlot extends Component {
 
     render() {
         return (
-            <div id={this.props.id} ref={this.chartRef}></div>
+            <div>
+                <div id='tooltip' style={{ position: "absolute", left: "400px", display: "none", backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "5px", boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)" }}></div>
+                <div id={this.props.id} ref={this.chartRef}></div>
+            </div>
         );
     }
 }

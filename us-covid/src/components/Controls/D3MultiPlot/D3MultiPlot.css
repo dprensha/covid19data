@@ -9,7 +9,7 @@
     font-family: "Open Sans", verdana, arial, sans-serif;
 }
 
-.line {
-    fill: none;
-    stroke-width: 2;
+.legendLabel {
+    text-anchor: left;
+    font-size: 12px;
 }
