@@ -698,7 +698,7 @@ class EntityPlotter extends PureComponent {
                         height={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 185 : 250}
                         x={this.props.entity.x}
                         y={yValue}
-                        tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 2 : 1}
+                        tickInterval={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE ? 4 : 2}
                         scaleMode={this.state.scaleMode}
                         showTooltip={true}
                     />

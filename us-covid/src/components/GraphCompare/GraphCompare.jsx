@@ -13,6 +13,10 @@ import D3Plot from "../Controls/D3Plot/D3Plot";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import MenuIcon from '@material-ui/icons/Menu';
 import TuneIcon from '@material-ui/icons/Tune';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
+import { VariableSizeList } from 'react-window';
 
 import styles from './GraphCompare.module.scss';
 
@@ -26,14 +30,14 @@ class GraphCompare extends PureComponent {
         super(props, context);
 
         this.state = {
+            hasCaseData: false,
+
             isMenuExpanded: false,
             isInfoExpanded: false,
             selectedCountries: [],
 
             visualizationMode: "activePerCapita",
-            visualizationTitle: "Active Cases Per 1,000",
-            showUSStates: true,
-            showUSCounties: true
+            visualizationTitle: "Active Cases Per 1,000"
         }
 
         this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
@@ -60,6 +64,59 @@ class GraphCompare extends PureComponent {
         if (!this.props.usCases.children) {
             this.props.requestUSCases();
         }
+
+        //if we already have the data we need, componentDidUpdate will not fire, so set the slider here also
+        if(this.props.usCases.children && this.props.globalCases.children) {
+            this.buildOptionsList();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if(Object.keys(this.props.globalCases).length !== 0 && Object.keys(this.props.usCases).length !== 0 && (prevProps.globalCases.length === 0 || prevProps.usCases.length === 0)) {
+            this.buildOptionsList();
+        }
+    }
+
+    buildOptionsList() {
+        let objects = [];
+        const countryGroups = [];
+        Object.keys(this.props.globalCases.children).forEach(country => {
+            const temp = JSON.parse(JSON.stringify(this.props.globalCases.children[country], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
+            temp.parentName = "All Countries"
+            objects.push(temp);
+
+            if (this.props.globalCases.children[country].children) {
+                Object.keys(this.props.globalCases.children[country].children).forEach(child => {
+                    const q = JSON.parse(JSON.stringify(this.props.globalCases.children[country].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
+                    q.title = `${this.props.globalCases.children[country].children[child].title}, ${this.props.globalCases.children[country].title}`;
+                    q.parentName = this.props.globalCases.children[country].title;
+                    countryGroups.push(q);
+                });
+            }
+        });
+
+        objects = objects.concat(countryGroups);
+        
+        Object.keys(this.props.usCases.children).forEach(state => {
+            const temp = JSON.parse(JSON.stringify(this.props.usCases.children[state], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
+            temp.parentName = this.props.usCases.children[state].title;
+            objects.push(temp);
+
+            if(this.props.usCases.children[state].children) {
+                Object.keys(this.props.usCases.children[state].children).forEach(child => {
+                    const q = JSON.parse(JSON.stringify(this.props.usCases.children[state].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths'] ));
+                    q.title = `${this.props.usCases.children[state].children[child].title}, ${this.props.usCases.children[state].title}`
+                    q.parentName = this.props.usCases.children[state].title;
+                    objects.push(q)
+                });
+            }
+        });
+        
+
+        this.setState({
+            hasCaseData: true,
+            options: objects
+        })
     }
 
     handleCloseInfoIcon() {
@@ -157,48 +214,12 @@ class GraphCompare extends PureComponent {
     }
 
     renderComparisonContent() {
-        if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
+        if (this.state.hasCaseData === false) {
             return (
                 <div style={{ marginTop: "88px", marginLeft: "16px" }}>Loading...</div>
             );
         }
         else {
-            let objects = [];
-            const countryGroups = [];
-            Object.keys(this.props.globalCases.children).forEach(country => {
-                const temp = JSON.parse(JSON.stringify(this.props.globalCases.children[country], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
-                temp.parentName = "All Countries"
-                objects.push(temp);
-
-                if (this.props.globalCases.children[country].children) {
-                    Object.keys(this.props.globalCases.children[country].children).forEach(child => {
-                        const q = JSON.parse(JSON.stringify(this.props.globalCases.children[country].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
-                        q.title = `${this.props.globalCases.children[country].children[child].title}, ${this.props.globalCases.children[country].title}`;
-                        q.parentName = this.props.globalCases.children[country].title;
-                        countryGroups.push(q);
-                    });
-                }
-            });
-
-            objects = objects.concat(countryGroups);
-            
-            if(this.state.showUSStates) {
-                Object.keys(this.props.usCases.children).forEach(state => {
-                    const temp = JSON.parse(JSON.stringify(this.props.usCases.children[state], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
-                    temp.parentName = this.props.usCases.children[state].title;
-                    objects.push(temp);
-
-                    if(this.props.usCases.children[state].children && this.state.showUSCounties) {
-                        Object.keys(this.props.usCases.children[state].children).forEach(child => {
-                            const q = JSON.parse(JSON.stringify(this.props.usCases.children[state].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths'] ));
-                            q.title = `${this.props.usCases.children[state].children[child].title}, ${this.props.usCases.children[state].title}`
-                            q.parentName = this.props.usCases.children[state].title;
-                            objects.push(q)
-                        });
-                    }
-                });
-            }
-
             var chartData = [];
 
             for (var i = 0; i < this.state.selectedCountries.length; i++) {
@@ -252,13 +273,104 @@ class GraphCompare extends PureComponent {
                 );
             }
 
+
+            const LISTBOX_PADDING = 8; // px
+
+            function renderRow(props) {
+            const { data, index, style } = props;
+            return React.cloneElement(data[index], {
+                style: {
+                ...style,
+                top: style.top + LISTBOX_PADDING,
+                },
+            });
+            }
+
+            const OuterElementContext = React.createContext({});
+
+            const OuterElementType = React.forwardRef((props, ref) => {
+            const outerProps = React.useContext(OuterElementContext);
+            return <div ref={ref} {...props} {...outerProps} />;
+            });
+
+            function useResetCache(data) {
+                const ref = React.useRef(null);
+                React.useEffect(() => {
+                  if (ref.current != null) {
+                    ref.current.resetAfterIndex(0, true);
+                  }
+                }, [data]);
+                return ref;
+              }
+              
+              // Adapter for react-window
+              const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
+                const { children, ...other } = props;
+                const itemData = React.Children.toArray(children);
+                const theme = useTheme();
+                const smUp = useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true });
+                const itemCount = itemData.length;
+                const itemSize = smUp ? 36 : 48;
+              
+                const getChildSize = (child) => {
+                  if (React.isValidElement(child) && child.type === ListSubheader) {
+                    return 48;
+                  }
+              
+                  return itemSize;
+                };
+              
+                const getHeight = () => {
+                  if (itemCount > 8) {
+                    return 8 * itemSize;
+                  }
+                  return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
+                };
+              
+                const gridRef = useResetCache(itemCount);
+              
+                return (
+                  <div ref={ref}>
+                    <OuterElementContext.Provider value={other}>
+                      <VariableSizeList
+                        itemData={itemData}
+                        height={getHeight() + 2 * LISTBOX_PADDING}
+                        width="100%"
+                        ref={gridRef}
+                        outerElementType={OuterElementType}
+                        innerElementType="ul"
+                        itemSize={(index) => getChildSize(itemData[index])}
+                        overscanCount={5}
+                        itemCount={itemCount}
+                      >
+                        {renderRow}
+                      </VariableSizeList>
+                    </OuterElementContext.Provider>
+                  </div>
+                );
+              });
+
+              ListboxComponent.propTypes = {
+                children: PropTypes.node,
+              };
+
+              const renderGroup = (params) => [
+                <ListSubheader key={params.key} component="div">
+                  {params.group}
+                </ListSubheader>,
+                params.children,
+              ];
+
             return (
                 <div style={{ paddingTop: "72px" }}>
                     <div className={styles.select}>
                         <Autocomplete
                             onChange={this.handleCountryChange}
+                            disableListWrap
+                            ListboxComponent={ListboxComponent}
+                            renderGroup={renderGroup}
                             multiple
-                            options={objects}
+                            options={this.state.options}
                             value={this.props.selectedCountries}
                             limitTags={3}
                             getOptionLabel={(option) => option.title}
@@ -269,7 +381,7 @@ class GraphCompare extends PureComponent {
                                 <TextField
                                     {...params}
                                     variant="standard"
-                                    label="Countries"
+                                    label="Country, State, or County"
                                 />
                             )}
                         />
@@ -341,38 +453,6 @@ class GraphCompare extends PureComponent {
                         </RadioGroup>
                     </FormControl>
                 </div>
-                {/* <Divider />
-                    <div className={styles.graphModeContainer}>
-                        <Typography className={styles.graphModeTitle} variant="h6">Detail:</Typography>
-                        <FormControl component="fieldset">
-                            <FormGroup
-                                className={styles.graphModeButtonContainer}
-                            >
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={this.state.showUSStates}
-                                            onChange={this.handleToggleUSStates}
-                                            name="usStates"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="US States"
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={this.state.showUSCounties}
-                                            onChange={this.handleToggleUSCounties}
-                                            name="usCounties"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="US Counties"
-                                />
-                            </FormGroup>
-                        </FormControl>
-                    </div> */}
             </Drawer>
         )
     }
