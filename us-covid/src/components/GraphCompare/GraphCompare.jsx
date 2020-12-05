@@ -263,7 +263,7 @@ class GraphCompare extends PureComponent {
             if (this.state.selectedCountries.length > 0) {
                 multiPlotContent = (
                     <D3MultiPlot
-                        id={"test"}
+                        id={"multiPlot"}
                         data={chartData}
                         tickInterval={2}
                         height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 300 : 500}
