@@ -7,7 +7,7 @@ import Navigation from '../Navigation/Navigation';
 import { constants } from "../Utilities";
 import InfoDialog from '../PlotWrapper/EntityPlotter/InfoDialog/InfoDialog';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Drawer, FormControl, FormGroup, Radio, FormControlLabel, RadioGroup, Typography, Toolbar, AppBar, IconButton, TextField, D3MultiPlot } from "../Controls";
+import { Drawer, Divider, Switch, FormControl, FormGroup, Radio, FormControlLabel, RadioGroup, Typography, Toolbar, AppBar, IconButton, TextField, D3MultiPlot } from "../Controls";
 import D3Plot from "../Controls/D3Plot/D3Plot";
 // import D3MultiPlot from "../Controls/D3MultiPlot/D3MultiPlot";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
@@ -17,7 +17,8 @@ import TuneIcon from '@material-ui/icons/Tune';
 import styles from './GraphCompare.module.scss';
 
 const propTypes = {
-    displayDetails: PropTypes.object
+    displayDetails: PropTypes.object,
+    data: PropTypes.array
 }
 
 class GraphCompare extends PureComponent {
@@ -31,6 +32,8 @@ class GraphCompare extends PureComponent {
 
             visualizationMode: "activePerCapita",
             visualizationTitle: "Active Cases Per 1,000",
+            showUSStates: true,
+            showUSCounties: true
         }
 
         this.handleCloseInfoIcon = this.handleCloseInfoIcon.bind(this);
@@ -45,15 +48,18 @@ class GraphCompare extends PureComponent {
         this.handleSettingsIconClick = this.handleSettingsIconClick.bind(this);
         this.handleCloseSettings = this.handleCloseSettings.bind(this);
         this.handleVisualizationModeChange = this.handleVisualizationModeChange.bind(this);
+
+        this.handleToggleUSCounties = this.handleToggleUSCounties.bind(this);
+        this.handleToggleUSStates = this.handleToggleUSStates.bind(this);
     }
 
     componentDidMount() {
         if (!this.props.globalCases.children) {
             this.props.requestGlobalCases();
         }
-        // if (!this.props.usCases.children) {
-        //     this.props.requestUSCases();
-        // }
+        if (!this.props.usCases.children) {
+            this.props.requestUSCases();
+        }
     }
 
     handleCloseInfoIcon() {
@@ -127,17 +133,21 @@ class GraphCompare extends PureComponent {
         })
     }
 
-    handleCountryChange(event, data) {
-        const objects = [];
-            Object.keys(data).forEach(country => {
-                const temp = data[country];
-                temp.parent = null;
-                temp.children = null;
-                objects.push(temp);
-            });
-        
+    handleToggleUSStates() {
         this.setState({
-            selectedCountries: objects
+            showUSStates: !this.state.showUSStates
+        })
+    }
+
+    handleToggleUSCounties() {
+        this.setState({
+            showUSCounties: !this.state.showUSCounties
+        })
+    }
+
+    handleCountryChange(event, data) {
+        this.setState({
+            selectedCountries: data
 
         })
     }
@@ -147,19 +157,47 @@ class GraphCompare extends PureComponent {
     }
 
     renderComparisonContent() {
-        if (this.props.globalCases.length === 0 /*|| this.props.usCases.length === 0*/) {
+        if (this.props.globalCases.length === 0 || this.props.usCases.length === 0) {
             return (
                 <div style={{ marginTop: "88px", marginLeft: "16px" }}>Loading...</div>
             );
         }
         else {
-            const objects = [];
+            let objects = [];
+            const countryGroups = [];
             Object.keys(this.props.globalCases.children).forEach(country => {
-                const temp = JSON.parse(JSON.stringify(this.props.globalCases.children[country], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths'] ));
-                //temp.parent = null;
-                //temp.children = null;
+                const temp = JSON.parse(JSON.stringify(this.props.globalCases.children[country], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
+                temp.parentName = "All Countries"
                 objects.push(temp);
+
+                if (this.props.globalCases.children[country].children) {
+                    Object.keys(this.props.globalCases.children[country].children).forEach(child => {
+                        const q = JSON.parse(JSON.stringify(this.props.globalCases.children[country].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
+                        q.title = `${this.props.globalCases.children[country].children[child].title}, ${this.props.globalCases.children[country].title}`;
+                        q.parentName = this.props.globalCases.children[country].title;
+                        countryGroups.push(q);
+                    });
+                }
             });
+
+            objects = objects.concat(countryGroups);
+            
+            if(this.state.showUSStates) {
+                Object.keys(this.props.usCases.children).forEach(state => {
+                    const temp = JSON.parse(JSON.stringify(this.props.usCases.children[state], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
+                    temp.parentName = this.props.usCases.children[state].title;
+                    objects.push(temp);
+
+                    if(this.props.usCases.children[state].children && this.state.showUSCounties) {
+                        Object.keys(this.props.usCases.children[state].children).forEach(child => {
+                            const q = JSON.parse(JSON.stringify(this.props.usCases.children[state].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths'] ));
+                            q.title = `${this.props.usCases.children[state].children[child].title}, ${this.props.usCases.children[state].title}`
+                            q.parentName = this.props.usCases.children[state].title;
+                            objects.push(q)
+                        });
+                    }
+                });
+            }
 
             var chartData = [];
 
@@ -201,38 +239,43 @@ class GraphCompare extends PureComponent {
 
             let multiPlotContent = null;
 
-            if(this.state.selectedCountries.length > 0) {
+            if (this.state.selectedCountries.length > 0) {
                 multiPlotContent = (
                     <D3MultiPlot
-                        id={"test"} 
+                        id={"test"}
                         data={chartData}
                         tickInterval={2}
-                        height={400}
-                        width={1000}
+                        height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 300 : 500}
+                        width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 1200}
+                        legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
                     />
                 );
             }
 
             return (
-                <div style={{paddingTop: "88px"}}>
+                <div style={{ paddingTop: "72px" }}>
                     <div className={styles.select}>
                         <Autocomplete
                             onChange={this.handleCountryChange}
                             multiple
                             options={objects}
                             value={this.props.selectedCountries}
+                            limitTags={3}
                             getOptionLabel={(option) => option.title}
+                            getOptionSelected={(option, value) => value.title === option.title}
+                            groupBy={(option) => option.parentName}
+                            filterSelectedOptions={true}
                             renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="standard"
-                                label="Countries"
-                            />
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    label="Countries"
+                                />
                             )}
                         />
                     </div>
                     <div>
-                       {multiPlotContent}
+                        {multiPlotContent}
                     </div>
                 </div>
             );
@@ -298,6 +341,38 @@ class GraphCompare extends PureComponent {
                         </RadioGroup>
                     </FormControl>
                 </div>
+                {/* <Divider />
+                    <div className={styles.graphModeContainer}>
+                        <Typography className={styles.graphModeTitle} variant="h6">Detail:</Typography>
+                        <FormControl component="fieldset">
+                            <FormGroup
+                                className={styles.graphModeButtonContainer}
+                            >
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={this.state.showUSStates}
+                                            onChange={this.handleToggleUSStates}
+                                            name="usStates"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="US States"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={this.state.showUSCounties}
+                                            onChange={this.handleToggleUSCounties}
+                                            name="usCounties"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="US Counties"
+                                />
+                            </FormGroup>
+                        </FormControl>
+                    </div> */}
             </Drawer>
         )
     }
@@ -342,7 +417,7 @@ class GraphCompare extends PureComponent {
                     </Toolbar>
                 </AppBar>
                 <InfoDialog isOpen={this.state.isInfoExpanded} displayDetails={this.props.displayDetails} handleClose={this.handleCloseInfoIcon} />
-                <Navigation 
+                <Navigation
                     handleNavigate={this.navigate}
                     isOpen={this.state.isMenuExpanded}
                     handleClose={this.handleCloseMenu}

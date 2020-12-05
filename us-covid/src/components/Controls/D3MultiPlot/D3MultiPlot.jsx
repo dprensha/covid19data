@@ -27,7 +27,8 @@ class D3MultiPlot extends Component {
 
     drawChart() {
         // set the dimensions and margins of the graph
-        var legendWidth = 200;
+        var legendWidth = this.props.legendLocation === "side" ? 200 : 0;
+        var legendHeight = this.props.legendLocation === "bottom" ? 200 : 0;
         var margin = { top: 24, right: 24, bottom: 56, left: 50 },
             width = this.props.width - margin.left - margin.right - legendWidth,
             height = this.props.height - margin.top - margin.bottom;
@@ -40,7 +41,7 @@ class D3MultiPlot extends Component {
         // append the svg object to the body of the page
         var svg = d3.select(`#${this.props.id}`).append("svg")
             .attr("width", width + margin.left + margin.right + legendWidth)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("height", height + margin.top + margin.bottom + legendHeight)
             .append("g")
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
@@ -125,26 +126,49 @@ class D3MultiPlot extends Component {
 
         const tooltip = d3.select('#tooltip');
         const tooltipLine = svg.append('line');
-        svg.selectAll("legendDots")
-            .data(sumstat)
-            .enter()
-            .append("circle")
-            .attr("cx", width + 20)
-            .attr("cy", function (d, i) { return 100 + i * (size + 15) }) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", size)
-            .style("fill", function (d) { return color(d.key) })
+        if(this.props.legendLocation === "side") {
+            svg.selectAll("legendDots")
+                .data(sumstat)
+                .enter()
+                .append("circle")
+                .attr("cx", width + 20)
+                .attr("cy", function (d, i) { return 100 + i * (size + 15) }) // 100 is where the first dot appears. 25 is the distance between dots
+                .attr("r", size)
+                .style("fill", function (d) { return color(d.key) })
 
-        // Add one dot in the legend for each name.
-        svg.selectAll("legendLabels")
-            .data(sumstat)
-            .enter()
-            .append("text")
-            .attr("x", width + 20 + size * 1.4)
-            .attr("y", function (d, i) { return 100 + i * (size + 15) + (size) }) // 100 is where the first dot appears. 25 is the distance between dots
-            .text(function (d) { return d.key })
-            .attr("class", "legendLabel");
+            // Add one dot in the legend for each name.
+            svg.selectAll("legendLabels")
+                .data(sumstat)
+                .enter()
+                .append("text")
+                .attr("x", width + 20 + size * 1.4)
+                .attr("y", function (d, i) { return 100 + i * (size + 15) + (size) }) // 100 is where the first dot appears. 25 is the distance between dots
+                .text(function (d) { return d.key })
+                .attr("class", "legendLabel");
+        }
+        else if (this.props.legendLocation === "bottom") {
+            svg.selectAll("legendDots")
+                .data(sumstat)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d, i) { return i < 5 ? 0 : 150})
+                .attr("cy", function (d, i) { return height + margin.top + margin.bottom + (i < 5 ? i : i - 5) * (size + 15) })
+                .attr("r", size)
+                .style("fill", function (d) { return color(d.key) })
 
-        var tipBox = svg.append('rect')
+            // Add one dot in the legend for each name.
+            svg.selectAll("legendLabels")
+                .data(sumstat)
+                .enter()
+                .append("text")
+                .attr("x", function (d, i) { return (i < 5 ? 0 : 150) + size * 1.4} )
+                .attr("y", function (d, i) { return height + margin.top + margin.bottom + (i < 5 ? i : i - 5) * (size + 15) + (size) })
+                .text(function (d) { return d.key })
+                .attr("class", "legendLabel");
+        }
+        
+
+        var tooltipBox = svg.append('rect')
             .attr('width', width)
             .attr('height', height)
             .attr('opacity', 0)
@@ -173,7 +197,7 @@ class D3MultiPlot extends Component {
         }
 
         function drawTooltip() {
-            const date = new Date(Math.floor((x.invert(d3.mouse(tipBox.node())[0]))));
+            const date = new Date(Math.floor((x.invert(d3.mouse(tooltipBox.node())[0]))));
             date.setHours(0);
             date.setMinutes(0);
             date.setSeconds(0);
@@ -189,14 +213,15 @@ class D3MultiPlot extends Component {
                 .attr('y1', 0)
                 .attr('y2', height)
                 .style("stroke-width", 2);
-                
-            tooltip.html(dateString)
+
+            tooltip.html(`<div class="tooltipTitle">${dateString}</div>`)
                 .style('display', 'block')
                 .attr('left', d3.event.pageX + 20)
                 .attr('top', d3.event.pageY - 20)
                 .selectAll()
                 .data(sumstat).enter()
                 .append('div')
+                .attr("class", "tooltipEntry")
                 .style('color', d => d.color)
                 .html(d => d.key + ': ' + addThousandSeparators(d.values.filter(value => value.x === dateString)[0].y, true));
         }
@@ -218,7 +243,7 @@ class D3MultiPlot extends Component {
     render() {
         return (
             <div>
-                <div id='tooltip' style={{ position: "absolute", left: "400px", display: "none", backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "5px", boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)" }}></div>
+                <div id='tooltip' style={{ position: "absolute", left: "100px", display: "none", backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "5px", boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)" }}></div>
                 <div id={this.props.id} ref={this.chartRef}></div>
             </div>
         );
