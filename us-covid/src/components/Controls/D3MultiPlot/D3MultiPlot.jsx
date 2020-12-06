@@ -27,13 +27,13 @@ class D3MultiPlot extends Component {
 
     drawChart() {
         // set the dimensions and margins of the graph
-        var legendWidth = this.props.legendLocation === "side" ? 200 : 0;
-        var legendHeight = this.props.legendLocation === "bottom" ? 200 : 0;
+        var legendWidth = this.props.legendLocation === "side" ? 150 : 0;
+        var legendHeight = this.props.legendLocation === "bottom" ? 120 : 0;
         var margin = { top: 24, right: 24, bottom: 56, left: 50 },
             width = this.props.width - margin.left - margin.right - legendWidth,
             height = this.props.height - margin.top - margin.bottom;
 
-        const { data }= this.props;
+        const { data, fixTooltip }= this.props;
 
 
         d3.select(`#${this.props.id} > svg`).remove()
@@ -123,8 +123,7 @@ class D3MultiPlot extends Component {
             })
 
         var size = 5
-
-        const tooltip = d3.select('#tooltip');
+        const tooltip = d3.select(`#tooltip_${this.props.id}`);
         const tooltipLine = svg.append('line');
         if(this.props.legendLocation === "side") {
             svg.selectAll("legendDots")
@@ -132,7 +131,7 @@ class D3MultiPlot extends Component {
                 .enter()
                 .append("circle")
                 .attr("cx", width + 20)
-                .attr("cy", function (d, i) { return 100 + i * (size + 15) }) // 100 is where the first dot appears. 25 is the distance between dots
+                .attr("cy", function (d, i) { return 24 + i * (size + 15) })
                 .attr("r", size)
                 .style("fill", function (d) { return color(d.key) })
 
@@ -140,10 +139,13 @@ class D3MultiPlot extends Component {
             svg.selectAll("legendLabels")
                 .data(sumstat)
                 .enter()
-                .append("text")
+                .append("foreignObject")
                 .attr("x", width + 20 + size * 1.4)
-                .attr("y", function (d, i) { return 100 + i * (size + 15) + (size) }) // 100 is where the first dot appears. 25 is the distance between dots
-                .text(function (d) { return d.key })
+                .attr("y", function (d, i) { return 16 + i * (size + 15) })
+                .attr("height", "24px")
+                .attr("width", "148px")
+                .append("xhtml:div")
+                .html(d => d.key)
                 .attr("class", "legendLabel");
         }
         else if (this.props.legendLocation === "bottom") {
@@ -151,7 +153,7 @@ class D3MultiPlot extends Component {
                 .data(sumstat)
                 .enter()
                 .append("circle")
-                .attr("cx", function (d, i) { return i < 5 ? 0 : 150})
+                .attr("cx", function (d, i) { return i < 5 ? -20 : 130})
                 .attr("cy", function (d, i) { return height + margin.top + margin.bottom + (i < 5 ? i : i - 5) * (size + 15) })
                 .attr("r", size)
                 .style("fill", function (d) { return color(d.key) })
@@ -160,10 +162,13 @@ class D3MultiPlot extends Component {
             svg.selectAll("legendLabels")
                 .data(sumstat)
                 .enter()
-                .append("text")
-                .attr("x", function (d, i) { return (i < 5 ? 0 : 150) + size * 1.4} )
-                .attr("y", function (d, i) { return height + margin.top + margin.bottom + (i < 5 ? i : i - 5) * (size + 15) + (size) })
-                .text(function (d) { return d.key })
+                .append("foreignObject")
+                .attr("x", function (d, i) { return (i < 5 ? -20 : 130) + size * 1.4} )
+                .attr("y", function (d, i) { return height + margin.top + margin.bottom + (i < 5 ? i : i - 5) * (size + 15) - 8 })
+                .attr("height", "24px")
+                .attr("width", "134px")
+                .append("xhtml:div")
+                .html(d => d.key)
                 .attr("class", "legendLabel");
         }
         
@@ -185,7 +190,7 @@ class D3MultiPlot extends Component {
                 return `${((Math.round(value / 1000)) / 1000).toFixed(2)} M`;
             }
             else if(formatMagnitude && Math.abs(Number(value)) >= 1.0e+3) {
-                return `${(Math.round(value / 1.0e+3))}k`;
+                return `${(Math.round(value) / 1.0e+3).toFixed(2)}k`;
             }
             else if(Math.abs(Number(value)) < 1000) {
                 return Math.round((value + Number.EPSILON) * 100) / 100;
@@ -201,11 +206,7 @@ class D3MultiPlot extends Component {
             date.setHours(0);
             date.setMinutes(0);
             date.setSeconds(0);
-            const dateString = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear().toString().substr(2, 2)}`
-
-            // sumstat.sort((a, b) => {
-            //   return b.history.find(h => h.date == date).population - a.history.find(h => h.date == date).population;
-            // })  
+            const dateString = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear().toString().substr(2, 2)}`;
 
             tooltipLine.attr('stroke', '#999999')
                 .attr('x1', x(date))
@@ -216,8 +217,8 @@ class D3MultiPlot extends Component {
 
             tooltip.html(`<div class="tooltipTitle">${dateString}</div>`)
                 .style('display', 'block')
-                .attr('left', d3.event.pageX + 20)
-                .attr('top', d3.event.pageY - 20)
+                .style('left', (fixTooltip) ? "32px" : `${d3.event.pageX + 20}px`)
+                .style('top', `${d3.event.pageY - 20}px`)
                 .selectAll()
                 .data(sumstat).enter()
                 .append('div')
@@ -243,7 +244,7 @@ class D3MultiPlot extends Component {
     render() {
         return (
             <div>
-                <div id='tooltip' style={{ position: "absolute", left: "100px", display: "none", backgroundColor: "rgba(255, 255, 255, 0.8)", padding: "5px", boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)" }}></div>
+                <div id={`tooltip_${this.props.id}`} style={{ position: "absolute", display: "none", backgroundColor: "rgba(255, 255, 255, 0.9)", padding: "5px", boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)" }}></div>
                 <div id={this.props.id} ref={this.chartRef}></div>
             </div>
         );

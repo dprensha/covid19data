@@ -59,6 +59,12 @@ class Navigation extends PureComponent {
                         </ListItemIcon>
                         <ListItemText primary="Map View" />
                     </ListItem>
+                    <ListItem button onClick={() => this.props.handleNavigate("/Compare")}>
+                        <ListItemIcon>
+                            <CompareIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Graph Comparison Tool" />
+                    </ListItem>
                     <ListItem button onClick={this.handleGraphViewClick}>
                         <ListItemIcon>
                             <ShowChartIcon />
@@ -176,12 +182,6 @@ class Navigation extends PureComponent {
                             </ListItem>
                         </List>
                     </Collapse>
-                    <ListItem button onClick={() => this.props.handleNavigate("/Compare")}>
-                        <ListItemIcon>
-                            <CompareIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Graph Comparison Tool" />
-                    </ListItem>
                 </List>
             </Drawer>
         )

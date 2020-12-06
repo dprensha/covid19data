@@ -66,13 +66,13 @@ class GraphCompare extends PureComponent {
         }
 
         //if we already have the data we need, componentDidUpdate will not fire, so set the slider here also
-        if(this.props.usCases.children && this.props.globalCases.children) {
+        if (this.props.usCases.children && this.props.globalCases.children) {
             this.buildOptionsList();
         }
     }
 
     componentDidUpdate(prevProps) {
-        if(Object.keys(this.props.globalCases).length !== 0 && Object.keys(this.props.usCases).length !== 0 && (prevProps.globalCases.length === 0 || prevProps.usCases.length === 0)) {
+        if (Object.keys(this.props.globalCases).length !== 0 && Object.keys(this.props.usCases).length !== 0 && (prevProps.globalCases.length === 0 || prevProps.usCases.length === 0)) {
             this.buildOptionsList();
         }
     }
@@ -96,22 +96,22 @@ class GraphCompare extends PureComponent {
         });
 
         objects = objects.concat(countryGroups);
-        
+
         Object.keys(this.props.usCases.children).forEach(state => {
             const temp = JSON.parse(JSON.stringify(this.props.usCases.children[state], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
             temp.parentName = this.props.usCases.children[state].title;
             objects.push(temp);
 
-            if(this.props.usCases.children[state].children) {
+            if (this.props.usCases.children[state].children) {
                 Object.keys(this.props.usCases.children[state].children).forEach(child => {
-                    const q = JSON.parse(JSON.stringify(this.props.usCases.children[state].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths'] ));
+                    const q = JSON.parse(JSON.stringify(this.props.usCases.children[state].children[child], ['title', 'population', 'x', 'yActive', 'yActivePerCapita', 'yConfirmed', 'yRecovered', 'yDeaths']));
                     q.title = `${this.props.usCases.children[state].children[child].title}, ${this.props.usCases.children[state].title}`
                     q.parentName = this.props.usCases.children[state].title;
                     objects.push(q)
                 });
             }
         });
-        
+
 
         this.setState({
             hasCaseData: true,
@@ -203,10 +203,11 @@ class GraphCompare extends PureComponent {
     }
 
     handleCountryChange(event, data) {
-        this.setState({
-            selectedCountries: data
-
-        })
+        if(data.length <= 10) {
+            this.setState({
+                selectedCountries: data
+            });
+        }
     }
 
     navigate(route) {
@@ -221,39 +222,54 @@ class GraphCompare extends PureComponent {
         }
         else {
             var chartData = [];
+            //let label = "Active Cases Per 1,000";
 
             for (var i = 0; i < this.state.selectedCountries.length; i++) {
                 for (var j = 0; j < this.state.selectedCountries[i].x.length; j++) {
-                    let yValue = this.state.selectedCountries[i].yActive[j] * 1000;
-                    switch (this.state.visualizationMode) {
-                        case "activePerCapita":
-                            yValue = this.state.selectedCountries[i].yActivePerCapita[j] * 1000;
-                            break;
-                        case "active":
-                            yValue = this.state.selectedCountries[i].yActive[j];
-                            break;
-                        case "totalPerCapita":
-                            yValue = this.state.selectedCountries[i].yConfirmed[j] / parseInt(this.state.selectedCountries[i].population, 10) * 1000
-                            break;
-                        case "total":
-                            yValue = this.state.selectedCountries[i].yConfirmed[j];
-                            break;
-                        case "deathsPerCapita":
-                            yValue = this.state.selectedCountries[i].yDeaths[j] / parseInt(this.state.selectedCountries[i].population, 10) * 100000;
-                            break;
-                        case "deaths":
-                            yValue = this.state.selectedCountries[i].yDeaths[j];
-                            break;
-                        case "mortalityRate":
-                            yValue = this.state.selectedCountries[i].yDeaths[j] / (this.state.selectedCountries[i].yConfirmed[j] === 0 ? 1 : this.state.selectedCountries[i].yConfirmed[j]);
-                            break;
-                        default: break;
-                    }
+                    // let yValue = this.state.selectedCountries[i].yActive[j] * 1000;
+                    // switch (this.state.visualizationMode) {
+                    //     case "activePerCapita":
+                    //         yValue = this.state.selectedCountries[i].yActivePerCapita[j] * 1000;
+                    //         label = "Active Cases Per 1,000";
+                    //         break;
+                    //     case "active":
+                    //         yValue = this.state.selectedCountries[i].yActive[j];
+                    //         label = "Active Cases";
+                    //         label = "Active Cases";
+                    //         break;
+                    //     case "totalPerCapita":
+                    //         yValue = this.state.selectedCountries[i].yConfirmed[j] / parseInt(this.state.selectedCountries[i].population, 10) * 1000
+                    //         label = "Total Cases Per 1,000";
+                    //         break;
+                    //     case "total":
+                    //         yValue = this.state.selectedCountries[i].yConfirmed[j];
+                    //         label = "Total Cases";
+                    //         break;
+                    //     case "deathsPerCapita":
+                    //         yValue = this.state.selectedCountries[i].yDeaths[j] / parseInt(this.state.selectedCountries[i].population, 10) * 100000;
+                    //         label = "Total Deaths Per 100,000"
+                    //         break;
+                    //     case "deaths":
+                    //         yValue = this.state.selectedCountries[i].yDeaths[j];
+                    //         label = "Total Deaths";
+                    //         break;
+                    //     case "mortalityRate":
+                    //         yValue = this.state.selectedCountries[i].yDeaths[j] / (this.state.selectedCountries[i].yConfirmed[j] === 0 ? 1 : this.state.selectedCountries[i].yConfirmed[j]);
+                    //         label = "Mortality Rate";
+                    //         break;
+                    //     default: break;
+                    // }
                     chartData.push({
                         title: this.state.selectedCountries[i].title,
                         x: this.state.selectedCountries[i].x[j],
-                        //y: this.state.selectedCountries[i].yActivePerCapita[j] * 1000
-                        y: yValue
+                        yActivePerCapita: this.state.selectedCountries[i].yActivePerCapita[j] * 1000,
+                        yActive: this.state.selectedCountries[i].yActive[j],
+                        yTotalPerCapita: this.state.selectedCountries[i].yConfirmed[j] / parseInt(this.state.selectedCountries[i].population, 10) * 1000,
+                        yTotal: this.state.selectedCountries[i].yConfirmed[j],
+                        yDeathsPerCapita: this.state.selectedCountries[i].yDeaths[j] / parseInt(this.state.selectedCountries[i].population, 10) * 100000,
+                        yDeaths: this.state.selectedCountries[i].yDeaths[j],
+                        yMortalityRate: this.state.selectedCountries[i].yDeaths[j] * 100 / (this.state.selectedCountries[i].yConfirmed[j] === 0 ? 1 : this.state.selectedCountries[i].yConfirmed[j])
+                        //y: yValue
                     })
                 }
             }
@@ -262,14 +278,94 @@ class GraphCompare extends PureComponent {
 
             if (this.state.selectedCountries.length > 0) {
                 multiPlotContent = (
-                    <D3MultiPlot
-                        id={"multiPlot"}
-                        data={chartData}
-                        tickInterval={2}
-                        height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 300 : 500}
-                        width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 1200}
-                        legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
-                    />
+                    <div>
+                        <div className={styles.plotContainer}>
+                            <div className={styles.plot}>
+                                <div className={styles.plotTitle}>{"Active Cases Per 1,000"}</div>
+                                <D3MultiPlot
+                                    id={"multiPlot"}
+                                    data={chartData.map(obj => { return { title: obj.title, x: obj.x, y: obj.yActivePerCapita }; })}
+                                    tickInterval={2}
+                                    height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 250 : 250}
+                                    width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 600}
+                                    legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
+                                    fixTooltip={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? true : false}
+                                />
+                            </div>
+                            <div className={styles.plot}>
+                                <div className={styles.plotTitle}>{"Active Cases"}</div>
+                                <D3MultiPlot
+                                    id={"multiPlot2"}
+                                    data={chartData.map(obj => { return { title: obj.title, x: obj.x, y: obj.yActive }; })}
+                                    tickInterval={2}
+                                    height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 250 : 250}
+                                    width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 600}
+                                    legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
+                                    fixTooltip={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? true : false}
+                                />
+                            </div>
+                            <div className={styles.plot}>
+                                <div className={styles.plotTitle}>{"Total Cases Per 1,000"}</div>
+                                <D3MultiPlot
+                                    id={"multiPlot3"}
+                                    data={chartData.map(obj => { return { title: obj.title, x: obj.x, y: obj.yTotalPerCapita }; })}
+                                    tickInterval={2}
+                                    height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 250 : 250}
+                                    width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 600}
+                                    legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
+                                    fixTooltip={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? true : false}
+                                />
+                            </div>
+                            <div className={styles.plot}>
+                                <div className={styles.plotTitle}>{"Total Cases"}</div>
+                                <D3MultiPlot
+                                    id={"multiPlot4"}
+                                    data={chartData.map(obj => { return { title: obj.title, x: obj.x, y: obj.yTotal }; })}
+                                    tickInterval={2}
+                                    height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 250 : 250}
+                                    width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 600}
+                                    legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
+                                    fixTooltip={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? true : false}
+                                />
+                            </div>
+                            <div className={styles.plot}>
+                                <div className={styles.plotTitle}>{"Deaths Per 100,000"}</div>
+                                <D3MultiPlot
+                                    id={"multiPlot5"}
+                                    data={chartData.map(obj => { return { title: obj.title, x: obj.x, y: obj.yDeathsPerCapita }; })}
+                                    tickInterval={2}
+                                    height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 250 : 250}
+                                    width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 600}
+                                    legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
+                                    fixTooltip={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? true : false}
+                                />
+                            </div>
+                            <div className={styles.plot}>
+                                <div className={styles.plotTitle}>{"Deaths"}</div>
+                                <D3MultiPlot
+                                    id={"multiPlot6"}
+                                    data={chartData.map(obj => { return { title: obj.title, x: obj.x, y: obj.yDeaths }; })}
+                                    tickInterval={2}
+                                    height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 250 : 250}
+                                    width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 600}
+                                    legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
+                                    fixTooltip={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? true : false}
+                                />
+                            </div>
+                            <div className={styles.plot}>
+                                <div className={styles.plotTitle}>{"Mortality Rate (%)"}</div>
+                                <D3MultiPlot
+                                    id={"multiPlot7"}
+                                    data={chartData.map(obj => { return { title: obj.title, x: obj.x, y: obj.yMortalityRate }; })}
+                                    tickInterval={2}
+                                    height={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 250 : 250}
+                                    width={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? 330 : 600}
+                                    legendLocation={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? "bottom" : "side"}
+                                    fixTooltip={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE) ? true : false}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 );
             }
 
@@ -277,89 +373,89 @@ class GraphCompare extends PureComponent {
             const LISTBOX_PADDING = 8; // px
 
             function renderRow(props) {
-            const { data, index, style } = props;
-            return React.cloneElement(data[index], {
-                style: {
-                ...style,
-                top: style.top + LISTBOX_PADDING,
-                },
-            });
+                const { data, index, style } = props;
+                return React.cloneElement(data[index], {
+                    style: {
+                        ...style,
+                        top: style.top + LISTBOX_PADDING,
+                    },
+                });
             }
 
             const OuterElementContext = React.createContext({});
 
             const OuterElementType = React.forwardRef((props, ref) => {
-            const outerProps = React.useContext(OuterElementContext);
-            return <div ref={ref} {...props} {...outerProps} />;
+                const outerProps = React.useContext(OuterElementContext);
+                return <div ref={ref} {...props} {...outerProps} />;
             });
 
             function useResetCache(data) {
                 const ref = React.useRef(null);
                 React.useEffect(() => {
-                  if (ref.current != null) {
-                    ref.current.resetAfterIndex(0, true);
-                  }
+                    if (ref.current != null) {
+                        ref.current.resetAfterIndex(0, true);
+                    }
                 }, [data]);
                 return ref;
-              }
-              
-              // Adapter for react-window
-              const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
+            }
+
+            // Adapter for react-window
+            const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
                 const { children, ...other } = props;
                 const itemData = React.Children.toArray(children);
                 const theme = useTheme();
                 const smUp = useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true });
                 const itemCount = itemData.length;
                 const itemSize = smUp ? 36 : 48;
-              
+
                 const getChildSize = (child) => {
-                  if (React.isValidElement(child) && child.type === ListSubheader) {
-                    return 48;
-                  }
-              
-                  return itemSize;
+                    if (React.isValidElement(child) && child.type === ListSubheader) {
+                        return 48;
+                    }
+
+                    return itemSize;
                 };
-              
+
                 const getHeight = () => {
-                  if (itemCount > 8) {
-                    return 8 * itemSize;
-                  }
-                  return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
+                    if (itemCount > 8) {
+                        return 8 * itemSize;
+                    }
+                    return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
                 };
-              
+
                 const gridRef = useResetCache(itemCount);
-              
+
                 return (
-                  <div ref={ref}>
-                    <OuterElementContext.Provider value={other}>
-                      <VariableSizeList
-                        itemData={itemData}
-                        height={getHeight() + 2 * LISTBOX_PADDING}
-                        width="100%"
-                        ref={gridRef}
-                        outerElementType={OuterElementType}
-                        innerElementType="ul"
-                        itemSize={(index) => getChildSize(itemData[index])}
-                        overscanCount={5}
-                        itemCount={itemCount}
-                      >
-                        {renderRow}
-                      </VariableSizeList>
-                    </OuterElementContext.Provider>
-                  </div>
+                    <div ref={ref}>
+                        <OuterElementContext.Provider value={other}>
+                            <VariableSizeList
+                                itemData={itemData}
+                                height={getHeight() + 2 * LISTBOX_PADDING}
+                                width="100%"
+                                ref={gridRef}
+                                outerElementType={OuterElementType}
+                                innerElementType="ul"
+                                itemSize={(index) => getChildSize(itemData[index])}
+                                overscanCount={5}
+                                itemCount={itemCount}
+                            >
+                                {renderRow}
+                            </VariableSizeList>
+                        </OuterElementContext.Provider>
+                    </div>
                 );
-              });
+            });
 
-              ListboxComponent.propTypes = {
+            ListboxComponent.propTypes = {
                 children: PropTypes.node,
-              };
+            };
 
-              const renderGroup = (params) => [
+            const renderGroup = (params) => [
                 <ListSubheader key={params.key} component="div">
-                  {params.group}
+                    {params.group}
                 </ListSubheader>,
                 params.children,
-              ];
+            ];
 
             return (
                 <div style={{ paddingTop: "72px" }}>
@@ -371,8 +467,7 @@ class GraphCompare extends PureComponent {
                             renderGroup={renderGroup}
                             multiple
                             options={this.state.options}
-                            value={this.props.selectedCountries}
-                            limitTags={3}
+                            value={this.state.selectedCountries}
                             getOptionLabel={(option) => option.title}
                             getOptionSelected={(option, value) => value.title === option.title}
                             groupBy={(option) => option.parentName}
@@ -381,7 +476,7 @@ class GraphCompare extends PureComponent {
                                 <TextField
                                     {...params}
                                     variant="standard"
-                                    label="Country, State, or County"
+                                    label="Select a Country, State, or County"
                                 />
                             )}
                         />
@@ -394,68 +489,68 @@ class GraphCompare extends PureComponent {
         }
     }
 
-    renderSettingsDrawer() {
-        return (
-            <Drawer anchor={'right'} open={this.state.isSettingsExpanded} onClose={this.handleCloseSettings}>
-                <div className={styles.graphModeContainer}>
-                    <Typography className={styles.graphModeTitle} variant="h6">Visualization Mode:</Typography>
-                    <FormControl component="fieldset">
-                        <RadioGroup
-                            row={false}
-                            name="position"
-                            defaultValue="top"
-                            onChange={this.handleVisualizationModeChange}
-                            value={this.state.visualizationMode}
-                            className={styles.graphModeButtonContainer}
-                        >
-                            <FormControlLabel
-                                value="activePerCapita"
-                                control={<Radio color="primary" />}
-                                label="Active Cases Per 1,000"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="active"
-                                control={<Radio color="primary" />}
-                                label="Active Cases"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="totalPerCapita"
-                                control={<Radio color="primary" />}
-                                label="Total Cases Per 1,000"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="total"
-                                control={<Radio color="primary" />}
-                                label="Total Cases"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="deathsPerCapita"
-                                control={<Radio color="primary" />}
-                                label="Total Deaths Per 100,000"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="deaths"
-                                control={<Radio color="primary" />}
-                                label="Total Deaths"
-                                labelPlacement="end"
-                            />
-                            <FormControlLabel
-                                value="mortalityRate"
-                                control={<Radio color="primary" />}
-                                label="Mortality Rate"
-                                labelPlacement="end"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                </div>
-            </Drawer>
-        )
-    }
+    // renderSettingsDrawer() {
+    //     return (
+    //         <Drawer anchor={'right'} open={this.state.isSettingsExpanded} onClose={this.handleCloseSettings}>
+    //             <div className={styles.graphModeContainer}>
+    //                 <Typography className={styles.graphModeTitle} variant="h6">Visualization Mode:</Typography>
+    //                 <FormControl component="fieldset">
+    //                     <RadioGroup
+    //                         row={false}
+    //                         name="position"
+    //                         defaultValue="top"
+    //                         onChange={this.handleVisualizationModeChange}
+    //                         value={this.state.visualizationMode}
+    //                         className={styles.graphModeButtonContainer}
+    //                     >
+    //                         <FormControlLabel
+    //                             value="activePerCapita"
+    //                             control={<Radio color="primary" />}
+    //                             label="Active Cases Per 1,000"
+    //                             labelPlacement="end"
+    //                         />
+    //                         <FormControlLabel
+    //                             value="active"
+    //                             control={<Radio color="primary" />}
+    //                             label="Active Cases"
+    //                             labelPlacement="end"
+    //                         />
+    //                         <FormControlLabel
+    //                             value="totalPerCapita"
+    //                             control={<Radio color="primary" />}
+    //                             label="Total Cases Per 1,000"
+    //                             labelPlacement="end"
+    //                         />
+    //                         <FormControlLabel
+    //                             value="total"
+    //                             control={<Radio color="primary" />}
+    //                             label="Total Cases"
+    //                             labelPlacement="end"
+    //                         />
+    //                         <FormControlLabel
+    //                             value="deathsPerCapita"
+    //                             control={<Radio color="primary" />}
+    //                             label="Total Deaths Per 100,000"
+    //                             labelPlacement="end"
+    //                         />
+    //                         <FormControlLabel
+    //                             value="deaths"
+    //                             control={<Radio color="primary" />}
+    //                             label="Total Deaths"
+    //                             labelPlacement="end"
+    //                         />
+    //                         <FormControlLabel
+    //                             value="mortalityRate"
+    //                             control={<Radio color="primary" />}
+    //                             label="Mortality Rate"
+    //                             labelPlacement="end"
+    //                         />
+    //                     </RadioGroup>
+    //                 </FormControl>
+    //             </div>
+    //         </Drawer>
+    //     )
+    // }
 
     render() {
         return (
@@ -481,12 +576,12 @@ class GraphCompare extends PureComponent {
                             </div>
                         </div>
                         <div>
-                            <IconButton
+                            {/* <IconButton
                                 style={{ color: "white" }}
                                 onClick={this.handleSettingsIconClick}
                             >
                                 <TuneIcon />
-                            </IconButton>
+                            </IconButton> */}
                             <IconButton
                                 style={{ color: "white" }}
                                 onClick={this.handleInfoIconClick}
@@ -503,7 +598,7 @@ class GraphCompare extends PureComponent {
                     handleClose={this.handleCloseMenu}
                 />
                 {this.renderComparisonContent()}
-                {this.renderSettingsDrawer()}
+                {/* {this.renderSettingsDrawer()} */}
             </div>
         )
     }
