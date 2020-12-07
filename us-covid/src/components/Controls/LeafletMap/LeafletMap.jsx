@@ -360,12 +360,12 @@ class LeafletMap extends PureComponent {
   }
 
   onViewportChanged = (event) => {
-    if (event.zoom >= 5) {
+    if (event.zoom >= 6) {
       this.setState({
         dataLabel: "County"
       })
     }
-    if (event.zoom === 4) {
+    if (event.zoom === 4 || event.zoom === 5) {
       this.setState({
         dataLabel: "StateProvince"
       })
