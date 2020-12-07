@@ -1,0 +1,29 @@
+.axis {
+    color: #EEE;
+    shape-rendering: crispedges;
+}
+
+.axis text{
+    color: #444;
+    font-size: 12px;
+    font-family: "Open Sans", verdana, arial, sans-serif;
+}
+
+.legendLabel {
+    font-size: 12px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.tooltipTitle {
+    color: #777;
+    font-size: 16px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.tooltipEntry {
+    font-size: 14px;
+    text-align: left;
+}

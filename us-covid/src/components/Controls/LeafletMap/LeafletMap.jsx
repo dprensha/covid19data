@@ -360,12 +360,12 @@ class LeafletMap extends PureComponent {
   }
 
   onViewportChanged = (event) => {
-    if (event.zoom >= 5) {
+    if (event.zoom >= 6) {
       this.setState({
         dataLabel: "County"
       })
     }
-    if (event.zoom === 4) {
+    if (event.zoom === 4 || event.zoom === 5) {
       this.setState({
         dataLabel: "StateProvince"
       })
@@ -419,7 +419,7 @@ class LeafletMap extends PureComponent {
         }
     
         else if (this.props.visualizationMode === "active") {
-          yValue = (this.state.selectedEntity.yActive * ascertainmentBias); //active
+          yValue = (this.state.selectedEntity.yActive.map(val => val * ascertainmentBias)); //active
         }
     
         else if (this.props.visualizationMode === "mortalityRate") {
@@ -431,7 +431,7 @@ class LeafletMap extends PureComponent {
         }
     
         else if (this.props.visualizationMode === "total") {
-          yValue = this.state.selectedEntity.yConfirmed * ascertainmentBias; //total
+          yValue = this.state.selectedEntity.yConfirmed.map(val => val * ascertainmentBias); //total
         }
     
         else if (this.props.visualizationMode === "deathsPerCapita") {
@@ -443,13 +443,13 @@ class LeafletMap extends PureComponent {
         }
     
         else if(this.props.visualizationMode === "activeChangeSevenDay") {
-          yValue = (this.state.selectedEntity.yActive); //active
-          title = "Active Cases";
+          yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000); //activePerCapita
+          title = "Active Cases Per 1,000";
         }
     
         else if (this.props.visualizationMode === "activeChangeFourteenDay") {
-          yValue = (this.state.selectedEntity.yActive); //active
-          title = "Active Cases";
+          yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000); //activePerCapita
+          title = "Active Cases Per 1,000";
         }
 
         tooltipContent = (

@@ -14,7 +14,7 @@ const Map = ({ displayDetails, width, height, entityName, long, lat, parentEntit
   let center = coordinates;
   let projection = "geoMercator";
   let zoom = 1;
-  let geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json";
+  let geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/WorldTopo.json";
   let strokeWidth = "1px";
   let mapConfig = null;
 
@@ -170,39 +170,39 @@ const fips = {
 
 const mapConfig = {
   "World": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/WorldTopo.json",
   },
   "Canada": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/CanadaTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/CanadaTopo.json",
     center: [-94.245, 57.728],
     zoom: 1.4
   },
   "Australia": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/AustraliaTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/AustraliaTopo.json",
     center: [136.423, -27.986],
     zoom: 1.9
   },
   "China": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/ChinaTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/ChinaTopo.json",
     center: [106.185, 38.147],
     zoom: 1.65
   },
   "United States": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/USTopo.json",
     center: [-96.949, 38.329],
     zoom: 2.4,
     coordinates: [0, 0],
     strokeWidth: "0.5px",
   },
   "AlaskaState": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/USTopo.json",
     center: [-155.949, 64.329],
     zoom: 1.5,
     coordinates: [0, 0],
     strokeWidth: "0.5px",
   },
   "HawaiiState": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/USTopo.json",
     center: [-158.949, 20.329],
     zoom: 9,
     coordinates: [0, 0],
@@ -263,49 +263,49 @@ const mapConfig = {
   "Puerto Rico": {center: [-66.6, 18.24], zoom: 50, strokeWidth: "0.01px"},
 
   "American Samoa": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/WorldTopo.json",
     center: [170.73, -14.31],
     zoom: 1,
     coordinates: [180, -14.31], //not completely accurate, but i want it to show to the right of Asia
     strokeWidth: "0.5px",
   },
   "Diamond Princess": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/WorldTopo.json",
     center: [139.648, 35.452],
     zoom: 2,
     coordinates: [139.648, 35.452],
     strokeWidth: "0.5px",
   },
   "Grand Princess": { 
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/USTopo.json",
     center: [-122.27, 37.79],
     zoom: 2,
     coordinates: [-122.27, 37.79],
     strokeWidth: "0.5px",
   },
   "Guam": { 
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/WorldTopo.json",
     center: [144.776, 13.456],
     zoom: 1,
     coordinates: [144.776, 13.456],
     strokeWidth: "1px",
   },
   "Northern Mariana Islands": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/WorldTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/WorldTopo.json",
     center: [145.677, 15.108],
     zoom: 1,
     coordinates: [145.677, 15.108],
     strokeWidth: "0.5px",
   },
   "Puerto Rico State": { 
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/USTopo.json",
     center: [-73.002, 22.329],
     zoom: 2,
     coordinates: [0, 0],
     strokeWidth: "0.5px",
   },
   "Virgin Islands": {
-    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/USTopo.json",
+    geoURL: "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/USTopo.json",
     center: [-73.002, 22.329],
     zoom: 2,
     coordinates: [-64.821, 18.335],
@@ -337,7 +337,7 @@ const getMapConfig = (parentEntityName, entityName, grandparentEntityName) => {
   if (grandparentEntityName === "United States") {
     let mc = mapConfig[parentEntityName];
     mc.strokeWidth = mc.strokeWidth ? mc.strokeWidth : "0.05px";
-    mc.geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/InfoMap/topoData/US_Counties.json";
+    mc.geoURL = "https://raw.githubusercontent.com/dprensha/covid19data/master/topoData/US_Counties.json";
     return mc;
   }
 

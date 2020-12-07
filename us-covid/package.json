@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.10.2",
+    "@material-ui/lab": "latest",
     "@material-ui/icons": "^3.0.2",
     "@material-ui/styles": "^3.0.0-alpha.10",
     "@testing-library/jest-dom": "^4.2.4",
@@ -27,6 +28,7 @@
     "react-router-redux": "^5.0.0-alpha.8",
     "react-scripts": "^3.4.3",
     "react-simple-maps": "2.1.2",
+    "react-window": "latest",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0"
   },

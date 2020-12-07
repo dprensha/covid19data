@@ -3,6 +3,7 @@ import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import { constants } from './Utilities';
 import PlotWrapper from './PlotWrapper/PlotWrapper';
 import MapViewer from './MapViewer/MapViewer';
+import GraphCompare from './GraphCompare';
 
 // The Main component renders one of the three provided
 // Routes (provided that one matches). Both the /roster
@@ -18,6 +19,7 @@ class Main extends Component {
     this.updateDisplayDetails = this.updateDisplayDetails.bind(this);
     this.getPlotWrapper = this.getPlotWrapper.bind(this);
     this.getMapViewer = this.getMapViewer.bind(this);
+    this.getGraphCompare = this.getGraphCompare.bind(this);
   }
 
   updateDisplayDetails(windowWidth, windowHeight) {
@@ -74,6 +76,10 @@ class Main extends Component {
     return <MapViewer {...props} displayDetails={this.displayDetails}/>
   }
 
+  getGraphCompare(props) {
+    return <GraphCompare {...props} displayDetails={this.displayDetails}/>
+  }
+
   render() {
     return (
       <main>
@@ -81,6 +87,7 @@ class Main extends Component {
           <Switch>
             <Redirect from='/' to='/Map' exact />
             <Route exact path='/Map' component={this.getMapViewer} />
+            <Route exact path='/Compare' component={this.getGraphCompare} />
             <Route exact path='/:mode?/:title?' component={this.getPlotWrapper} />
           </Switch>
         </BrowserRouter>
