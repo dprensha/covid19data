@@ -200,9 +200,9 @@ class EntityPlotter extends PureComponent {
                     />
                 );
 
-                if(this.props.entity.children[childKey].title !== "Unassigned" && this.props.entity.children[childKey].title !== "Out of TN") {
-                    //console.log(/*this.props.entity.children[childKey].title,*/ this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]);
-                }
+                // if(this.props.entity.children[childKey].title !== "Unassigned" && this.props.entity.children[childKey].title !== "Out of TN") {
+                //     //console.log(/*this.props.entity.children[childKey].title,*/ this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]);
+                // }
                 }
                 let hotSpotsValue = null;
                 switch (this.state.comparisonKPI) {
@@ -496,7 +496,64 @@ class EntityPlotter extends PureComponent {
                         keyValueFormat={"Decimal"}
                         baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
                         baselineValue={this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1 - parseInt(this.state.kpiBaselineDays)] / parseInt(baselineStats.peopleTested) * 100}
-                        baselineValueFormat={"Percentage"}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
+            );
+        }
+
+        let totalVaccinesAllocatedKPIContent = null;
+        if (this.props.entity.vaccinationData) {
+            totalVaccinesAllocatedKPIContent = (
+                <div className={kpiClasses}>
+                    <KPI
+                        keyValueTitle={"Vaccines Allocated"}
+                        keyValue={this.props.entity.vaccinationData.allocatedTotal[this.props.entity.vaccinationData.allocatedTotal.length - 1]}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={this.props.entity.vaccinationData.allocatedTotal[this.props.entity.vaccinationData.allocatedTotal.length - 1 - parseInt(this.state.kpiBaselineDays)]}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
+            );
+        }
+
+        let totalVaccinesAdministeredKPIContent = null;
+        if (this.props.entity.vaccinationData) {
+            totalVaccinesAdministeredKPIContent = (
+                <div className={kpiClasses}>
+                    <KPI
+                        keyValueTitle={"Vaccines Administered"}
+                        keyValue={this.props.entity.vaccinationData.administeredTotal[this.props.entity.vaccinationData.administeredTotal.length - 1]}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={this.props.entity.vaccinationData.administeredTotal[this.props.entity.vaccinationData.administeredTotal.length - 1 - parseInt(this.state.kpiBaselineDays)]}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
+            );
+        }
+
+        let totalPeopleVaccinatedAllDosesKPIContent = null;
+        if (this.props.entity.vaccinationData) {
+            totalPeopleVaccinatedAllDosesKPIContent = (
+                <div className={kpiClasses}>
+                    <KPI
+                        keyValueTitle={"Vaccination Regimens Completed"}
+                        keyValue={this.props.entity.vaccinationData.totalPeopleVaccinatedAllDoses[this.props.entity.vaccinationData.totalPeopleVaccinatedAllDoses.length - 1]}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={this.props.entity.vaccinationData.totalPeopleVaccinatedAllDoses[this.props.entity.vaccinationData.totalPeopleVaccinatedAllDoses.length - 1 - parseInt(this.state.kpiBaselineDays)]}
+                        baselineValueFormat={"Decimal"}
                         colorCodeBaselineValue={false}
                         displayDetails={this.props.displayDetails}
                         size={"large"}
@@ -769,6 +826,9 @@ class EntityPlotter extends PureComponent {
                     {peopleTestedKPIContent}
                     {newCasesPerHundredTestedKPIContent}
                     {testingRateKPIContent}
+                    {totalVaccinesAllocatedKPIContent}
+                    {totalVaccinesAdministeredKPIContent}
+                    {totalPeopleVaccinatedAllDosesKPIContent}
                 </div>
                 {/* {disclaimerArea} */}
                 <div className={styles.hotSpotContainer}>

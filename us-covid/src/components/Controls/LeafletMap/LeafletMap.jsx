@@ -180,6 +180,11 @@ class LeafletMap extends PureComponent {
       const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 14] : 1;
       visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
     }
+    
+    else if (this.props.visualizationMode === "vaccinationPct") {
+      const index = currentEntity && currentEntity.vaccinationData ? currentEntity.parent.vaccinationX.indexOf(currentEntity.x[this.props.dateIndex]): 0;
+      visualizationMetric = currentEntity && currentEntity.vaccinationData ? currentEntity.vaccinationData.totalPeopleVaccinatedOneDose[index] / currentEntity.population * 100 : 0;
+    }
 
 
     //const activePerCapita = currentEntity && currentEntity.yConfirmed ? currentEntity.yConfirmed[currentEntity.yConfirmed.length - 1] / parseInt(currentEntity.population) * 1000 : 0;
@@ -412,6 +417,7 @@ class LeafletMap extends PureComponent {
       
       if(this.props.tooltipMode === "graph" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
         let yValue = this.state.selectedEntity.yActive;
+        let xValue = this.state.selectedEntity.x;
         let title = this.props.visualizationTitle;
 
         if (this.props.visualizationMode === "activePerCapita") {
@@ -424,6 +430,11 @@ class LeafletMap extends PureComponent {
     
         else if (this.props.visualizationMode === "mortalityRate") {
           yValue = this.state.selectedEntity.yDeaths.map((val, index) => val/(this.state.selectedEntity.yConfirmed[index] || 1)); //deaths
+        }
+
+        else if (this.props.visualizationMode === "vaccinationPct" && this.state.selectedEntity.vaccinationData) {
+          yValue = this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedOneDose.map(val => val / this.state.selectedEntity.population * 100);
+          xValue = this.state.selectedEntity.parent.vaccinationX;
         }
     
         else if (this.props.visualizationMode === "totalPerCapita") {
@@ -461,7 +472,7 @@ class LeafletMap extends PureComponent {
             <D3Plot
                 id={this.state.selectedEntity.navigableTitle}
                 data={this.state.selectedEntity}
-                x={this.state.selectedEntity.x}
+                x={xValue}
                 y={yValue}
                 width={200}
                 height={100}

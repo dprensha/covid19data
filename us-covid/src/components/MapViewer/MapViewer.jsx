@@ -223,6 +223,12 @@ class MapViewer extends Component {
                 scaleIncludesNegatives = true;
                 scaleIsExponential = false;
                 break;
+            case "vaccinationPct":
+                breakpoint = .1;
+                visualizationTitle = "% of Population Vaccinated";
+                scaleIncludesNegatives = false;
+                scaleIsExponential = false;
+                break;
             default: break;
         }
 
@@ -462,7 +468,7 @@ class MapViewer extends Component {
                     //     breakpointColumns.push(<td key={i} className={styles.legendLabel}>{Math.round((this.state.breakpoint * i + Number.EPSILON) * 10) / 10}{this.state.visualizationMode === "mortalityRate" ? "%" : ""}{i === 18 ? "+" : ""}</td>)
                     // }
                     const label = (num) => {
-                        return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" ? "%" : ""}`
+                        return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" || this.state.visualizationMode === "vaccinationPct" ? "%" : ""}`
                     }
 
                     breakpointColumns = (
@@ -600,6 +606,12 @@ class MapViewer extends Component {
                                 value="mortalityRate"
                                 control={<Radio color="primary" />}
                                 label="Mortality Rate"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="vaccinationPct"
+                                control={<Radio color="primary" />}
+                                label="US Vaccination Pct"
                                 labelPlacement="end"
                             />
                         </RadioGroup>
