@@ -128,6 +128,15 @@ class KPI extends PureComponent {
             );
         }
 
+        let ratioContent = null;
+        if(this.props.ratio) {
+            ratioContent = (
+                <div className={kpiValueStyles}>
+                    {`1 in ${this.addThousandSeparators(this.props.ratio, true)}`}
+                </div>
+            );
+        }
+
         return (
             <div className={styles.kpi}>
                 <div className={kpiTitleStyles}>
@@ -136,6 +145,7 @@ class KPI extends PureComponent {
                 <div className={kpiValueStyles}>
                     {displayKeyValue}
                 </div>
+                {ratioContent}
                 {baselineValueContent}
             </div>
         );

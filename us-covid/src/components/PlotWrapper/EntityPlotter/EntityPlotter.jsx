@@ -208,6 +208,7 @@ class EntityPlotter extends PureComponent {
                 switch (this.state.comparisonKPI) {
                     case "activePerCapita":
                         hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
+                        //hotSpotsValue = Math.round(this.props.entity.children[childKey].population / this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1])
                         break;
                     case "active":
                         hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
@@ -219,7 +220,7 @@ class EntityPlotter extends PureComponent {
                         hotSpotsValue = isNaN(percentage) ? 0 : percentage;
                         break;
                     case "total":
-                        hotSpotsValue = this.props.entity.children[childKey].yConfirmed[this.props.entity.children[childKey].yConfirmed.length - 1];
+                        //hotSpotsValue = Math.round(this.props.entity.children[childKey].population / this.props.entity.children[childKey].yConfirmed[this.props.entity.children[childKey].yConfirmed.length - 1]);
                         break;
                     case "percentOfParent":
                         hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1] / this.props.entity.yActive[this.props.entity.yActive.length - 1] * 100;
@@ -410,24 +411,24 @@ class EntityPlotter extends PureComponent {
             }
         }
 
-        let percentageParentCasesKPIContent = null;
-        if (this.props.entity.parent) {
-            percentageParentCasesKPIContent = (
-                <div className={kpiClasses}>
-                    <KPI
-                        keyValueTitle={`% of ${this.props.entity.parent.title} Active Cases`}
-                        keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1] / this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1] * 100}
-                        keyValueFormat={"Percentage"}
-                        baselineValueTitle={null}
-                        baselineValue={null}
-                        baselineValueFormat={"Percentage"}
-                        colorCodeBaselineValue={false}
-                        displayDetails={this.props.displayDetails}
-                        size={"large"}
-                    />
-                </div>
-            );
-        }
+        // let percentageParentCasesKPIContent = null;
+        // if (this.props.entity.parent) {
+        //     percentageParentCasesKPIContent = (
+        //         <div className={kpiClasses}>
+        //             <KPI
+        //                 keyValueTitle={`% of ${this.props.entity.parent.title} Active Cases`}
+        //                 keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1] / this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1] * 100}
+        //                 keyValueFormat={"Percentage"}
+        //                 baselineValueTitle={null}
+        //                 baselineValue={null}
+        //                 baselineValueFormat={"Percentage"}
+        //                 colorCodeBaselineValue={false}
+        //                 displayDetails={this.props.displayDetails}
+        //                 size={"large"}
+        //             />
+        //         </div>
+        //     );
+        // }
 
         // let deathsKPIContent = null;
         // if (this.props.entity.stats) {
@@ -448,43 +449,43 @@ class EntityPlotter extends PureComponent {
         //     );
         // }
 
-        let peopleTestedKPIContent = null;
-        if (this.props.entity.stats) {
-            peopleTestedKPIContent = (
-                <div className={kpiClasses}>
-                    <KPI
-                        keyValueTitle={"Tests"}
-                        keyValue={parseInt(this.props.entity.stats.current.peopleTested)}
-                        keyValueFormat={"Decimal"}
-                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseInt(baselineStats.peopleTested)}
-                        baselineValueFormat={"Decimal"}
-                        colorCodeBaselineValue={false}
-                        displayDetails={this.props.displayDetails}
-                        size={"large"}
-                    />
-                </div>
-            );
-        }
+        // let peopleTestedKPIContent = null;
+        // if (this.props.entity.stats) {
+        //     peopleTestedKPIContent = (
+        //         <div className={kpiClasses}>
+        //             <KPI
+        //                 keyValueTitle={"Tests"}
+        //                 keyValue={parseInt(this.props.entity.stats.current.peopleTested)}
+        //                 keyValueFormat={"Decimal"}
+        //                 baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+        //                 baselineValue={parseInt(baselineStats.peopleTested)}
+        //                 baselineValueFormat={"Decimal"}
+        //                 colorCodeBaselineValue={false}
+        //                 displayDetails={this.props.displayDetails}
+        //                 size={"large"}
+        //             />
+        //         </div>
+        //     );
+        // }
 
-        let testingRateKPIContent = null;
-        if (this.props.entity.stats) {
-            testingRateKPIContent = (
-                <div className={kpiClasses}>
-                    <KPI
-                        keyValueTitle={"Tests per 100 People"}
-                        keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0) / 1000}
-                        keyValueFormat={"Decimal"}
-                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-                        baselineValue={parseFloat(baselineStats.testingRate).toFixed(0) / 1000}
-                        baselineValueFormat={"Percentage"}
-                        colorCodeBaselineValue={false}
-                        displayDetails={this.props.displayDetails}
-                        size={"large"}
-                    />
-                </div>
-            );
-        }
+        // let testingRateKPIContent = null;
+        // if (this.props.entity.stats) {
+        //     testingRateKPIContent = (
+        //         <div className={kpiClasses}>
+        //             <KPI
+        //                 keyValueTitle={"Tests per 100 People"}
+        //                 keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0) / 1000}
+        //                 keyValueFormat={"Decimal"}
+        //                 baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+        //                 baselineValue={parseFloat(baselineStats.testingRate).toFixed(0) / 1000}
+        //                 baselineValueFormat={"Percentage"}
+        //                 colorCodeBaselineValue={false}
+        //                 displayDetails={this.props.displayDetails}
+        //                 size={"large"}
+        //             />
+        //         </div>
+        //     );
+        // }
 
         let newCasesPerHundredTestedKPIContent = null;
         if (this.props.entity.stats) {
@@ -783,6 +784,7 @@ class EntityPlotter extends PureComponent {
                             colorCodeBaselineValue={true}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
+                            ratio={Math.round(this.props.entity.population / this.props.entity.yActive[this.props.entity.yActive.length - 1])}
                         />
                     </div>
                     <div className={kpiClasses}>
@@ -797,7 +799,20 @@ class EntityPlotter extends PureComponent {
                             size={"large"}
                         />
                     </div>
-                    {percentageParentCasesKPIContent}
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={constants.strings.TOTAL_CASES_PER_THOUSAND}
+                            keyValue={this.props.entity.yConfirmed[this.props.entity.yActive.length - 1] / this.props.entity.population * 1000}
+                            baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                            baselineValue={null}
+                            baselineValueFormat={"Percentage"}
+                            colorCodeBaselineValue={true}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                            ratio={Math.round(this.props.entity.population / this.props.entity.yConfirmed[this.props.entity.yConfirmed.length - 1])}
+                        />
+                    </div>
+                    {/* {percentageParentCasesKPIContent} */}
                     <div className={kpiClasses}>
                         <KPI
                             keyValueTitle={"Deaths"}
@@ -808,6 +823,19 @@ class EntityPlotter extends PureComponent {
                             colorCodeBaselineValue={false}
                             displayDetails={this.props.displayDetails}
                             size={"large"}
+                        />
+                    </div>
+                    <div className={kpiClasses}>
+                        <KPI
+                            keyValueTitle={"Deaths per 100,000"}
+                            keyValue={this.props.entity.yDeaths[this.props.entity.yDeaths.length - 1] / this.props.entity.population * 100000}
+                            baselineValueTitle={null}
+                            baselineValue={null}
+                            baselineValueFormat={"Decimal"}
+                            colorCodeBaselineValue={false}
+                            displayDetails={this.props.displayDetails}
+                            size={"large"}
+                            ratio={Math.round(this.props.entity.population / this.props.entity.yDeaths[this.props.entity.yConfirmed.length - 1])}
                         />
                     </div>
                     <div className={kpiClasses}>
@@ -823,9 +851,9 @@ class EntityPlotter extends PureComponent {
                             size={"large"}
                         />
                     </div>
-                    {peopleTestedKPIContent}
+                    {/* {peopleTestedKPIContent} */}
                     {newCasesPerHundredTestedKPIContent}
-                    {testingRateKPIContent}
+                    {/* {testingRateKPIContent} */}
                     {totalVaccinesAllocatedKPIContent}
                     {totalVaccinesAdministeredKPIContent}
                     {totalPeopleVaccinatedAllDosesKPIContent}

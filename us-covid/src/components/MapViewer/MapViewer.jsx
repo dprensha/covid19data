@@ -224,8 +224,8 @@ class MapViewer extends Component {
                 scaleIsExponential = false;
                 break;
             case "vaccinationPct":
-                breakpoint = .1;
-                visualizationTitle = "% of Population Vaccinated";
+                breakpoint = .2;
+                visualizationTitle = "% Vaccinated (1 Dose)";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = false;
                 break;
@@ -301,7 +301,7 @@ class MapViewer extends Component {
         }
 
         //if we already have the data we need, componentDidUpdate will not fire, so set the slider here also
-        if(this.props.usCases.children && this.props.globalCases.children) {
+        if (this.props.usCases.children && this.props.globalCases.children) {
             this.setState({
                 sliderValue: this.props.globalCases.x.length - 1
             })
@@ -436,13 +436,13 @@ class MapViewer extends Component {
                     const label = (value) => {
                         if (Math.abs(Number(value)) >= 1.0e+6) {
                             return `${((Math.round(value / 1000)) / 1000).toFixed(1)}M`;
-                          }
-                          else if(Math.abs(Number(value)) >= 1.0e+3) {
-                              return `${(Math.round(value / 1.0e+3))}k`;
-                          }
-                          else if (Math.abs(Number(value)) < 1000) {
+                        }
+                        else if (Math.abs(Number(value)) >= 1.0e+3) {
+                            return `${(Math.round(value / 1.0e+3))}k`;
+                        }
+                        else if (Math.abs(Number(value)) < 1000) {
                             return Math.round((value + Number.EPSILON) * 100) / 100;
-                          }
+                        }
                     }
 
                     breakpointColumns = (
@@ -505,24 +505,46 @@ class MapViewer extends Component {
                         </tr>
                     );
                 }
+
                 else {
-                    breakpointColors = (
-                        <tr>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .6)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .7)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .8)" }}></td>
-                            <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .9)" }}></td>
-                        </tr>
-                    );
+                    if (this.state.visualizationMode === "vaccinationPct") {
+                        breakpointColors = (
+                            <tr>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .25)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .3)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .35)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .4)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .45)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .5)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .55)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .6)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .65)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .7)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .75)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .8)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .85)" }}></td>
+                            </tr>
+                        )
+                    }
+                    else {
+                        breakpointColors = (
+                            <tr>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .1)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .3)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .5)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .7)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 255, .9)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .5)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .6)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .7)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(176, 0, 0, .8)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .6)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .7)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .8)" }}></td>
+                                <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 0, 0, .9)" }}></td>
+                            </tr>
+                        );
+                    }
                 }
 
                 return (
@@ -618,8 +640,8 @@ class MapViewer extends Component {
                     </FormControl>
                     <Divider />
                     <div>
-                    <Typography className={styles.graphModeTitle} variant="h6">Ascertainment Bias:</Typography>
-                    <div className={styles.graphModeSubTitle}>Accounts for unrepored cases. An ascertainment bias of 5 presumes that there are 5 times more cases than are being reported.</div>
+                        <Typography className={styles.graphModeTitle} variant="h6">Ascertainment Bias:</Typography>
+                        <div className={styles.graphModeSubTitle}>Accounts for unrepored cases. An ascertainment bias of 5 presumes that there are 5 times more cases than are being reported.</div>
                     </div>
                     <FormControl component="fieldset">
                         <RadioGroup
