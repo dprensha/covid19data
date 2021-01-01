@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PlotContainer from './PlotContainer/PlotContainer'
 import HotSpotGrid from './HotSpotGrid/HotSpotGrid';
+import DataTable from './DataTable';
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -862,11 +863,16 @@ class EntityPlotter extends PureComponent {
                 <div className={styles.hotSpotContainer}>
                     {hotSpotsKPIContent}
                 </div>
+                <div className={styles.dataGridContainer}>
+                    <DataTable 
+                        entity={this.props.entity}
+                    />
+                </div>
                 <Divider />
                 {searchFieldContent}
-                <div className={styles.childPlotContainer}>
+                {/* <div className={styles.childPlotContainer}>
                     {childPlots}
-                </div>
+                </div> */}
             </div>
         )
     }

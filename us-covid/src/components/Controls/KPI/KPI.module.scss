@@ -85,3 +85,17 @@
     text-align: center;
     margin-top: 8px;
 }
+
+.ratio {
+    font-size: 24px;
+    text-align: center;
+    color: black;
+
+    &.isMobile {
+        font-size: 20px;
+    }
+
+    &.isSmall {
+        font-size: 17px;
+    }
+}
