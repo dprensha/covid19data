@@ -185,7 +185,6 @@ class EntityPlotter extends PureComponent {
             const childKeys = Object.keys(this.props.entity.children).sort();
 
             childKeys.forEach(childKey => {
-                //if(this.state.filterText.length < 2 || ( this.state.filterText.length >= 2 && this.props.entity.children[childKey].title.toLowerCase().includes(this.state.filterText.toLowerCase()))) {
                 if(this.props.entity.children[childKey].title.toLowerCase().includes(this.state.filterTextDebounced.toLowerCase())){
                 childPlots.push(
                     <PlotContainer
@@ -198,10 +197,6 @@ class EntityPlotter extends PureComponent {
                         scaleMode={this.state.scaleMode}
                     />
                 );
-
-                // if(this.props.entity.children[childKey].title !== "Unassigned" && this.props.entity.children[childKey].title !== "Out of TN") {
-                //     //console.log(/*this.props.entity.children[childKey].title,*/ this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]);
-                // }
                 }
             });
         }
@@ -214,23 +209,6 @@ class EntityPlotter extends PureComponent {
         );
 
         let backButtonContent = null;
-        // if (this.props.entity.parent || this.props.entity.title === "United States") {
-        //     backButtonContent = (
-        //         <IconButton
-        //             style={{ color: "white" }}
-        //             onClick={() => { this.handlePlotClick(this.props.entity.parent ? this.props.entity.parent : "Global")}}
-        //         >
-        //             <ArrowBackIcon />
-        //         </IconButton>
-        //     )
-        // }
-        // else {
-        //     backButtonContent = (
-        //         <div style={{ paddingLeft: "12px" }}>
-
-        //         </div>
-        //     )
-        // }
         if (this.props.entity.title === "World" || (this.props.entity.parent && this.props.entity.parent.title === "World") || this.props.entity.title === "United States") {
             backButtonContent = (
                 <IconButton
@@ -251,28 +229,6 @@ class EntityPlotter extends PureComponent {
                 </IconButton>
             )
         }
-
-
-        const listKPITitleClasses = classNames(
-            styles.listKPITitle,
-            {
-                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
-            }
-        );
-
-        const listKPISubtitleClasses = classNames(
-            styles.listKPISubtitle,
-            {
-                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
-            }
-        );
-
-        // const listKPIContainerClasses = classNames(
-        //     styles.listKPIContainer,
-        //     {
-        //         [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
-        //     }
-        // )
 
         const parentGraphContainerStyles = classNames(
             styles.parentGraphContainer,
@@ -331,82 +287,6 @@ class EntityPlotter extends PureComponent {
                     break;
             }
         }
-
-        // let percentageParentCasesKPIContent = null;
-        // if (this.props.entity.parent) {
-        //     percentageParentCasesKPIContent = (
-        //         <div className={kpiClasses}>
-        //             <KPI
-        //                 keyValueTitle={`% of ${this.props.entity.parent.title} Active Cases`}
-        //                 keyValue={this.props.entity.yActive[this.props.entity.yActive.length - 1] / this.props.entity.parent.yActive[this.props.entity.parent.yActive.length - 1] * 100}
-        //                 keyValueFormat={"Percentage"}
-        //                 baselineValueTitle={null}
-        //                 baselineValue={null}
-        //                 baselineValueFormat={"Percentage"}
-        //                 colorCodeBaselineValue={false}
-        //                 displayDetails={this.props.displayDetails}
-        //                 size={"large"}
-        //             />
-        //         </div>
-        //     );
-        // }
-
-        // let deathsKPIContent = null;
-        // if (this.props.entity.stats) {
-        //     deathsKPIContent = (
-        //         <div className={kpiClasses}>
-        //             <KPI
-        //                 keyValueTitle={"Deaths"}
-        //                 keyValue={parseInt(this.props.entity.stats.current.deaths)}
-        //                 keyValueFormat={"Decimal"}
-        //                 baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-        //                 baselineValue={parseInt(baselineStats.deaths)}
-        //                 baselineValueFormat={"Decimal"}
-        //                 colorCodeBaselineValue={false}
-        //                 displayDetails={this.props.displayDetails}
-        //                 size={"large"}
-        //             />
-        //         </div>
-        //     );
-        // }
-
-        // let peopleTestedKPIContent = null;
-        // if (this.props.entity.stats) {
-        //     peopleTestedKPIContent = (
-        //         <div className={kpiClasses}>
-        //             <KPI
-        //                 keyValueTitle={"Tests"}
-        //                 keyValue={parseInt(this.props.entity.stats.current.peopleTested)}
-        //                 keyValueFormat={"Decimal"}
-        //                 baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-        //                 baselineValue={parseInt(baselineStats.peopleTested)}
-        //                 baselineValueFormat={"Decimal"}
-        //                 colorCodeBaselineValue={false}
-        //                 displayDetails={this.props.displayDetails}
-        //                 size={"large"}
-        //             />
-        //         </div>
-        //     );
-        // }
-
-        // let testingRateKPIContent = null;
-        // if (this.props.entity.stats) {
-        //     testingRateKPIContent = (
-        //         <div className={kpiClasses}>
-        //             <KPI
-        //                 keyValueTitle={"Tests per 100 People"}
-        //                 keyValue={parseFloat(this.props.entity.stats.current.testingRate).toFixed(0) / 1000}
-        //                 keyValueFormat={"Decimal"}
-        //                 baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
-        //                 baselineValue={parseFloat(baselineStats.testingRate).toFixed(0) / 1000}
-        //                 baselineValueFormat={"Percentage"}
-        //                 colorCodeBaselineValue={false}
-        //                 displayDetails={this.props.displayDetails}
-        //                 size={"large"}
-        //             />
-        //         </div>
-        //     );
-        // }
 
         let newCasesPerHundredTestedKPIContent = null;
         if (this.props.entity.stats) {
@@ -483,17 +363,6 @@ class EntityPlotter extends PureComponent {
                 </div>
             );
         }
-
-        // let disclaimerArea = null;
-        // if (this.props.entity.stats && this.props.entity.stats.current.hospitalizedReporting) {
-        //     disclaimerArea = (
-        //         <div className={styles.disclaimerAreaContainer}>
-        //             <div>
-        //                 {`* ${this.props.entity.stats.current.hospitalizedReporting} States and Territories Reporting`}
-        //             </div>
-        //         </div>
-        //     )
-        // }
 
         let searchFieldContent = null;
         if(this.props.entity.children && Object.keys(this.props.entity.children).length > 1) {
@@ -582,12 +451,6 @@ class EntityPlotter extends PureComponent {
                                 value={this.state.kpiBaselineDays}
                                 className={styles.graphModeButtonContainer}
                             >
-                                {/* <FormControlLabel
-                                    value="1"
-                                    control={<Radio color="primary" />}
-                                    label="1 Day"
-                                    labelPlacement="end"
-                                /> */}
                                 <FormControlLabel
                                     value="7"
                                     control={<Radio color="primary" />}
@@ -603,33 +466,6 @@ class EntityPlotter extends PureComponent {
                             </RadioGroup>
                         </FormControl>
                     </div>
-                    {/* <div className={styles.graphModeContainer}>
-                        <Divider />
-                        <Typography className={styles.comparisonWindowTitle} variant="h6">Scale:</Typography>
-                        <FormControl component="fieldset">
-                            <RadioGroup
-                                row={false}
-                                name="position"
-                                defaultValue="top"
-                                onChange={this.handleScaleModeChange}
-                                value={this.state.scaleMode}
-                                className={styles.graphModeButtonContainer}
-                            >
-                                <FormControlLabel
-                                    value="linear"
-                                    control={<Radio color="primary" />}
-                                    label="Linear"
-                                    labelPlacement="end"
-                                />
-                                <FormControlLabel
-                                    value="logarithmic"
-                                    control={<Radio color="primary" />}
-                                    label="Logarithmic"
-                                    labelPlacement="end"
-                                />
-                            </RadioGroup>
-                        </FormControl>
-                    </div> */}
                 </Drawer>
                 <AppBar style={{ position: "fixed", paddingTop: "4px", paddingBottom: "4px" }}>
                     <Toolbar style={{ justifyContent: "space-between" }}
