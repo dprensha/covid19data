@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PlotContainer from './PlotContainer/PlotContainer'
-import HotSpotGrid from './HotSpotGrid/HotSpotGrid';
 import DataTable from './DataTable';
 import classNames from 'classnames';
 import { constants } from "../../Utilities"
@@ -181,7 +180,6 @@ class EntityPlotter extends PureComponent {
 
     render() {
         const childPlots = [];
-        const hotSpots = [];
 
         if (this.props.entity.children) {
             const childKeys = Object.keys(this.props.entity.children).sort();
@@ -205,63 +203,7 @@ class EntityPlotter extends PureComponent {
                 //     //console.log(/*this.props.entity.children[childKey].title,*/ this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1]);
                 // }
                 }
-                let hotSpotsValue = null;
-                switch (this.state.comparisonKPI) {
-                    case "activePerCapita":
-                        hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
-                        //hotSpotsValue = Math.round(this.props.entity.children[childKey].population / this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1])
-                        break;
-                    case "active":
-                        hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
-                        break;
-                    case "activePctChange":
-                        const keyValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1];
-                        const baselineValue = this.props.entity.children[childKey].yActive[this.props.entity.children[childKey].yActive.length - 1 - parseInt(this.state.kpiBaselineDays)];
-                        const percentage = (keyValue - baselineValue) / baselineValue * 100;
-                        hotSpotsValue = isNaN(percentage) ? 0 : percentage;
-                        break;
-                    case "total":
-                        //hotSpotsValue = Math.round(this.props.entity.children[childKey].population / this.props.entity.children[childKey].yConfirmed[this.props.entity.children[childKey].yConfirmed.length - 1]);
-                        break;
-                    case "percentOfParent":
-                        hotSpotsValue = this.props.entity.children[childKey].yActive[this.props.entity.yActive.length - 1] / this.props.entity.yActive[this.props.entity.yActive.length - 1] * 100;
-                        break;
-                    case "mortalityRate":
-                        hotSpotsValue = isNaN((this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100) ? 0 : (this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]) / (this.props.entity.children[childKey].yConfirmed[this.props.entity.yConfirmed.length - 1]) * 100;
-                        break;
-                    case "deaths":
-                        hotSpotsValue = parseInt(this.props.entity.children[childKey].yDeaths[this.props.entity.yDeaths.length - 1]);
-                        break;
-                    // case "hospitalizationRate":
-                    //     hotSpotsValue = isNaN(parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate)) ? 0 : parseFloat(this.props.entity.children[childKey].stats.current.hospitalizationRate);
-                    //     break;
-                    // case "hospitalizations":
-                    //     hotSpotsValue = isNaN(parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized)) ? 0 : parseInt(this.props.entity.children[childKey].stats.current.peopleHospitalized);
-                    //     break;
-                    case "tests":
-                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.peopleTested);
-                        break;
-                    case "newCasesPerHundredTests":
-                        hotSpotsValue = parseInt(this.props.entity.children[childKey].stats.current.confirmed) / parseInt(this.props.entity.children[childKey].stats.current.peopleTested) * 100;
-                        break;
-                    case "testsPerCapita":
-                        hotSpotsValue = parseFloat(this.props.entity.children[childKey].stats.current.testingRate).toFixed(0) / 1000;
-                        break;
-                    default:
-                        hotSpotsValue = this.props.entity.children[childKey].yActivePerCapita[this.props.entity.children[childKey].yActivePerCapita.length - 1] * 1000;
-                        break;
-                }
-
-                hotSpots.push({
-                    navigableTitle: this.props.entity.children[childKey].navigableTitle,
-                    key: childKey,
-                    value: hotSpotsValue
-                })
             });
-            hotSpots.sort((a, b) => { return b.value - a.value });
-            for (var i = 0; i < hotSpots.length; i++) {
-                hotSpots[i].rank = i + 1;
-            }
         }
 
         const kpiClasses = classNames(
@@ -331,28 +273,6 @@ class EntityPlotter extends PureComponent {
         //         [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)
         //     }
         // )
-
-        let hotSpotsKPIContent = null;
-        if (hotSpots.filter((hotSpot) => hotSpot.value > 0).length > 0) {
-            hotSpotsKPIContent = (
-                <div className={styles.listKPIContainer}>
-                    <div className={listKPITitleClasses}>
-                        Hot Spot Ranking
-                    </div>
-                    <div className={listKPISubtitleClasses}>
-                        Tap a row to scroll to graph
-                    </div>
-                    <HotSpotGrid
-                        data={hotSpots}
-                        handleCompareDropDownListChange={this.handleCompareDropDownListChange}
-                        comparisonKPI={this.state.comparisonKPI}
-                        childrenHaveStats={this.props.entity.title === "United States"}
-                        isMobile={this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE}
-                        comparisonWindow={this.state.kpiBaselineDays}
-                    />
-                </div>
-            );
-        }
 
         const parentGraphContainerStyles = classNames(
             styles.parentGraphContainer,
@@ -860,19 +780,17 @@ class EntityPlotter extends PureComponent {
                     {totalPeopleVaccinatedAllDosesKPIContent}
                 </div>
                 {/* {disclaimerArea} */}
-                <div className={styles.hotSpotContainer}>
-                    {hotSpotsKPIContent}
-                </div>
                 <div className={styles.dataGridContainer}>
                     <DataTable 
                         entity={this.props.entity}
+                        isMobile={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)}
                     />
                 </div>
                 <Divider />
                 {searchFieldContent}
-                {/* <div className={styles.childPlotContainer}>
+                <div className={styles.childPlotContainer}>
                     {childPlots}
-                </div> */}
+                </div>
             </div>
         )
     }

@@ -5,4 +5,18 @@
 
 .value {
     color: black;
+    cursor: pointer;
+}
+
+.value:focus {
+    outline: none !important;
+}
+
+.container {
+    width: 100%;
+}
+
+.container > div {
+    width: auto !important;
+    height: auto !important;
 }
