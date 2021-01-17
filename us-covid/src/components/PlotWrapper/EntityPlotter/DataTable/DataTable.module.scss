@@ -12,11 +12,20 @@
     outline: none !important;
 }
 
+.containerFullWidth {
+    width: 100% !important;
+}
+
 .container {
-    width: 100%;
+    width: 1410px !important;
 }
 
 .container > div {
+    width: auto !important;
+    height: auto !important;
+}
+
+.containerFullWidth > div {
     width: auto !important;
     height: auto !important;
 }

@@ -185,7 +185,10 @@ class EntityPlotter extends PureComponent {
             const childKeys = Object.keys(this.props.entity.children).sort();
 
             childKeys.forEach(childKey => {
-                if(this.props.entity.children[childKey].title.toLowerCase().includes(this.state.filterTextDebounced.toLowerCase())){
+                if(this.props.entity.children[childKey].title.toLowerCase().includes(this.state.filterTextDebounced.toLowerCase()) 
+                    && !this.props.entity.children[childKey].title.startsWith("Unassigned") 
+                    && !this.props.entity.children[childKey].title.startsWith("Out of") 
+                    ){
                 childPlots.push(
                     <PlotContainer
                         key={childKey}
@@ -620,6 +623,7 @@ class EntityPlotter extends PureComponent {
                     <DataTable 
                         entity={this.props.entity}
                         isMobile={(this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE)}
+                        title={this.props.entity.title}
                     />
                 </div>
                 <Divider />

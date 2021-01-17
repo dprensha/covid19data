@@ -484,7 +484,34 @@ export const actionCreators = {
                     totalPeopleVaccinatedAllDoses: data["people_total_2nd_dose"],
 
                 })
-            })
+            }),
+//             fetch("https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data", {
+//   "headers": {
+//     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+//     "accept-language": "en-US,en;q=0.9",
+//     "cache-control": "max-age=0",
+//     "sec-fetch-dest": "document",
+//     "sec-fetch-mode": "navigate",
+//     "sec-fetch-site": "none",
+//     "sec-fetch-user": "?1",
+//     "upgrade-insecure-requests": "1"
+//   },
+//   "referrerPolicy": "strict-origin-when-cross-origin",
+//   "body": null,
+//   "method": "GET",
+//   "mode": "cors",
+//   "credentials": "include"
+// });
+            // fetch("https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data", {
+            //     method: "GET",
+            //     mode: "no-cors",
+            //     credentials: "omit"
+            // })
+            // .then(response => response.json())
+            // // .then(data =>  {
+            // //     console.log(data);
+            // // })
+
         ])
             .then(() => {
                 var sortedKeys = Object.keys(allData.children).sort();
@@ -677,7 +704,15 @@ export const actionCreators = {
                 dispatch({
                     type: receiveUSCases, payload: allData
                 });
-            })
+            });
+
+            // d3.json("https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data", {
+            //     method: "GET",
+            //     //mode: "no-cors",
+            //     //credentials: "omit"
+            // })
+            // .then((response) => response => response.json())
+            // .then(data => console.log(data));
     }
 };
 

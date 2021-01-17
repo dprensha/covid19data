@@ -223,9 +223,21 @@ class MapViewer extends Component {
                 scaleIncludesNegatives = true;
                 scaleIsExponential = false;
                 break;
-            case "vaccinationPct":
-                breakpoint = .2;
+            case "vaccinationPctOne":
+                breakpoint = .4;
                 visualizationTitle = "% Vaccinated (1 Dose)";
+                scaleIncludesNegatives = false;
+                scaleIsExponential = false;
+                break;
+            case "vaccinationsAdministered":
+                breakpoint = 100000;
+                visualizationTitle = "Vaccines Administered";
+                scaleIncludesNegatives = false;
+                scaleIsExponential = false;
+                break;
+            case "vaccinationPctAll":
+                breakpoint = .2;
+                visualizationTitle = "% Vaccinated (All Doses)";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = false;
                 break;
@@ -463,12 +475,29 @@ class MapViewer extends Component {
                         </tr>
                     )
                 }
+
                 else {
                     // for (var i = 2; i <= 18; i += 2) {
                     //     breakpointColumns.push(<td key={i} className={styles.legendLabel}>{Math.round((this.state.breakpoint * i + Number.EPSILON) * 10) / 10}{this.state.visualizationMode === "mortalityRate" ? "%" : ""}{i === 18 ? "+" : ""}</td>)
                     // }
-                    const label = (num) => {
-                        return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" || this.state.visualizationMode === "vaccinationPct" ? "%" : ""}`
+                    let label = null;
+                    if (this.state.visualizationMode === "vaccinationsAdministered") {
+                        label = (value) => {
+                            if (Math.abs(Number(value*this.state.breakpoint)) >= 1.0e+6) {
+                                return `${((Math.round(value*this.state.breakpoint / 1000)) / 1000).toFixed(1)}M`;
+                            }
+                            else if (Math.abs(Number(value*this.state.breakpoint)) >= 1.0e+3) {
+                                return `${(Math.round(value*this.state.breakpoint / 1.0e+3))}k`;
+                            }
+                            else if (Math.abs(Number(value*this.state.breakpoint)) < 1000) {
+                                return Math.round((value*this.state.breakpoint + Number.EPSILON) * 100) / 100;
+                            }
+                        }
+                    }
+                    else {
+                        label = (num) => {
+                            return `${Math.round((this.state.breakpoint * num + Number.EPSILON) * 10) / 10}${this.state.visualizationMode === "mortalityRate" || this.state.visualizationMode === "vaccinationPctOne" || this.state.visualizationMode === "vaccinationPctAll" ? "%" : ""}`
+                        }
                     }
 
                     breakpointColumns = (
@@ -488,6 +517,7 @@ class MapViewer extends Component {
                             <td> </td>{/* <td className={styles.legendLabel}>{label(26)}</td> */}
                         </tr>
                     )
+
                 }
 
                 if (this.state.scaleIncludesNegatives) {
@@ -507,7 +537,7 @@ class MapViewer extends Component {
                 }
 
                 else {
-                    if (this.state.visualizationMode === "vaccinationPct") {
+                    if (this.state.visualizationMode === "vaccinationPctOne" || this.state.visualizationMode === "vaccinationPctAll" || this.state.visualizationMode === "vaccinationsAdministered") {
                         breakpointColors = (
                             <tr>
                                 <td className={styles.legendItem} style={{ backgroundColor: "rgba(0, 176, 0, .25)" }}></td>
@@ -630,10 +660,22 @@ class MapViewer extends Component {
                                 label="Mortality Rate"
                                 labelPlacement="end"
                             />
-                            <FormControlLabel
-                                value="vaccinationPct"
+                            {/* <FormControlLabel
+                                value="vaccinationPctOne"
                                 control={<Radio color="primary" />}
-                                label="US Vaccination Pct"
+                                label="US % Vaccinated (1 Dose)"
+                                labelPlacement="end"
+                            /> */}
+                            <FormControlLabel
+                                value="vaccinationsAdministered"
+                                control={<Radio color="primary" />}
+                                label="US Vaccines Administered"
+                                labelPlacement="end"
+                            />
+                            <FormControlLabel
+                                value="vaccinationPctAll"
+                                control={<Radio color="primary" />}
+                                label="US % Vaccinated (All Doses)"
                                 labelPlacement="end"
                             />
                         </RadioGroup>

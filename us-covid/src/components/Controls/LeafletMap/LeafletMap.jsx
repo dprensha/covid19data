@@ -181,9 +181,19 @@ class LeafletMap extends PureComponent {
       visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
     }
 
-    else if (this.props.visualizationMode === "vaccinationPct") {
+    else if (this.props.visualizationMode === "vaccinationPctOne") {
       const index = currentEntity && currentEntity.vaccinationData ? currentEntity.parent.vaccinationX.indexOf(currentEntity.x[this.props.dateIndex]) : 0;
       visualizationMetric = currentEntity && currentEntity.vaccinationData ? currentEntity.vaccinationData.totalPeopleVaccinatedOneDose[index] / currentEntity.population * 100 : 0;
+    }
+
+    else if (this.props.visualizationMode === "vaccinationsAdministered") {
+      const index = currentEntity && currentEntity.vaccinationData ? currentEntity.parent.vaccinationX.indexOf(currentEntity.x[this.props.dateIndex]) : 0;
+      visualizationMetric = currentEntity && currentEntity.vaccinationData ? currentEntity.vaccinationData.administeredTotal[index] : 0;
+    }
+
+    else if (this.props.visualizationMode === "vaccinationPctAll") {
+      const index = currentEntity && currentEntity.vaccinationData ? currentEntity.parent.vaccinationX.indexOf(currentEntity.x[this.props.dateIndex]) : 0;
+      visualizationMetric = currentEntity && currentEntity.vaccinationData ? currentEntity.vaccinationData.totalPeopleVaccinatedAllDoses[index] / currentEntity.population * 100 : 0;
     }
 
 
@@ -201,7 +211,7 @@ class LeafletMap extends PureComponent {
 
     else {
       if (this.props.scaleIncludesNegatives === false) {
-        if (this.props.visualizationMode === "vaccinationPct") {
+        if (this.props.visualizationMode === "vaccinationPctOne" || this.props.visualizationMode === "vaccinationPctAll" || this.props.visualizationMode === "vaccinationsAdministered") {
           if (visualizationMetric < positiveScaleCompareValue(1)) { //0-.4
             style = { fillColor: "#00B000", fillOpacity: ".00" }
           }
@@ -478,8 +488,18 @@ class LeafletMap extends PureComponent {
           yValue = this.state.selectedEntity.yDeaths.map((val, index) => val / (this.state.selectedEntity.yConfirmed[index] || 1)); //deaths
         }
 
-        else if (this.props.visualizationMode === "vaccinationPct" && this.state.selectedEntity.vaccinationData) {
+        else if (this.props.visualizationMode === "vaccinationPctOne" && this.state.selectedEntity.vaccinationData) {
           yValue = this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedOneDose.map(val => val / this.state.selectedEntity.population * 100);
+          xValue = this.state.selectedEntity.parent.vaccinationX;
+        }
+
+        else if (this.props.visualizationMode === "vaccinationsAdministered" && this.state.selectedEntity.vaccinationData) {
+          yValue = this.state.selectedEntity.vaccinationData.administeredTotal;
+          xValue = this.state.selectedEntity.parent.vaccinationX;
+        }
+
+        else if (this.props.visualizationMode === "vaccinationPctAll" && this.state.selectedEntity.vaccinationData) {
+          yValue = this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedAllDoses.map(val => val / this.state.selectedEntity.population * 100);
           xValue = this.state.selectedEntity.parent.vaccinationX;
         }
 
@@ -529,19 +549,21 @@ class LeafletMap extends PureComponent {
           </div>
         );
 
-        if (this.props.visualizationMode === "vaccinationPct" && this.state.selectedEntity.vaccinationData === undefined) {
+        if ((this.props.visualizationMode === "vaccinationPctOne" || this.props.visualizationMode === "vaccinationPctAll" ) && this.state.selectedEntity.vaccinationData === undefined) {
           tooltipContent = "No data available"
         }
       }
 
       else if (this.props.tooltipMode === "list" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
-        let vaccinationPctTableRow = null;
+        let vaccinationPctOneTableRow = null;
+        let vaccinationPctAllTableRow = null;
+        let vaccinationsAdministeredTableRow = null;
         
         if(this.state.selectedEntity && this.state.selectedEntity.vaccinationData) {
           const index = this.state.selectedEntity.parent.vaccinationX.indexOf(this.state.selectedEntity.x[this.props.dateIndex]);
           
-          vaccinationPctTableRow = (
-          <tr style={this.props.visualizationMode === "vaccinationPct" ? { fontWeight: "bold" } : {}}>
+          vaccinationPctOneTableRow = (
+          <tr style={this.props.visualizationMode === "vaccinationPctOne" ? { fontWeight: "bold" } : {}}>
                 <td>
                   % Vaccinated (1 Dose)
                   </td>
@@ -550,6 +572,28 @@ class LeafletMap extends PureComponent {
                 </td>
               </tr>
           );
+
+          vaccinationsAdministeredTableRow = (
+            <tr style={this.props.visualizationMode === "vaccinationsAdministered" ? { fontWeight: "bold" } : {}}>
+                  <td>
+                    Vaccines Administered
+                    </td>
+                  <td className={styles.popupValue}>
+                    {this.addThousandSeparators(this.state.selectedEntity.vaccinationData.administeredTotal[index], true)}
+                  </td>
+                </tr>
+            );
+
+          vaccinationPctAllTableRow = (
+            <tr style={this.props.visualizationMode === "vaccinationPctAll" ? { fontWeight: "bold" } : {}}>
+                  <td>
+                    % Vaccinated (All Doses)
+                    </td>
+                  <td className={styles.popupValue}>
+                    {this.formatPercentage(this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedAllDoses[index] / this.state.selectedEntity.population * 100)}
+                  </td>
+                </tr>
+            );
         }
 
 
@@ -623,7 +667,9 @@ class LeafletMap extends PureComponent {
                   {this.formatPercentage((this.state.selectedEntity.yDeaths[this.props.dateIndex]) / (this.state.selectedEntity.yConfirmed[this.props.dateIndex]) * 100)}
                 </td>
               </tr>
-              {vaccinationPctTableRow}
+              {/* {vaccinationPctOneTableRow} */}
+              {vaccinationsAdministeredTableRow}
+              {vaccinationPctAllTableRow}
             </tbody>
           </table>
         )
