@@ -37,6 +37,9 @@ class InfoDialog extends PureComponent {
               <a href="https://github.com/CSSEGISandData/COVID-19">COVID-19 Data Repository</a> by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University 
             </li>
             <li>
+            <a href="https://github.com/govex/COVID-19/tree/master/data_tables/vaccine_data">Vaccine Data</a> from the Centers for Civic Impact
+            </li>
+            <li>
               US Census Bureau 2019 Population <a href="http://www2.census.gov/programs-surveys/popest/datasets/2010-2019/national/totals/nst-est2019-alldata.csv?#">Projections</a>
             </li>
             <li>

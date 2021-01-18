@@ -5,6 +5,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Checkbox from '@material-ui/core/Checkbox';
+import { DataGrid } from '@material-ui/data-grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -70,6 +71,7 @@ export {
     CardContent,
     Checkbox,
     Collapse,
+    DataGrid,
     Dialog,
     DialogActions,
     DialogContent,

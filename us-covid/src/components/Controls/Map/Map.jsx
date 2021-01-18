@@ -55,7 +55,7 @@ const Map = ({ displayDetails, width, height, entityName, long, lat, parentEntit
 
   return (
     <>
-      <div style={{ width: width, margin: "auto" }}>
+      <div style={{ width: width, margin: "auto", pointerEvents: "none" }}>
         <ComposableMap data-tip="" projection={projection} /*projectionConfig={{ scale: 160 }}*/ height={height} width={width} >
           <ZoomableGroup
             center={center}

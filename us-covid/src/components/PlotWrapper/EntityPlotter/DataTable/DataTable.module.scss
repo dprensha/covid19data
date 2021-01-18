@@ -1,0 +1,31 @@
+.header {
+    font-size: 12px;
+    color: rgba(0, 0, 0,0.54);
+}
+
+.value {
+    color: black;
+    cursor: pointer;
+}
+
+.value:focus {
+    outline: none !important;
+}
+
+.containerFullWidth {
+    width: 100% !important;
+}
+
+.container {
+    width: 1410px !important;
+}
+
+.container > div {
+    width: auto !important;
+    height: auto !important;
+}
+
+.containerFullWidth > div {
+    width: auto !important;
+    height: auto !important;
+}

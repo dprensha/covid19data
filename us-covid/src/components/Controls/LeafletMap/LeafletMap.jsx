@@ -146,7 +146,7 @@ class LeafletMap extends PureComponent {
     }
 
     else if (this.props.visualizationMode === "active") {
-      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]): 0 * ascertainmentBias; //active
+      visualizationMetric = currentEntity ? (currentEntity.yActive[this.props.dateIndex]) : 0 * ascertainmentBias; //active
     }
 
     else if (this.props.visualizationMode === "mortalityRate") {
@@ -169,16 +169,31 @@ class LeafletMap extends PureComponent {
       visualizationMetric = currentEntity ? (currentEntity.yDeaths[this.props.dateIndex]) : 0; //deaths
     }
 
-    else if(this.props.visualizationMode === "activeChangeSevenDay") {
+    else if (this.props.visualizationMode === "activeChangeSevenDay") {
       const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex] : 0;
       const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 7] : 1;
-      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0; 
+      visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
     }
 
     else if (this.props.visualizationMode === "activeChangeFourteenDay") {
-      const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex ] : 0;
+      const keyValue = currentEntity ? currentEntity.yActive[this.props.dateIndex] : 0;
       const baselineValue = currentEntity ? currentEntity.yActive[this.props.dateIndex - 14] : 1;
       visualizationMetric = currentEntity ? (keyValue - baselineValue) / baselineValue * 100 : 0;
+    }
+
+    else if (this.props.visualizationMode === "vaccinationPctOne") {
+      const index = currentEntity && currentEntity.vaccinationData ? currentEntity.parent.vaccinationX.indexOf(currentEntity.x[this.props.dateIndex]) : 0;
+      visualizationMetric = currentEntity && currentEntity.vaccinationData ? currentEntity.vaccinationData.totalPeopleVaccinatedOneDose[index] / currentEntity.population * 100 : 0;
+    }
+
+    else if (this.props.visualizationMode === "vaccinationsAdministered") {
+      const index = currentEntity && currentEntity.vaccinationData ? currentEntity.parent.vaccinationX.indexOf(currentEntity.x[this.props.dateIndex]) : 0;
+      visualizationMetric = currentEntity && currentEntity.vaccinationData ? currentEntity.vaccinationData.administeredTotal[index] : 0;
+    }
+
+    else if (this.props.visualizationMode === "vaccinationPctAll") {
+      const index = currentEntity && currentEntity.vaccinationData ? currentEntity.parent.vaccinationX.indexOf(currentEntity.x[this.props.dateIndex]) : 0;
+      visualizationMetric = currentEntity && currentEntity.vaccinationData ? currentEntity.vaccinationData.totalPeopleVaccinatedAllDoses[index] / currentEntity.population * 100 : 0;
     }
 
 
@@ -195,87 +210,133 @@ class LeafletMap extends PureComponent {
     }
 
     else {
-      if(this.props.scaleIncludesNegatives === false) {
-        if (visualizationMetric < positiveScaleCompareValue(1)) { //0-.4
-          style = { fillColor: "#0000B0", fillOpacity: ".05" }
+      if (this.props.scaleIncludesNegatives === false) {
+        if (this.props.visualizationMode === "vaccinationPctOne" || this.props.visualizationMode === "vaccinationPctAll" || this.props.visualizationMode === "vaccinationsAdministered") {
+          if (visualizationMetric < positiveScaleCompareValue(1)) { //0-.4
+            style = { fillColor: "#00B000", fillOpacity: ".00" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(2)) { //.4-.8
+            style = { fillColor: "#00B000", fillOpacity: ".05" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(4)) { //.8-1.2
+            style = { fillColor: "#00B000", fillOpacity: ".1" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(6)) { //1.2-1.6
+            style = { fillColor: "#00B000", fillOpacity: ".15" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(8)) {
+            style = { fillColor: "#00B000", fillOpacity: ".2" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(10)) {
+            style = { fillColor: "#00B000", fillOpacity: ".25" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(12)) {
+            style = { fillColor: "#00B000", fillOpacity: ".3" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(14)) {
+            style = { fillColor: "#00B000", fillOpacity: ".35" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(16)) {
+            style = { fillColor: "#00B000", fillOpacity: ".4" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(18)) {
+            style = { fillColor: "#00B000", fillOpacity: ".45" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(20)) {
+            style = { fillColor: "#00B000", fillOpacity: ".5" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(22)) {
+            style = { fillColor: "#00B000", fillOpacity: ".55" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(24)) {
+            style = { fillColor: "#00B000", fillOpacity: ".6" }
+          }
+          else if (visualizationMetric >= breakpoint * 26) {
+            style = { fillColor: "#00B000", fillOpacity: ".65" }
+          }
         }
-        else if (visualizationMetric < positiveScaleCompareValue(2)) { //.4-.8
-          style = { fillColor: "#0000B0", fillOpacity: ".1" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(3)) { //.8-1.2
-          style = { fillColor: "#0000B0", fillOpacity: ".2" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(4)) { //1.2-1.6
-          style = { fillColor: "#0000B0", fillOpacity: ".3" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(5)) {
-          style = { fillColor: "#0000B0", fillOpacity: ".4" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(6)) {
-          style = { fillColor: "#0000B0", fillOpacity: ".5" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(7)) {
-          style = { fillColor: "#0000B0", fillOpacity: ".6" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(8)) {
-          style = { fillColor: "#0000B0", fillOpacity: ".7" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(9)) {
-          style = { fillColor: "#0000B0", fillOpacity: ".8" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(10)) {
-          style = { fillColor: "#0000B0", fillOpacity: ".9" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(11)) {
-          style = { fillColor: "#B00000", fillOpacity: ".45" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(12)) {
-          style = { fillColor: "#B00000", fillOpacity: ".5" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(13)) {
-          style = { fillColor: "#B00000", fillOpacity: ".55" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(14)) {
-          style = { fillColor: "#B00000", fillOpacity: ".6" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(15)) {
-          style = { fillColor: "#B00000", fillOpacity: ".65" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(16)) {
-          style = { fillColor: "#B00000", fillOpacity: ".7" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(17)) {
-          style = { fillColor: "#B00000", fillOpacity: ".75" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(18)) {
-          style = { fillColor: "#B00000", fillOpacity: ".8" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(19)) {
-          style = { fillColor: "#000000", fillOpacity: ".6" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(20)) {
-          style = { fillColor: "#000000", fillOpacity: ".65" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(21)) {
-          style = { fillColor: "#000000", fillOpacity: ".7" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(22)) {
-          style = { fillColor: "#000000", fillOpacity: ".75" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(23)) {
-          style = { fillColor: "#000000", fillOpacity: ".8" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(24)) {
-          style = { fillColor: "#000000", fillOpacity: ".85" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(25)) {
-          style = { fillColor: "#000000", fillOpacity: ".9" }
-        }
-        else if (visualizationMetric < positiveScaleCompareValue(26)) {
-          style = { fillColor: "#000000", fillOpacity: ".95" }
-        }
-        else if (visualizationMetric >= breakpoint * 26) {
-          style = { fillColor: "#000000", fillOpacity: "1" }
+        else {
+          if (visualizationMetric < positiveScaleCompareValue(1)) { //0-.4
+            style = { fillColor: "#0000B0", fillOpacity: ".05" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(2)) { //.4-.8
+            style = { fillColor: "#0000B0", fillOpacity: ".1" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(3)) { //.8-1.2
+            style = { fillColor: "#0000B0", fillOpacity: ".2" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(4)) { //1.2-1.6
+            style = { fillColor: "#0000B0", fillOpacity: ".3" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(5)) {
+            style = { fillColor: "#0000B0", fillOpacity: ".4" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(6)) {
+            style = { fillColor: "#0000B0", fillOpacity: ".5" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(7)) {
+            style = { fillColor: "#0000B0", fillOpacity: ".6" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(8)) {
+            style = { fillColor: "#0000B0", fillOpacity: ".7" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(9)) {
+            style = { fillColor: "#0000B0", fillOpacity: ".8" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(10)) {
+            style = { fillColor: "#0000B0", fillOpacity: ".9" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(11)) {
+            style = { fillColor: "#B00000", fillOpacity: ".45" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(12)) {
+            style = { fillColor: "#B00000", fillOpacity: ".5" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(13)) {
+            style = { fillColor: "#B00000", fillOpacity: ".55" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(14)) {
+            style = { fillColor: "#B00000", fillOpacity: ".6" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(15)) {
+            style = { fillColor: "#B00000", fillOpacity: ".65" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(16)) {
+            style = { fillColor: "#B00000", fillOpacity: ".7" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(17)) {
+            style = { fillColor: "#B00000", fillOpacity: ".75" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(18)) {
+            style = { fillColor: "#B00000", fillOpacity: ".8" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(19)) {
+            style = { fillColor: "#000000", fillOpacity: ".6" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(20)) {
+            style = { fillColor: "#000000", fillOpacity: ".65" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(21)) {
+            style = { fillColor: "#000000", fillOpacity: ".7" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(22)) {
+            style = { fillColor: "#000000", fillOpacity: ".75" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(23)) {
+            style = { fillColor: "#000000", fillOpacity: ".8" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(24)) {
+            style = { fillColor: "#000000", fillOpacity: ".85" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(25)) {
+            style = { fillColor: "#000000", fillOpacity: ".9" }
+          }
+          else if (visualizationMetric < positiveScaleCompareValue(26)) {
+            style = { fillColor: "#000000", fillOpacity: ".95" }
+          }
+          else if (visualizationMetric >= breakpoint * 26) {
+            style = { fillColor: "#000000", fillOpacity: "1" }
+          }
         }
       }
       else {
@@ -303,13 +364,13 @@ class LeafletMap extends PureComponent {
         else if (visualizationMetric < -breakpoint * 2) {
           style = { fillColor: "#00B000", fillOpacity: ".25" }
         }
-        else if (visualizationMetric <  -breakpoint * 1) {
+        else if (visualizationMetric < -breakpoint * 1) {
           style = { fillColor: "#00B000", fillOpacity: ".15" }
         }
-        else if (visualizationMetric === 0 ){
-          style = { fillColor: "#00B000", fillOpacity: "0"}
+        else if (visualizationMetric === 0) {
+          style = { fillColor: "#00B000", fillOpacity: "0" }
         }
-        else if (visualizationMetric <  0) {
+        else if (visualizationMetric < 0) {
           style = { fillColor: "#00B000", fillOpacity: ".1" }
         }
         else if (visualizationMetric < breakpoint * 1) {
@@ -378,7 +439,7 @@ class LeafletMap extends PureComponent {
   }
 
   addThousandSeparators(value, formatMagnitude) {
-    if(!value) { value = 0 }
+    if (!value) { value = 0 }
     if (formatMagnitude && Math.abs(Number(value)) >= 1.0e+9) {
       return `${((Math.round(value / 1000)) / 1000000).toFixed(2)} B`;
     }
@@ -409,44 +470,60 @@ class LeafletMap extends PureComponent {
       const baselineValueSeven = this.state.selectedEntity.yActive[this.props.dateIndex - 7];
       const baselineValueFourteen = this.state.selectedEntity.yActive[this.props.dateIndex - 14];
       const ascertainmentBias = this.props.ascertainmentBias;
-      
-      if(this.props.tooltipMode === "graph" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
+
+      if (this.props.tooltipMode === "graph" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
         let yValue = this.state.selectedEntity.yActive;
+        let xValue = this.state.selectedEntity.x;
         let title = this.props.visualizationTitle;
 
         if (this.props.visualizationMode === "activePerCapita") {
           yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000 * ascertainmentBias); //activePerCapita
         }
-    
+
         else if (this.props.visualizationMode === "active") {
           yValue = (this.state.selectedEntity.yActive.map(val => val * ascertainmentBias)); //active
         }
-    
+
         else if (this.props.visualizationMode === "mortalityRate") {
-          yValue = this.state.selectedEntity.yDeaths.map((val, index) => val/(this.state.selectedEntity.yConfirmed[index] || 1)); //deaths
+          yValue = this.state.selectedEntity.yDeaths.map((val, index) => val / (this.state.selectedEntity.yConfirmed[index] || 1)); //deaths
         }
-    
+
+        else if (this.props.visualizationMode === "vaccinationPctOne" && this.state.selectedEntity.vaccinationData) {
+          yValue = this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedOneDose.map(val => val / this.state.selectedEntity.population * 100);
+          xValue = this.state.selectedEntity.parent.vaccinationX;
+        }
+
+        else if (this.props.visualizationMode === "vaccinationsAdministered" && this.state.selectedEntity.vaccinationData) {
+          yValue = this.state.selectedEntity.vaccinationData.administeredTotal;
+          xValue = this.state.selectedEntity.parent.vaccinationX;
+        }
+
+        else if (this.props.visualizationMode === "vaccinationPctAll" && this.state.selectedEntity.vaccinationData) {
+          yValue = this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedAllDoses.map(val => val / this.state.selectedEntity.population * 100);
+          xValue = this.state.selectedEntity.parent.vaccinationX;
+        }
+
         else if (this.props.visualizationMode === "totalPerCapita") {
-          yValue = this.state.selectedEntity.yConfirmed.map((val) => val/this.state.selectedEntity.population * 1000 * ascertainmentBias); //totalPerCapita
+          yValue = this.state.selectedEntity.yConfirmed.map((val) => val / this.state.selectedEntity.population * 1000 * ascertainmentBias); //totalPerCapita
         }
-    
+
         else if (this.props.visualizationMode === "total") {
           yValue = this.state.selectedEntity.yConfirmed.map(val => val * ascertainmentBias); //total
         }
-    
+
         else if (this.props.visualizationMode === "deathsPerCapita") {
-          yValue = this.state.selectedEntity.yDeaths.map((val) => val/this.state.selectedEntity.population * 100000); //deathsPerCapita
+          yValue = this.state.selectedEntity.yDeaths.map((val) => val / this.state.selectedEntity.population * 100000); //deathsPerCapita
         }
-    
+
         else if (this.props.visualizationMode === "deaths") {
           yValue = this.state.selectedEntity.yDeaths; //deaths
         }
-    
-        else if(this.props.visualizationMode === "activeChangeSevenDay") {
+
+        else if (this.props.visualizationMode === "activeChangeSevenDay") {
           yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000); //activePerCapita
           title = "Active Cases Per 1,000";
         }
-    
+
         else if (this.props.visualizationMode === "activeChangeFourteenDay") {
           yValue = this.state.selectedEntity.yActivePerCapita.map((val) => val * 1000); //activePerCapita
           title = "Active Cases Per 1,000";
@@ -459,21 +536,67 @@ class LeafletMap extends PureComponent {
             </div>
             <div className={styles.plotLabel}>{title}</div>
             <D3Plot
-                id={this.state.selectedEntity.navigableTitle}
-                data={this.state.selectedEntity}
-                x={this.state.selectedEntity.x}
-                y={yValue}
-                width={200}
-                height={100}
-                tickInterval={4}
-                scaleMode={"linear"}
-                showTooltip={false}
+              id={this.state.selectedEntity.navigableTitle}
+              data={this.state.selectedEntity}
+              x={xValue}
+              y={yValue}
+              width={200}
+              height={100}
+              tickInterval={4}
+              scaleMode={"linear"}
+              showTooltip={false}
             />
           </div>
         );
+
+        if ((this.props.visualizationMode === "vaccinationPctOne" || this.props.visualizationMode === "vaccinationPctAll" ) && this.state.selectedEntity.vaccinationData === undefined) {
+          tooltipContent = "No data available"
+        }
       }
 
-      else if(this.props.tooltipMode === "list" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
+      else if (this.props.tooltipMode === "list" && this.state.selectedEntity && this.state.selectedEntity.yActive.length > 1) {
+        let vaccinationPctOneTableRow = null;
+        let vaccinationPctAllTableRow = null;
+        let vaccinationsAdministeredTableRow = null;
+        
+        if(this.state.selectedEntity && this.state.selectedEntity.vaccinationData) {
+          const index = this.state.selectedEntity.parent.vaccinationX.indexOf(this.state.selectedEntity.x[this.props.dateIndex]);
+          
+          vaccinationPctOneTableRow = (
+          <tr style={this.props.visualizationMode === "vaccinationPctOne" ? { fontWeight: "bold" } : {}}>
+                <td>
+                  % Vaccinated (1 Dose)
+                  </td>
+                <td className={styles.popupValue}>
+                  {this.formatPercentage(this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedOneDose[index] / this.state.selectedEntity.population * 100)}
+                </td>
+              </tr>
+          );
+
+          vaccinationsAdministeredTableRow = (
+            <tr style={this.props.visualizationMode === "vaccinationsAdministered" ? { fontWeight: "bold" } : {}}>
+                  <td>
+                    Vaccines Administered
+                    </td>
+                  <td className={styles.popupValue}>
+                    {this.addThousandSeparators(this.state.selectedEntity.vaccinationData.administeredTotal[index], true)}
+                  </td>
+                </tr>
+            );
+
+          vaccinationPctAllTableRow = (
+            <tr style={this.props.visualizationMode === "vaccinationPctAll" ? { fontWeight: "bold" } : {}}>
+                  <td>
+                    % Vaccinated (All Doses)
+                    </td>
+                  <td className={styles.popupValue}>
+                    {this.formatPercentage(this.state.selectedEntity.vaccinationData.totalPeopleVaccinatedAllDoses[index] / this.state.selectedEntity.population * 100)}
+                  </td>
+                </tr>
+            );
+        }
+
+
         tooltipContent = (
           <table className={styles.popupTable}>
             <tbody>
@@ -481,22 +604,22 @@ class LeafletMap extends PureComponent {
                 <td colSpan="2" className={styles.popupTitle}>{this.state.selectedEntity.title}{this.state.selectedEntity.parent && this.state.selectedEntity.parent.title !== "World" ? `, ${this.state.selectedEntity.parent.title}` : ""}</td>
               </tr>
               <tr>
-              <td>
+                <td>
                   Population
                   </td>
                 <td className={styles.popupValue}>
                   {this.addThousandSeparators(this.state.selectedEntity.population, true)}
                 </td>
               </tr>
-              <tr style={this.props.visualizationMode === "active" ? {fontWeight: "bold"} : {}}>
-              <td>
+              <tr style={this.props.visualizationMode === "active" ? { fontWeight: "bold" } : {}}>
+                <td>
                   Active Cases
                   </td>
                 <td className={styles.popupValue}>
                   {this.addThousandSeparators(this.state.selectedEntity.yActive[this.props.dateIndex] * ascertainmentBias, false)}
                 </td>
               </tr>
-              <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? {fontWeight: "bold"} : {}}>
+              <tr style={this.props.visualizationMode === "activeChangeSevenDay" ? { fontWeight: "bold" } : {}}>
                 <td>
                   Active Cases 7-Day Change
                   </td>
@@ -504,23 +627,23 @@ class LeafletMap extends PureComponent {
                   {this.formatPercentage((keyValue - baselineValueSeven) / baselineValueSeven * 100)}
                 </td>
               </tr>
-              <tr style={this.props.visualizationMode === "activeChangeFourteenDay" ? {fontWeight: "bold"} : {}}>
-              <td>
+              <tr style={this.props.visualizationMode === "activeChangeFourteenDay" ? { fontWeight: "bold" } : {}}>
+                <td>
                   Active Cases 14-Day Change
                   </td>
                 <td className={styles.popupValue}>
                   {this.formatPercentage((keyValue - baselineValueFourteen) / baselineValueFourteen * 100)}
                 </td>
               </tr>
-              <tr style={this.props.visualizationMode === "activePerCapita" ? {fontWeight: "bold"} : {}}>
-              <td>
+              <tr style={this.props.visualizationMode === "activePerCapita" ? { fontWeight: "bold" } : {}}>
+                <td>
                   Active Cases Per 1,000
                   </td>
                 <td className={styles.popupValue}>
                   {this.addThousandSeparators(this.state.selectedEntity.yActivePerCapita[this.props.dateIndex] * 1000 * ascertainmentBias, false)}
                 </td>
               </tr>
-              <tr style={this.props.visualizationMode === "total" ? {fontWeight: "bold"} : {}}>
+              <tr style={this.props.visualizationMode === "total" ? { fontWeight: "bold" } : {}}>
                 <td>
                   Total Cases
                   </td>
@@ -528,7 +651,7 @@ class LeafletMap extends PureComponent {
                   {this.addThousandSeparators(this.state.selectedEntity.yConfirmed[this.props.dateIndex] * ascertainmentBias, true)}
                 </td>
               </tr>
-              <tr style={this.props.visualizationMode === "deaths" ? {fontWeight: "bold"} : {}}>
+              <tr style={this.props.visualizationMode === "deaths" ? { fontWeight: "bold" } : {}}>
                 <td>
                   Deaths
                   </td>
@@ -536,14 +659,17 @@ class LeafletMap extends PureComponent {
                   {this.addThousandSeparators(this.state.selectedEntity.yDeaths[this.props.dateIndex])}
                 </td>
               </tr>
-              <tr style={this.props.visualizationMode === "mortalityRate" ? {fontWeight: "bold"} : {}}>
-              <td>
+              <tr style={this.props.visualizationMode === "mortalityRate" ? { fontWeight: "bold" } : {}}>
+                <td>
                   Mortality Rate
                   </td>
                 <td className={styles.popupValue}>
                   {this.formatPercentage((this.state.selectedEntity.yDeaths[this.props.dateIndex]) / (this.state.selectedEntity.yConfirmed[this.props.dateIndex]) * 100)}
                 </td>
               </tr>
+              {/* {vaccinationPctOneTableRow} */}
+              {vaccinationsAdministeredTableRow}
+              {vaccinationPctAllTableRow}
             </tbody>
           </table>
         )

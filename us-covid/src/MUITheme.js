@@ -127,6 +127,11 @@ const styles = createMuiTheme({
               },
           },
         },
+        MuiDataGrid: {
+            root: {
+                border: "none"
+            }
+        }
     }
 });
 

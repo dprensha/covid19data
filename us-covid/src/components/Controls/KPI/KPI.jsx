@@ -114,6 +114,14 @@ class KPI extends PureComponent {
             }
         );
 
+        const ratioStyles = classNames(
+            styles.ratio,
+            {
+                [styles.isMobile]: (this.props.displayDetails.formFactor === constants.display.formFactors.MOBILE),
+                [styles.isSmall]: (this.props.size === "small")
+            }
+        );
+
         let baselineValueContent = null;
         if(baselineValue) {
             baselineValueContent = (
@@ -128,6 +136,15 @@ class KPI extends PureComponent {
             );
         }
 
+        let ratioContent = null;
+        if(this.props.ratio) {
+            ratioContent = (
+                <div className={ratioStyles}>
+                    {`1 in ${this.addThousandSeparators(this.props.ratio, true)}`}
+                </div>
+            );
+        }
+
         return (
             <div className={styles.kpi}>
                 <div className={kpiTitleStyles}>
@@ -136,6 +153,7 @@ class KPI extends PureComponent {
                 <div className={kpiValueStyles}>
                     {displayKeyValue}
                 </div>
+                {ratioContent}
                 {baselineValueContent}
             </div>
         );
