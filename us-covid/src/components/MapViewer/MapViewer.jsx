@@ -230,13 +230,13 @@ class MapViewer extends Component {
                 scaleIsExponential = false;
                 break;
             case "vaccinationsAdministered":
-                breakpoint = 100000;
+                breakpoint = 200000;
                 visualizationTitle = "Vaccines Administered";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = false;
                 break;
             case "vaccinationPctAll":
-                breakpoint = 1;
+                breakpoint = 2;
                 visualizationTitle = "% Vaccinated (All Doses)";
                 scaleIncludesNegatives = false;
                 scaleIsExponential = false;
