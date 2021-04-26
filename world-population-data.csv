@@ -88,6 +88,7 @@ Tibet,China,31.6927,88.0924,3370000
 Xinjiang,China,41.1129,85.2401,24450000
 Yunnan,China,24.974,101.487,48010000
 Zhejiang,China,29.1832,120.0934,56570000
+Unknown,China,34.59,103.68,1000000
 ,Colombia,4.5709,-74.2973,50339443
 ,Comoros,-11.6455,43.3333,850886
 ,Congo (Brazzaville),-4.0383,21.7587,5244000
@@ -256,6 +257,7 @@ Anguilla,United Kingdom,18.2206,-63.0686,15094
 British Virgin Islands,United Kingdom,18.4207,-64.64,29802
 Turks and Caicos Islands,United Kingdom,21.694,-71.7979,37665
 Falkland Islands (Malvinas),United Kingdom,-51.7963,-59.5236,2840
+"Saint Helena, Ascension and Tristan da Cunha",United Kingdom,-7.9467,-14.3559,4534
 ,Uruguay,-32.5228,-55.7658,3461734
 ,US,37.0902,-95.7129,328239523
 ,Uzbekistan,41.3775,64.5853,33580650
