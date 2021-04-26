@@ -460,30 +460,32 @@ export const actionCreators = {
                         }
                     }
             }),
-            d3.csv('https://raw.githubusercontent.com/govex/COVID-19/master/data_tables/vaccine_data/raw_data/vaccine_data_us_state_timeline.csv', (data) => {
-                const d = new Date(data.date);
+            d3.csv('https://raw.githubusercontent.com/govex/COVID-19/master/data_tables/vaccine_data/us_data/time_series/vaccine_data_us_timeline.csv', (data) => {
+                const d = new Date(data.Date);
 
-                vaccinations.push({
-                    date: `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear().toString().substr(2, 2)}`,
-                    state: data["Province_State"],
-                    abbreviation: data["stabbr"],
-                    isDashboardAvailable: data["dashboard_available"],
-                    allocatedTotal: data["doses_alloc_total"],
-                    allocatedModerna: data["doses_alloc_moderna"],
-                    allocatedPfizer: data["doses_alloc_pfizer"],
-                    allocatedUnknown: data["doses_alloc_unknown"],
-                    shippedTotal: data["doses_shipped_total"],
-                    shippedModerna: data["doses_shipped_moderna"],
-                    shippedPfizer: data["doses_shipped_pfizer"],
-                    shippedUnknown: data["doses_shipped_unknown"],
-                    administeredTotal: data["doses_admin_total"],
-                    administeredModerna: data["doses_admin_moderna"],
-                    administeredPfizer: data["doses_admin_pfizer"],
-                    administeredUnknown: data["doses_admin_unknown"],
-                    totalPeopleVaccinatedOneDose: data["people_total"],
-                    totalPeopleVaccinatedAllDoses: data["people_total_2nd_dose"],
+                if(data["Vaccine_Type"] === "All") {
+                    vaccinations.push({
+                        date: `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear().toString().substr(2, 2)}`,
+                        state: data["Province_State"],
+                        abbreviation: data["stabbr"],
+                        isDashboardAvailable: data["dashboard_available"],
+                        allocatedTotal: data["Doses_alloc"],
+                        //allocatedModerna: data["doses_alloc_moderna"],
+                        //allocatedPfizer: data["doses_alloc_pfizer"],
+                        //allocatedUnknown: data["doses_alloc_unknown"],
+                        shippedTotal: data["Doses_shipped"],
+                        //shippedModerna: data["doses_shipped_moderna"],
+                        //shippedPfizer: data["doses_shipped_pfizer"],
+                        //shippedUnknown: data["doses_shipped_unknown"],
+                        administeredTotal: data["Doses_admin"],
+                        //administeredModerna: data["doses_admin_moderna"],
+                        //administeredPfizer: data["doses_admin_pfizer"],
+                        //administeredUnknown: data["doses_admin_unknown"],
+                        totalPeopleVaccinatedOneDose: data["Stage_One_Doses"],
+                        totalPeopleVaccinatedAllDoses: data["Stage_Two_Doses"],
 
-                })
+                    })
+                }
             }),
 //             fetch("https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data", {
 //   "headers": {
