@@ -153,6 +153,8 @@ UID,State,County,Population
 84002020,Alaska,Anchorage Municipality,288000
 84002050,Alaska,Bethel Census Area,18386
 84002060,Alaska,Bristol Bay Borough,836
+84002063,Alaska,Chugach,6751
+84002066,Alaska,Copper River,1929
 84002068,Alaska,Denali Borough,2097
 84002070,Alaska,Dillingham Census Area,4916
 84002090,Alaska,Fairbanks North Star Borough,96849
@@ -1883,7 +1885,7 @@ UID,State,County,Population
 84035007,New Mexico,Colfax County,11941
 84035009,New Mexico,Curry County,48954
 84035011,New Mexico,De Baca County,1748
-84035013,New Mexico,Doña Ana County,218195
+84035013,New Mexico,Doï¿½a Ana County,218195
 84035015,New Mexico,Eddy County,58460
 84035017,New Mexico,Grant County,26998
 84035019,New Mexico,Guadalupe County,4300
