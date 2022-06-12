@@ -11,16 +11,6 @@
         border: 2px solid rgba(0,0,0,0.2);
         box-shadow: none;
     }
-
-    .search-control-icon-button svg {
-        margin-top: 8px;
-    }
-}
-
-@media screen and (min-width: 501px) {
-    .search-control-icon-button svg {
-        margin-top: 6px;
-    }
 }
 
 .fa {
