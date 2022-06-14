@@ -9,12 +9,6 @@ import styles from './MUITheme'
 
 const store = configureStore();
 
-// const theme = createMuiTheme({
-//   palette: {
-//     type: 'dark',
-//   },
-// });
-
 function App() {
   return (
     <div className="App">

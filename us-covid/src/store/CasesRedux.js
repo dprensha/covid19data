@@ -100,7 +100,7 @@ export const actionCreators = {
             //     }
             // }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv', (data) => {
-                if (data["Province/State"] === "" && (data["Country/Region"] === "United Kingdom" || data["Country/Region"] === "Denmark" || data["Country/Region"] === "France" || data["Country/Region"] === "Netherlands")) {
+                if (data["Province/State"] === "" && (data["Country/Region"] === "United Kingdom" || data["Country/Region"] === "Denmark" || data["Country/Region"] === "France" || data["Country/Region"] === "Netherlands" || data["Country/Region"] === "New Zealand")) {
                     data["Province/State"] = `Mainland ${data["Country/Region"]}`
                 }
                 const dates = Object.keys(data).filter(function(key) { return !isNaN(Date.parse(key)) });
@@ -111,7 +111,7 @@ export const actionCreators = {
             }),
             d3.csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv', (data) => {
                 //deal with Denmark, France, Netherlands, United Kingdom
-                if (data["Province/State"] === "" && (data["Country/Region"] === "United Kingdom" || data["Country/Region"] === "Denmark" || data["Country/Region"] === "France" || data["Country/Region"] === "Netherlands")) {
+                if (data["Province/State"] === "" && (data["Country/Region"] === "United Kingdom" || data["Country/Region"] === "Denmark" || data["Country/Region"] === "France" || data["Country/Region"] === "Netherlands" || data["Country/Region"] === "New Zealand")) {
                     data["Province/State"] = `Mainland ${data["Country/Region"]}`
                 }
 
