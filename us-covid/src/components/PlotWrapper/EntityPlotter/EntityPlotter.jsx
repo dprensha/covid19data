@@ -37,7 +37,7 @@ class EntityPlotter extends PureComponent {
             popoverAnchorElement: null,
             filterText: "",
             comparisonKPI: "activePerCapita",
-            kpiBaselineDays: "7",
+            kpiBaselineDays: "14",
             scaleMode: "linear",
             filterTextDebounced: "",
             childViewMode: "graphs",
@@ -367,6 +367,25 @@ class EntityPlotter extends PureComponent {
             );
         }
 
+        let totalAdditionalDosesKPIContent = null;
+        if (this.props.entity.vaccinationData) {
+            totalAdditionalDosesKPIContent = (
+                <div className={kpiClasses}>
+                    <KPI
+                        keyValueTitle={"Total Additional Doses"}
+                        keyValue={this.props.entity.vaccinationData.totalAdditionalDoses[this.props.entity.vaccinationData.totalAdditionalDoses.length - 1]}
+                        keyValueFormat={"Decimal"}
+                        baselineValueTitle={`Past ${this.state.kpiBaselineDays} Days`}
+                        baselineValue={this.props.entity.vaccinationData.totalAdditionalDoses[this.props.entity.vaccinationData.totalAdditionalDoses.length - 1 - parseInt(this.state.kpiBaselineDays)]}
+                        baselineValueFormat={"Decimal"}
+                        colorCodeBaselineValue={false}
+                        displayDetails={this.props.displayDetails}
+                        size={"large"}
+                    />
+                </div>
+            );
+        }
+
         let searchFieldContent = null;
         if(this.props.entity.children && Object.keys(this.props.entity.children).length > 1) {
             searchFieldContent = (
@@ -612,11 +631,12 @@ class EntityPlotter extends PureComponent {
                         />
                     </div>
                     {/* {peopleTestedKPIContent} */}
-                    {newCasesPerHundredTestedKPIContent}
+                    {/* {newCasesPerHundredTestedKPIContent} */}
                     {/* {testingRateKPIContent} */}
-                    {totalVaccinesAllocatedKPIContent}
+                    {/* {totalVaccinesAllocatedKPIContent} */}
                     {totalVaccinesAdministeredKPIContent}
                     {totalPeopleVaccinatedAllDosesKPIContent}
+                    {totalAdditionalDosesKPIContent}
                 </div>
                 {/* {disclaimerArea} */}
                 <div className={styles.dataGridContainer}>

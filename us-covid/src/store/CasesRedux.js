@@ -460,20 +460,20 @@ export const actionCreators = {
                         }
                     }
             }),
-            d3.csv('https://raw.githubusercontent.com/govex/COVID-19/master/data_tables/vaccine_data/us_data/time_series/vaccine_data_us_timeline.csv', (data) => {
+            d3.csv('https://raw.githubusercontent.com/govex/COVID-19/master/data_tables/vaccine_data/us_data/time_series/time_series_covid19_vaccine_us.csv', (data) => {
                 const d = new Date(data.Date);
 
-                if(data["Vaccine_Type"] === "All") {
+                //if(data["Vaccine_Type"] === "All") {
                     vaccinations.push({
                         date: `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear().toString().substr(2, 2)}`,
                         state: data["Province_State"],
-                        abbreviation: data["stabbr"],
-                        isDashboardAvailable: data["dashboard_available"],
-                        allocatedTotal: data["Doses_alloc"],
+                        //abbreviation: data["stabbr"],
+                        //isDashboardAvailable: data["dashboard_available"],
+                        allocatedTotal: null,
                         //allocatedModerna: data["doses_alloc_moderna"],
                         //allocatedPfizer: data["doses_alloc_pfizer"],
                         //allocatedUnknown: data["doses_alloc_unknown"],
-                        shippedTotal: data["Doses_shipped"],
+                        shippedTotal: "0",
                         //shippedModerna: data["doses_shipped_moderna"],
                         //shippedPfizer: data["doses_shipped_pfizer"],
                         //shippedUnknown: data["doses_shipped_unknown"],
@@ -481,11 +481,12 @@ export const actionCreators = {
                         //administeredModerna: data["doses_admin_moderna"],
                         //administeredPfizer: data["doses_admin_pfizer"],
                         //administeredUnknown: data["doses_admin_unknown"],
-                        totalPeopleVaccinatedOneDose: data["Stage_One_Doses"],
-                        totalPeopleVaccinatedAllDoses: data["Stage_Two_Doses"],
+                        totalPeopleVaccinatedOneDose: data["People_at_least_one_dose"],
+                        totalPeopleVaccinatedAllDoses: data["People_fully_vaccinated"],
+                        totalAdditionalDoses: data["Total_additional_doses"]
 
                     })
-                }
+                //}
             }),
 //             fetch("https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data", {
 //   "headers": {
@@ -526,7 +527,8 @@ export const actionCreators = {
                     allocatedTotal: allData.vaccinationX.map(v => 0),
                     administeredTotal: allData.vaccinationX.map(v => 0),
                     totalPeopleVaccinatedOneDose: allData.vaccinationX.map(v => 0),
-                    totalPeopleVaccinatedAllDoses: allData.vaccinationX.map(v => 0)
+                    totalPeopleVaccinatedAllDoses: allData.vaccinationX.map(v => 0),
+                    totalAdditionalDoses: allData.vaccinationX.map(v => 0)
                 };
                 
                 for (var i = 0; i < sortedKeys.length; i++) {
@@ -535,12 +537,13 @@ export const actionCreators = {
                         allocatedTotal: [],
                         administeredTotal: [],
                         totalPeopleVaccinatedOneDose: [],
-                        totalPeopleVaccinatedAllDoses: []
+                        totalPeopleVaccinatedAllDoses: [],
+                        totalAdditionalDoses: [],
                     };
 
-                    var markedValue = { allocatedTotal: 0, administeredTotal: 0, totalPeopleVaccinatedOneDose: 0, totalPeopleVaccinatedAllDoses: 0 };
+                    var markedValue = { allocatedTotal: 0, administeredTotal: 0, totalPeopleVaccinatedOneDose: 0, totalPeopleVaccinatedAllDoses: 0, totalAdditionalDoses: 0 };
                     for(var j = 0; j < allData.vaccinationX.length; j++) {
-                        var marked = { allocatedTotal: false, administeredTotal: false, totalPeopleVaccinatedOneDose: false, totalPeopleVaccinatedAllDoses: false };
+                        var marked = { allocatedTotal: false, administeredTotal: false, totalPeopleVaccinatedOneDose: false, totalPeopleVaccinatedAllDoses: false, totalAdditionalDoses: false };
                         for(var k = 0; k < stateVaccinationList.length; k++) {
                             if(stateVaccinationList[k].date === allData.vaccinationX[j] && stateVaccinationList[k].allocatedTotal !== "" && !isNaN(parseInt(stateVaccinationList[k].allocatedTotal, 10))) {
                                 marked.allocatedTotal = true;
@@ -566,6 +569,12 @@ export const actionCreators = {
                                 allData.children[sortedKeys[i]].vaccinationData.totalPeopleVaccinatedAllDoses.push(markedValue.totalPeopleVaccinatedAllDoses);
                                 allData.vaccinationData.totalPeopleVaccinatedAllDoses[j] += markedValue.totalPeopleVaccinatedAllDoses;
                             }
+                            if(stateVaccinationList[k].date === allData.vaccinationX[j] && stateVaccinationList[k].totalAdditionalDoses !== "" && !isNaN(parseInt(stateVaccinationList[k].totalAdditionalDoses, 10))) {
+                                marked.totalAdditionalDoses = true;
+                                markedValue.totalAdditionalDoses = parseInt(stateVaccinationList[k].totalAdditionalDoses, 10);
+                                allData.children[sortedKeys[i]].vaccinationData.totalAdditionalDoses.push(markedValue.totalAdditionalDoses);
+                                allData.vaccinationData.totalAdditionalDoses[j] += markedValue.totalAdditionalDoses;
+                            }
                         }
                         if(!marked.allocatedTotal) {
                             allData.children[sortedKeys[i]].vaccinationData.allocatedTotal.push(markedValue.allocatedTotal);
@@ -582,6 +591,10 @@ export const actionCreators = {
                         if(!marked.totalPeopleVaccinatedAllDoses) {
                             allData.children[sortedKeys[i]].vaccinationData.totalPeopleVaccinatedAllDoses.push(markedValue.totalPeopleVaccinatedAllDoses);
                             allData.vaccinationData.totalPeopleVaccinatedAllDoses[j] += markedValue.totalPeopleVaccinatedAllDoses;
+                        }
+                        if(!marked.totalAdditionalDoses) {
+                            allData.children[sortedKeys[i]].vaccinationData.totalAdditionalDoses.push(markedValue.totalAdditionalDoses);
+                            allData.vaccinationData.totalAdditionalDoses[j] += markedValue.totalAdditionalDoses;
                         }
                     }
 
